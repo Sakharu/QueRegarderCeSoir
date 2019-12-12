@@ -1,14 +1,18 @@
-package com.example.myapplication
+package com.sakharu.queregardercesoir.data.locale.genre
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
+/*
+    Genre représente les différents genre disponibles pour un film comme par exemple,
+    action, aventure, science-fiction...
+ */
 @Entity(tableName = "genre")
 data class Genre(
     @PrimaryKey
     @field:SerializedName("id")
-    var id:Int,
+    var id:Long,
     @field:SerializedName("name")
     var name:String="unknown"
 )

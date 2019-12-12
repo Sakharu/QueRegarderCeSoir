@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.sakharu.queregardercesoir.data.remote
 
 import com.google.gson.annotations.SerializedName
 

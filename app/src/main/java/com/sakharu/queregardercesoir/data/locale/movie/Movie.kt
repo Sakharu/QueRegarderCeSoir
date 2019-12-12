@@ -1,15 +1,14 @@
-package com.sakharu.queregardercesoir
+package com.sakharu.queregardercesoir.data.locale.movie
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.example.myapplication.Genre
 import com.google.gson.annotations.SerializedName
 
-@Entity(tableName = "film")
-data class Film (
+@Entity(tableName = "movie")
+data class Movie (
     @PrimaryKey
     @field:SerializedName("id")
-    var id:Int,
+    var id:Long,
     @field:SerializedName("title")
     var title:String,
     //@field:SerializedName("genre_ids")
@@ -17,7 +16,7 @@ data class Film (
     @field:SerializedName("overview")
     var overview:String,
     @field:SerializedName("popularity")
-    var popularity:Int,
+    var popularity:Double,
     @field:SerializedName("poster_path")
     var posterImg:String,
     @field:SerializedName("backdrop_path")

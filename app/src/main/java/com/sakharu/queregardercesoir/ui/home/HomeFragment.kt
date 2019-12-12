@@ -4,11 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.sakharu.queregardercesoir.data.locale.movie.Movie
+import com.sakharu.queregardercesoir.util.ViewModelFactory
 import com.sakharu.queregardercesoir.R
+import com.sakharu.queregardercesoir.ui.home.category.CategoryMovieAdapter
 
 class HomeFragment : Fragment() {
 
@@ -16,13 +20,23 @@ class HomeFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
-        homeViewModel =
-            ViewModelProviders.of(this).get(HomeViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        val textView: TextView = root.findViewById(R.id.text_home)
-        homeViewModel.text.observe(this, Observer {
-            textView.text = it
+        homeViewModel = ViewModelProvider(this, ViewModelFactory()).get(HomeViewModel::class.java)
+        val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerHomePopularMovies)
+
+        val categoryMovieAdapter = CategoryMovieAdapter(context!!, listOf(), listOf())
+        recyclerView.apply {
+            layoutManager = GridLayoutManager(context!!,2)
+            setHasFixedSize(true)
+            adapter = categoryMovieAdapter
+        }
+
+        homeViewModel.popularMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
+            categoryMovieAdapter.setData(homeViewModel.categoriesLiveList.value.orEmpty(),
+                homeViewModel.allMoviesInAllCategories)
         })
+
+
         return root
     }
 }
