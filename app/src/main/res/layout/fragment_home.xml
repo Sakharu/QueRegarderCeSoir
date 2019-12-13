@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/background_dark">
+    android:background="@color/colorBaseBackround">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerHomePopularMovies"
@@ -13,7 +13,10 @@
         android:clipToPadding="false"
         android:scrollbars="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:context="com.elifox.legocatalog.MainActivity"
-        tools:listitem="@layout/item_film_home" />
+        tools:listitem="@layout/item_big_movie" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

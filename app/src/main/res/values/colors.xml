@@ -4,5 +4,8 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFEB3B</color>
     <color name="colorBaseText">#FFFFFF</color>
-    <color name="colorBaseBackround">#000000</color>
+    <color name="colorBaseBackround">#263238</color>
+    <color name="colorBaseBackround80">#80263238</color>
+    <color name="colorInactiveIconBottomNav">#b0bec5</color>
+    <color name="colorActiveIconBottomNav">#000000</color>
 </resources>

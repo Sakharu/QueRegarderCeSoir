@@ -1,6 +1,6 @@
 package com.sakharu.queregardercesoir.data.remote
 
-import com.sakharu.queregardercesoir.data.locale.movie.Movie
+import com.sakharu.queregardercesoir.data.locale.model.Movie
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,6 +19,21 @@ interface MovieService
                                  @Query("language") language:String = "fr-FR",
                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
 
+    @GET("movie/top_rated")
+    suspend fun getTopRatedMovies(@Query("api_key") api_key:String = API_KEY,
+                                 @Query("language") language:String = "fr-FR",
+                                 @Query("page") page:Int = 1) : ResponseResult<Movie>
+
+    @GET("movie/now_playing")
+    suspend fun getNowPlayingMovies(@Query("api_key") api_key:String = API_KEY,
+                                  @Query("language") language:String = "fr-FR",
+                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
+
+    @GET("movie/upcoming")
+    suspend fun getUpcomingMovies(@Query("api_key") api_key:String = API_KEY,
+                                  @Query("language") language:String = "fr-FR",
+                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
+
     companion object
     {
         private const val BASE_ADRESS="https://api.themoviedb.org/3/"
@@ -35,7 +50,6 @@ interface MovieService
             val retrofit = Retrofit.Builder()
                 .baseUrl(BASE_ADRESS)
                 .client(client)
-                //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
 

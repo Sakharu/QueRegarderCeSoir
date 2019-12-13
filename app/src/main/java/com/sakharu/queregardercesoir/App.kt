@@ -1,7 +1,7 @@
 package com.sakharu.queregardercesoir
 
 import android.app.Application
-import com.sakharu.queregardercesoir.data.locale.movie.MovieRepository
+import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 
 class App:Application()
 {

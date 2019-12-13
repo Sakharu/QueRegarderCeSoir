@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.sakharu.queregardercesoir.data.locale.movie.Movie
+import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.R
 
 class BigMovieAdapter(private var context: Context, private var listeMovie:List<Movie> = listOf())
@@ -16,7 +16,7 @@ class BigMovieAdapter(private var context: Context, private var listeMovie:List<
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder
     = BigMovieHolder(
         inflater.inflate(
-            R.layout.item_film_home,
+            R.layout.item_big_movie,
             parent,
             false
         )

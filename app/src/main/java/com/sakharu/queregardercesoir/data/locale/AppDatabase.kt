@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.sakharu.queregardercesoir.data.locale.category.Category
-import com.sakharu.queregardercesoir.data.locale.category.CategoryDAO
-import com.sakharu.queregardercesoir.data.locale.genre.Genre
-import com.sakharu.queregardercesoir.data.locale.movie.Movie
-import com.sakharu.queregardercesoir.data.locale.movie.MovieDAO
-import com.sakharu.queregardercesoir.data.locale.movieInCategory.MovieInCategory
-import com.sakharu.queregardercesoir.data.locale.movieInCategory.MovieInCategoryDAO
+import com.sakharu.queregardercesoir.data.locale.model.Category
+import com.sakharu.queregardercesoir.data.locale.dao.CategoryDAO
+import com.sakharu.queregardercesoir.data.locale.model.Genre
+import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
+import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
+import com.sakharu.queregardercesoir.data.locale.dao.MovieInCategoryDAO
 
 
 @Database(entities = [Movie::class, Genre::class, Category::class, MovieInCategory::class], version = 1, exportSchema = false)

@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.data.locale.movie
+package com.sakharu.queregardercesoir.data.locale.model
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
