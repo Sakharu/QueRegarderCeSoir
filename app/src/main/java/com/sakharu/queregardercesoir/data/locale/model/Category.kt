@@ -3,6 +3,7 @@ package com.sakharu.queregardercesoir.data.locale.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 /*
     Categorie représente les catégories que l'on peut afficher sur la home comme par
@@ -10,9 +11,15 @@ import com.google.gson.annotations.SerializedName
  */
 @Entity(tableName = "category")
 data class Category(
+
     @PrimaryKey(autoGenerate = true)
     @field:SerializedName("id")
     var id:Long?,
+
     @field:SerializedName("name")
-    var name:String="unknown"
-)
+    var name:String="unknown",
+
+    @field:SerializedName("overview")
+    var overview:String="unknown"
+
+) : Serializable

@@ -8,4 +8,16 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="CategoryTitleStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorBaseText</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="CategoryOverviewStyle" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorBaseText</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
 </resources>

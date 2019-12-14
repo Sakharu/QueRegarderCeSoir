@@ -20,7 +20,7 @@ object MovieRepository
     private lateinit var categoryDAO: CategoryDAO
     private lateinit var movieInCategoryDAO: MovieInCategoryDAO
 
-    private val service = MovieService.create()
+    val service = MovieService.create()
 
     fun initialize(application: Application)
     {
@@ -34,29 +34,21 @@ object MovieRepository
 
     suspend fun insertAll(movies: List<Movie>) = movieDAO.insertAll(movies)
 
-    suspend fun insertCategory(id:Long,name:String) = categoryDAO.insert(Category(id, name))
+    suspend fun insertCategory(id:Long,name:String,overview:String) =
+        categoryDAO.insert(Category(id, name, overview))
 
     suspend fun insert(movie: Movie) = insertAll(listOf(movie))
 
-    suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long)
+    suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long, page: Int)
     {
-        for(idMovie in idMovieList)
-            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovie))
+        for (i in idMovieList.indices)
+            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+20*page))
     }
 
     fun getById(id: Long): LiveData<Movie> = movieDAO.getById(id)
 
-    fun getPopularMovies(popularMoviesListId:List<Long>): LiveData<List<Movie>>
+    fun getMoviesInCategory(popularMoviesListId:List<Long>): LiveData<List<Movie>>
             = movieDAO.getMoviesByListId(popularMoviesListId)
-
-    fun getTopRatedMovies(topRatedMoviesListId:List<Long>): LiveData<List<Movie>>
-            = movieDAO.getMoviesByListId(topRatedMoviesListId)
-
-    fun getNowPlayingMovies(nowPlayingMoviesListId:List<Long>): LiveData<List<Movie>>
-            = movieDAO.getMoviesByListId(nowPlayingMoviesListId)
-
-    fun getUpcomingMovies(upcomingMoviesListId:List<Long>): LiveData<List<Movie>>
-            = movieDAO.getMoviesByListId(upcomingMoviesListId)
 
     fun getMovieInCategory(id:Long): LiveData<List<MovieInCategory>> =
         movieInCategoryDAO.getMoviesIdFromCategoryId(id)
@@ -67,36 +59,40 @@ object MovieRepository
 
     //region remote
 
-    suspend fun downloadPopularMovies()
+    suspend fun downloadPopularMovies(page:Int=1)
     {
-        val lastPopularMovies = service.getPopularMovies()
-        val idCategory = insertCategory(CATEGORY_POPULAR_ID, CATEGORY_POPULAR_NAME)
+        val lastPopularMovies = service.getPopularMovies(page = page)
+        val idCategory = insertCategory(CATEGORY_POPULAR_ID, CATEGORY_POPULAR_NAME,
+            CATEGORY_POPULAR_OVERVIEW)
         insertAll(lastPopularMovies.results)
-        insertMovieListInCategory(lastPopularMovies.results.map { it.id }, idCategory)
+        insertMovieListInCategory(lastPopularMovies.results.map { it.id }, idCategory,page)
     }
 
-    suspend fun downloadTopRatedMovies()
+    suspend fun downloadTopRatedMovies(page:Int=1)
     {
-        val topRatedMovies = service.getTopRatedMovies()
-        val idCategory = insertCategory(CATEGORY_TOPRATED_ID, CATEGORY_TOPRATED_NAME)
+        val topRatedMovies = service.getTopRatedMovies(page = page)
+        val idCategory = insertCategory(CATEGORY_TOPRATED_ID, CATEGORY_TOPRATED_NAME,
+            CATEGORY_TOPRATED_OVERVIEW)
         insertAll(topRatedMovies.results)
-        insertMovieListInCategory(topRatedMovies.results.map { it.id }, idCategory)
+        insertMovieListInCategory(topRatedMovies.results.map { it.id }, idCategory,page)
     }
 
-    suspend fun downloadNowPlayingMovies()
+    suspend fun downloadNowPlayingMovies(page:Int=1)
     {
-        val newPlayingMovies = service.getNowPlayingMovies()
-        val idCategory = insertCategory(CATEGORY_NOWPLAYING_ID, CATEGORY_NOWPLAYING_NAME)
+        val newPlayingMovies = service.getNowPlayingMovies(page = page)
+        val idCategory = insertCategory(CATEGORY_NOWPLAYING_ID, CATEGORY_NOWPLAYING_NAME,
+        CATEGORY_NOWPLAYING_OVERVIEW)
         insertAll(newPlayingMovies.results)
-        insertMovieListInCategory(newPlayingMovies.results.map { it.id }, idCategory)
+        insertMovieListInCategory(newPlayingMovies.results.map { it.id }, idCategory,page)
     }
 
-    suspend fun downloadUpcomingMovies()
+    suspend fun downloadUpcomingMovies(page:Int=1)
     {
-        val upcomingMovies = service.getUpcomingMovies()
-        val idCategory = insertCategory(CATEGORY_UPCOMING_ID, CATEGORY_UPCOMING_NAME)
+        val upcomingMovies = service.getUpcomingMovies(page = page)
+        val idCategory = insertCategory(CATEGORY_UPCOMING_ID, CATEGORY_UPCOMING_NAME,
+            CATEGORY_UPCOMING_OVERVIEW)
         insertAll(upcomingMovies.results)
-        insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory)
+        insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory,page)
     }
 }
 

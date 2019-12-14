@@ -43,7 +43,7 @@ class HomeViewModel : ViewModel()
     */
     var popularMoviesLiveList = Transformations.switchMap(moviesInPopularCategory)
     {
-        MovieRepository.getPopularMovies(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -65,7 +65,7 @@ class HomeViewModel : ViewModel()
     */
     var topRatedMoviesLiveList = Transformations.switchMap(moviesInTopRatedCategory)
     {
-        MovieRepository.getTopRatedMovies(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -87,7 +87,7 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMoviesLiveList = Transformations.switchMap(nowPlayingMovieInCategory)
     {
-        MovieRepository.getNowPlayingMovies(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -109,7 +109,7 @@ class HomeViewModel : ViewModel()
     */
     var upcomingMoviesLiveList = Transformations.switchMap(upcomingMovieInCategory)
     {
-        MovieRepository.getUpcomingMovies(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
 }

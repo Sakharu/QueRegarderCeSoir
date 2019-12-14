@@ -26,5 +26,9 @@ data class MovieInCategory(
 
     @ForeignKey(entity = Movie::class,parentColumns = ["idMovie"],childColumns = ["id"], onDelete = ForeignKey.CASCADE)
     @field:SerializedName("idMovie")
-    var idMovie:Long
+    var idMovie:Long,
+
+    @field:SerializedName("order")
+    var order:Int
+
 )

@@ -10,9 +10,11 @@ import com.google.gson.annotations.SerializedName
  */
 @Entity(tableName = "genre")
 data class Genre(
+
     @PrimaryKey
     @field:SerializedName("id")
     var id:Long,
+
     @field:SerializedName("name")
     var name:String="unknown"
 )

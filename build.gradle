@@ -19,10 +19,11 @@ buildscript {
         loggingInterceptorVersion = '4.2.1'
         materialVersion = '1.0.0'
         navigationVersion = '2.1.0'
-        recyclerViewVersion = '1.1.0'
-        roomVersion = '2.2.2'
         okhttpVersion = '3.10.0'
+        pagingVersion = "2.1.0"
+        recyclerViewVersion = '1.1.0'
         retrofitVersion = '2.6.0'
+        roomVersion = '2.2.2'
     }
 
     repositories {

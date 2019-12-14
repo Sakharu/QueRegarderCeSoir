@@ -13,7 +13,7 @@ interface MovieInCategoryDAO
     @Query("SELECT * FROM movieInCategory WHERE id = :id")
     fun getById(id:Long) : LiveData<MovieInCategory>
 
-    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory")
+    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory ORDER BY `order`")
     fun getMoviesIdFromCategoryId(idCategory:Long) : LiveData<List<MovieInCategory>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -21,5 +21,4 @@ interface MovieInCategoryDAO
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movieInCategory: MovieInCategory)
-
 }
