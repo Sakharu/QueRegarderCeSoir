@@ -6,6 +6,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 
@@ -21,24 +22,29 @@ interface MovieService
 
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(@Query("api_key") api_key:String = API_KEY,
-                                 @Query("language") language:String = "fr-FR",
-                                 @Query("page") page:Int = 1) : ResponseResult<Movie>
+                                  @Query("language") language:String = "fr-FR",
+                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
 
     @GET("movie/now_playing")
     suspend fun getNowPlayingMovies(@Query("api_key") api_key:String = API_KEY,
-                                  @Query("language") language:String = "fr-FR",
-                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
+                                    @Query("language") language:String = "fr-FR",
+                                    @Query("page") page:Int = 1) : ResponseResult<Movie>
 
     @GET("movie/upcoming")
     suspend fun getUpcomingMovies(@Query("api_key") api_key:String = API_KEY,
                                   @Query("language") language:String = "fr-FR",
                                   @Query("page") page:Int = 1) : ResponseResult<Movie>
 
+    @GET("movie/{id}")
+    suspend fun getMovieDetail(@Path("id")id:Long,@Query("api_key") api_key:String = API_KEY,
+                               @Query("language") language:String = "fr-FR"): ResponseMovieDetail
+
     companion object
     {
         private const val BASE_ADRESS="https://api.themoviedb.org/3/"
         const val API_KEY : String ="378e894543dbaa8f54acecd7e63168b1"
         const val IMAGE_PREFIX : String ="https://image.tmdb.org/t/p/w185/"
+        const val NUMBER_MOVIES_RETRIEVE_BY_REQUEST =20
 
         fun create(): MovieService
         {

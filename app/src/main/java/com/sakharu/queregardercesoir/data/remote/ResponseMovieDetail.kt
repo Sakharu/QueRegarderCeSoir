@@ -1,21 +1,18 @@
-package com.sakharu.queregardercesoir.data.locale.model
+package com.sakharu.queregardercesoir.data.remote
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import com.sakharu.queregardercesoir.data.locale.model.Genre
 
-@Entity(tableName = "movie")
-data class Movie (
+data class ResponseMovieDetail(
 
-    @PrimaryKey
     @field:SerializedName("id")
     var id:Long,
 
     @field:SerializedName("title")
     var title:String,
 
-    @field:SerializedName("genre_ids")
-    var genresId : List<Long>,
+    @field:SerializedName("genres")
+    var genres : ArrayList<Genre>,
 
     @field:SerializedName("overview")
     var overview:String="",
@@ -44,9 +41,3 @@ data class Movie (
     @field:SerializedName("vote_count")
     var vote_count:Int?
 )
-{
-    override fun equals(other: Any?): Boolean{
-        return this.id == (other as Movie).id
-    }
-
-}

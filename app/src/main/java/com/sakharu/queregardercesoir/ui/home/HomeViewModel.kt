@@ -12,6 +12,7 @@ import com.sakharu.queregardercesoir.util.CATEGORY_POPULAR_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_UPCOMING_ID
 import kotlinx.coroutines.Dispatchers
+import org.jetbrains.anko.doAsync
 
 class HomeViewModel : ViewModel()
 {
@@ -43,7 +44,7 @@ class HomeViewModel : ViewModel()
     */
     var popularMoviesLiveList = Transformations.switchMap(moviesInPopularCategory)
     {
-        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -65,7 +66,7 @@ class HomeViewModel : ViewModel()
     */
     var topRatedMoviesLiveList = Transformations.switchMap(moviesInTopRatedCategory)
     {
-        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -87,7 +88,7 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMoviesLiveList = Transformations.switchMap(nowPlayingMovieInCategory)
     {
-        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -109,7 +110,20 @@ class HomeViewModel : ViewModel()
     */
     var upcomingMoviesLiveList = Transformations.switchMap(upcomingMovieInCategory)
     {
-        MovieRepository.getMoviesInCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+    }
+
+
+    /************************************
+     * DELETE MOVIES FROM CATEGORY
+     ***********************************/
+    /*
+    On récupère toutes les liaisons entre les films et les catégories en vue de les supprimer
+     lorsque celles-ci datent de plus de 3 jours
+    */
+    var getAllMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
+    {
+        emitSource(MovieRepository.getAllMoviesInCategory())
     }
 
 }

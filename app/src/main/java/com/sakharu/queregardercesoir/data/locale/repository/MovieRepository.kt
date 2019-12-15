@@ -3,13 +3,14 @@ package com.sakharu.queregardercesoir.data.locale.repository
 import android.app.Application
 import androidx.lifecycle.LiveData
 import com.sakharu.queregardercesoir.data.locale.AppDatabase
-import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.dao.CategoryDAO
 import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
-import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.locale.dao.MovieInCategoryDAO
+import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.remote.MovieService
+import com.sakharu.queregardercesoir.ui.home.category.detail.DetailCategoryViewModel
 import com.sakharu.queregardercesoir.util.*
 
 
@@ -20,7 +21,7 @@ object MovieRepository
     private lateinit var categoryDAO: CategoryDAO
     private lateinit var movieInCategoryDAO: MovieInCategoryDAO
 
-    val service = MovieService.create()
+    private val service = MovieService.create()
 
     fun initialize(application: Application)
     {
@@ -42,18 +43,27 @@ object MovieRepository
     suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long, page: Int)
     {
         for (i in idMovieList.indices)
-            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+20*page))
+        {
+            val timeStamp = System.currentTimeMillis()
+            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*page,timeStamp))
+            DetailCategoryViewModel.lastTimeStamp = timeStamp
+        }
+
     }
 
     fun getById(id: Long): LiveData<Movie> = movieDAO.getById(id)
 
-    fun getMoviesInCategory(popularMoviesListId:List<Long>): LiveData<List<Movie>>
+    fun getMoviesFromCategory(popularMoviesListId:List<Long>): LiveData<List<Movie>>
             = movieDAO.getMoviesByListId(popularMoviesListId)
 
-    fun getMovieInCategory(id:Long): LiveData<List<MovieInCategory>> =
-        movieInCategoryDAO.getMoviesIdFromCategoryId(id)
+    fun getMovieInCategory(id:Long, lastTimestamp:Long=0): LiveData<List<MovieInCategory>> =
+        movieInCategoryDAO.getMoviesIdFromCategoryId(id,lastTimestamp)
 
     fun getAllCategories() : LiveData<List<Category>> = categoryDAO.getAllCategories()
+
+    fun getAllMoviesInCategory() : LiveData<List<MovieInCategory>> = movieInCategoryDAO.getAllMoviesInCategory()
+
+    fun deleteDeprecatedMoviesInCategory(listId : List<Long>) = movieInCategoryDAO.deleteOldMoviesInCategory(listId)
 
     //endregion
 
@@ -93,6 +103,15 @@ object MovieRepository
             CATEGORY_UPCOMING_OVERVIEW)
         insertAll(upcomingMovies.results)
         insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory,page)
+    }
+
+    suspend fun downloadMovieDetail(id:Long)
+    {
+        val movieResult = service.getMovieDetail(id = id)
+        val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
+            movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
+            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count)
+        insert(movie)
     }
 }
 

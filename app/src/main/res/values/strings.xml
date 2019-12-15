@@ -3,4 +3,18 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+    <!-- CATEGORIES -->
+    <string name="category_popular_name">Ils ont le vent en poupe</string>
+    <string name="category_popular_overview">Les films les plus populaires récent ou ancien. Actualisé chaque jour.</string>
+
+    <string name="category_toprated_name">Ils ont conquis le public</string>
+    <string name="category_toprated_overview">Les films les mieux notés par le public toutes générations confondues.</string>
+
+    <string name="category_nowplaying_name">En salle en ce moment</string>
+    <string name="category_nowplaying_overview">Les films actuellement en salle près de chez vous.</string>
+
+    <string name="category_upcoming_name">Bientôt en salle</string>
+    <string name="category_upcoming_overview">Les fims prochainement en salle près de chez vous.</string>
+
 </resources>

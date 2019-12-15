@@ -11,10 +11,12 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.fspt.android_monclubetmoi.`object`.RecyclerItemClickListener
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.base.BaseFragment
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.home.category.listCategory.littleMovie.LittleMovieAdapter
 import com.sakharu.queregardercesoir.util.*
 
@@ -24,12 +26,12 @@ class DetailCategoryFragment : BaseFragment()
 
     private lateinit var detailCategoryViewModel: DetailCategoryViewModel
     private lateinit var littleMoviePagingAdapter: LittleMovieAdapter
-    private var isLoading = false
     private val titleCategoryTV by lazy { view!!.findViewById<TextView>(R.id.nameCategoryDetail) }
     private val overviewCategoryTV by lazy { view!!.findViewById<TextView>(R.id.overviewCategoryDetail) }
     private val loadingMoreAnimation by lazy { view!!.findViewById<ProgressBar>(R.id.loadingMoreAnimationDetailCategory) }
     private lateinit var observer : Observer<List<Movie>>
     private var page=1
+
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -47,6 +49,15 @@ class DetailCategoryFragment : BaseFragment()
             setHasFixedSize(true)
             adapter = littleMoviePagingAdapter
         }
+
+
+        observer = Observer {
+            littleMoviePagingAdapter.addData(it)
+            loadingMoreAnimation.hide()
+            isLoading=false
+        }
+
+
         return root
     }
 
@@ -60,14 +71,9 @@ class DetailCategoryFragment : BaseFragment()
         titleCategoryTV.text = detailCategoryViewModel.category.name
         overviewCategoryTV.text = detailCategoryViewModel.category.overview
 
-        observer = Observer {
-                    littleMoviePagingAdapter.setData(it)
-                    loadingMoreAnimation.hide()
-                    isLoading=false
-                }
-
         //on charge les films populaires lorsqu'on en a en BD
         detailCategoryViewModel.getMoviesLiveList(page).observe(viewLifecycleOwner, observer)
+        listePageChargee.add(page)
     }
 
     override fun doOnReceive(intent: Intent)
@@ -77,12 +83,13 @@ class DetailCategoryFragment : BaseFragment()
         Si l'adapter notifie le fragment qu'il a chargé les derniers items de la liste,
         on va télécharger et afficher les films de la page suivante
          */
-        if(intent.action == ACTION_LOAD_MORE_CATEGORY_DETAIL)
+        if(intent.action == ACTION_LOAD_MORE_CATEGORY_DETAIL )
         {
+            page = intent.getIntExtra(EXTRA_PAGE,page)
             detailCategoryViewModel.getMoviesLiveList(page).removeObserver(observer)
             detailCategoryViewModel.getMoviesLiveList(page).observe(viewLifecycleOwner, observer)
-            page++
             loadingMoreAnimation.show()
+            listePageChargee.add(page)
         }
     }
 
@@ -96,7 +103,8 @@ class DetailCategoryFragment : BaseFragment()
             frag.arguments =  args
             return frag
         }
-        var isLoading=false
+        var isLoading=true
+        var listePageChargee= arrayListOf<Int>()
     }
 
 }

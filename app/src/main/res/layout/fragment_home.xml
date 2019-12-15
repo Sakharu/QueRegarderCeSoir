@@ -17,6 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:context="com.elifox.legocatalog.MainActivity"
-        tools:listitem="@layout/item_big_movie" />
+        tools:listitem="@layout/item_category_home" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,6 +5,7 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
+import java.util.*
 
 /*
     MovieInCategory représente la liaison entre la table categorie et la table movie
@@ -29,6 +30,9 @@ data class MovieInCategory(
     var idMovie:Long,
 
     @field:SerializedName("order")
-    var order:Int
+    var order:Int,
+
+    @field:SerializedName("addedTimestamp")
+    var addedTimestamp:Long
 
 )

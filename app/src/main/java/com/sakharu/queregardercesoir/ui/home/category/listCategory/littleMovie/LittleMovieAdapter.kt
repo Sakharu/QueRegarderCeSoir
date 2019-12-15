@@ -8,13 +8,19 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.MovieService
-import com.sakharu.queregardercesoir.R
+import com.sakharu.queregardercesoir.data.remote.MovieService.Companion.NUMBER_MOVIES_RETRIEVE_BY_REQUEST
+import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.home.category.detail.DetailCategoryFragment
 import com.sakharu.queregardercesoir.util.ACTION_LOAD_MORE_CATEGORY_DETAIL
+import com.sakharu.queregardercesoir.util.EXTRA_MOVIE_ID
+import com.sakharu.queregardercesoir.util.EXTRA_PAGE
+import kotlin.math.ceil
 
-class LittleMovieAdapter(var context: Context, private var listeMovie: List<Movie>,
+
+class LittleMovieAdapter(var context: Context, private var listeMovie: MutableList<Movie>,
                          private var isForDetailCategory:Boolean=false)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
 {
@@ -25,10 +31,11 @@ class LittleMovieAdapter(var context: Context, private var listeMovie: List<Movi
 
     override fun getItemCount(): Int = listeMovie.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
+    {
         holder as LittleMovieHolder
         val film = listeMovie[position]
-        if (film.posterImg.isNotEmpty())
+        if (!film.posterImg.isNullOrEmpty())
             Glide.with(holder.itemView)
                 .load(MovieService.IMAGE_PREFIX + film.posterImg)
                 .placeholder(R.drawable.film_poster_placeholder)
@@ -39,17 +46,38 @@ class LittleMovieAdapter(var context: Context, private var listeMovie: List<Movi
         else
             Glide.with(holder.itemView).load(R.drawable.film_poster_placeholder).into(holder.posterImgIV)
 
-        //On lance le chargement nouveaux films lorsque l'on arrive au bout de la liste
-        if (isForDetailCategory && position == listeMovie.size-1 && !DetailCategoryFragment.isLoading)
+        /*
+        On informe le fragment lorsque l'on a affiché l'équivalent d'une page afin qu'il puisse
+        lancer la récupération de la page suivante pour que ça soit transparent pour l'utilisateur
+         */
+
+        if (isForDetailCategory && (position+1) %NUMBER_MOVIES_RETRIEVE_BY_REQUEST == 0 && !DetailCategoryFragment.isLoading )
         {
-            DetailCategoryFragment.isLoading = true
-            LocalBroadcastManager.getInstance(holder.itemView.context).sendBroadcast(Intent(ACTION_LOAD_MORE_CATEGORY_DETAIL))
+            val page = ceil(position.toDouble() / NUMBER_MOVIES_RETRIEVE_BY_REQUEST).toInt()+1
+            if (!DetailCategoryFragment.listePageChargee.contains(page))
+            {
+                DetailCategoryFragment.isLoading = true
+                LocalBroadcastManager.getInstance(holder.itemView.context)
+                    .sendBroadcast(Intent(ACTION_LOAD_MORE_CATEGORY_DETAIL).putExtra(EXTRA_PAGE,page))
+            }
+        }
+
+        holder.itemView.setOnClickListener{
+            holder.itemView.context.startActivity(Intent(holder.itemView.context, DetailMovieActivity::class.java)
+                .putExtra(EXTRA_MOVIE_ID, film.id))
         }
     }
 
-    fun setData(newMovies: List<Movie>)
+    fun addData(newMovies:List<Movie>)
     {
-        this.listeMovie = newMovies
-        notifyDataSetChanged()
+        /*
+        On ajoute à la liste actuelle les nouveaux films récupérés
+         */
+        if (newMovies.isNotEmpty())
+        {
+            val oldPosition = listeMovie.size
+            this.listeMovie.addAll(newMovies.filter { !listeMovie.contains(it) })
+            notifyItemRangeInserted(oldPosition, listeMovie.size)
+        }
     }
 }

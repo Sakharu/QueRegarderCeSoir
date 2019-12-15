@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:theme="@style/AppTheme"
+    android:layout_height="800dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="800dp"
+        tools:context=".ui.detailMovie.DetailMovieActivity">
+
+        <ImageView
+            android:id="@+id/imgBackdropMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="150dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@mipmap/ic_launcher_round" />
+
+        <ImageView
+            android:id="@+id/imgPosterMovieDetail"
+            android:layout_width="150dp"
+            android:layout_height="220dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/placeholder_poster_home" />
+
+        <TextView
+            android:id="@+id/titleMovieDetail"
+            style="@style/CategoryTitleStyle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toStartOf="@+id/imgPosterMovieDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgBackdropMovieDetail"
+            tools:text="Infinite wars" />
+
+        <TextView
+            android:id="@+id/overviewMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imgPosterMovieDetail"
+            tools:text="Evadé d'un centre de redressement, El Jaibo, jeune Mexicain laissé à lui-même, prend la tete d'une bande de jeunes délinquants de Mexico. Le vieux mendiant aveugle Don Carmelo, sur le point d'être volé, blesse l'un deux avec la pointe de sa canne..." />
+
+        <TextView
+            android:id="@+id/genresMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/overviewMovieDetail"
+            tools:text="Genre : crime, drame" />
+
+        <TextView
+            android:id="@+id/popularityMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/genresMovieDetail"
+            tools:text="Popularité : 14.673" />
+
+        <TextView
+            android:id="@+id/textAverageVoteMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/popularityMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/popularityMovieDetail"
+            tools:text="Note moyenne : 6.5/10" />
+
+        <ProgressBar
+            android:id="@+id/progressBarAverageVoteMovieDetail"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:max="10"
+            android:progress="5"
+            android:progressTint="@android:color/holo_orange_light"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textAverageVoteMovieDetail" />
+
+        <TextView
+            android:id="@+id/voteCountMovieDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
+            tools:text="15416 votes" />
+
+        <TextView
+            android:id="@+id/originalTitleMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/releaseDateMovieDetail"
+            tools:text="200 000$ de budget" />
+
+        <TextView
+            android:id="@+id/releaseDateMovieDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/voteCountMovieDetail"
+            tools:text="Date de sortie : 04/12/2019" />
+
+        <ImageButton
+            android:id="@+id/backButtonMovieDetail"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorBaseBackround"
+            android:src="@drawable/ic_arrow_back_white_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imgBackdropMovieDetail" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
