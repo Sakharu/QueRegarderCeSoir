@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Que regarder ce soir</string>
+
+    <!-- BOTTOM NAVIGATION VIEW -->
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_search">Rechercher</string>
+    <string name="title_lists">Listes</string>
 
     <!-- CATEGORIES -->
     <string name="category_popular_name">Ils ont le vent en poupe</string>
@@ -16,5 +18,18 @@
 
     <string name="category_upcoming_name">Bientôt en salle</string>
     <string name="category_upcoming_overview">Les fims prochainement en salle près de chez vous.</string>
+
+    <!-- DETAIL D'UN FILM -->
+    <string name="genrePrefix">Genre : %1$s</string>
+    <string name="popularityPrefix">Popularite : %1$.2f</string>
+    <string name="voteAveragePrefix">Note moyenne :  %1$.2f/10</string>
+    <string name="voteCountPrefix">Sur %1$d votes</string>
+    <string name="releaseDatePrefix">Date de sortie : %1$s</string>
+    <string name="budgetPrefix">Budget : %1$f\$</string>
+    <string name="overviewPrefix">Synopsis : %1$s</string>
+    <string name="originalTitlePrefix">Titre original : %1$s</string>
+
+    <!-- TRANSITIONS -->
+    <string name="transitionMovieListToDetail">transitionMovieListToDetail</string>
 
 </resources>

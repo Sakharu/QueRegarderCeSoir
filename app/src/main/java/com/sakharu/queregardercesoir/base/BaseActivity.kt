@@ -6,16 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.view.View
-import android.view.ViewGroup
-import android.view.Window
 import android.widget.ProgressBar
-import android.widget.RelativeLayout
-import androidx.fragment.app.Fragment
+import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
-open class BaseFragment : Fragment()
+open class BaseActivity : AppCompatActivity()
 {
     private lateinit var mIntentFilter: IntentFilter
     private var progressBar : ProgressBar? = null
@@ -33,14 +29,12 @@ open class BaseFragment : Fragment()
 
     override fun onResume() {
         super.onResume()
-        if (context!=null)
-            LocalBroadcastManager.getInstance(context!!).registerReceiver(broadcastReceiver,mIntentFilter)
+        LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver,mIntentFilter)
     }
 
     override fun onPause() {
         super.onPause()
-        if (context!=null)
-            LocalBroadcastManager.getInstance(context!!).unregisterReceiver(broadcastReceiver)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver)
     }
 
 

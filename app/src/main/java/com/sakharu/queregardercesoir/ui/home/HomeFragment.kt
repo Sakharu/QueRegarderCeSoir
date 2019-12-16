@@ -1,5 +1,6 @@
 package com.sakharu.queregardercesoir.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,17 +10,14 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.fspt.android_monclubetmoi.`object`.RecyclerItemClickListener
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
-import com.sakharu.queregardercesoir.ui.home.category.detail.DetailCategoryFragment
-import com.sakharu.queregardercesoir.ui.home.category.listCategory.CategoryMovieAdapter
-import com.sakharu.queregardercesoir.util.NUMBER_OF_DAYS_DEPRECATED_MOVIEINCATEGORY
-import com.sakharu.queregardercesoir.util.Util
-import com.sakharu.queregardercesoir.util.ViewModelFactory
+import com.sakharu.queregardercesoir.ui.home.category.CategoryMovieAdapter
+import com.sakharu.queregardercesoir.ui.movieList.MovieListActivity
+import com.sakharu.queregardercesoir.util.*
 import org.jetbrains.anko.doAsync
 
 
@@ -27,18 +25,20 @@ class HomeFragment : Fragment()
 {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var categoryMovieAdapter : CategoryMovieAdapter
+    private lateinit var recyclerCategory : RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        categoryMovieAdapter = CategoryMovieAdapter()
-        val recyclerView = root.findViewById<RecyclerView>(R.id.recyclerHomePopularMovies)
-        recyclerView.apply {
+        categoryMovieAdapter =
+            CategoryMovieAdapter()
+        recyclerCategory = root.findViewById(R.id.recyclerHomePopularMovies)
+        recyclerCategory.apply {
             layoutManager = LinearLayoutManager(context!!,LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(true)
             adapter = categoryMovieAdapter
-
         }
+
         return root
     }
 
@@ -48,8 +48,31 @@ class HomeFragment : Fragment()
 
         homeViewModel = ViewModelProvider(this, ViewModelFactory()).get(HomeViewModel::class.java)
 
-        //on ajoute l'observer sinon le livedata n'est jamais appelé
-        homeViewModel.categoriesLiveList.observe(viewLifecycleOwner, Observer<List<Category>> {})
+        //on ajoute le listener sur le recyclerview afin d'ouvrir le détail d'une catégorie au clic
+        homeViewModel.categoriesLiveList.observe(viewLifecycleOwner, Observer<List<Category>> {
+            //on recupère l'exception si jamais le context est null ou qu'il y a un problème avec la liste
+            try
+            {
+                recyclerCategory.addOnItemTouchListener(RecyclerItemClickListener(context!!,
+                    recyclerCategory,object : RecyclerItemClickListener.OnItemClickListener
+                    {
+                        override fun onItemClick(view: View, position: Int)
+                        {
+                            startActivity(Intent(context!!,MovieListActivity::class.java).putExtra(
+                            EXTRA_CATEGORY,it[position]))
+                        }
+
+                        override fun onLongItemClick(view: View?, position: Int) {}
+                    })
+                )
+
+            }
+            catch (e:Exception)
+            {
+                //TODO GERER ERREUR
+            }
+
+        })
 
         //on charge les films populaires lorsqu'on en a en BD
         homeViewModel.popularMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
@@ -79,7 +102,7 @@ class HomeFragment : Fragment()
         //datent de plus de 3 jours
         homeViewModel.getAllMoviesInCategory.observe(viewLifecycleOwner, Observer<List<MovieInCategory>>
         {
-            //on fait tout le traitement dans un thread secondaire
+            //on fait tout le traitement dans un thread secondaire pour ne pas affecter l'ux
             doAsync {
                 val listMovieInCategoryDeprecated =
                     it.filter { movieInCategory ->
@@ -91,14 +114,4 @@ class HomeFragment : Fragment()
             }
         })
     }
-
-    private fun openDetailCategoryFragment(category: Category)
-    {
-        val ftt = activity!!.supportFragmentManager.beginTransaction()
-        ftt.setCustomAnimations(R.anim.in_from_left, R.anim.out_to_right, R.anim.in_from_left, R.anim.out_to_right)
-        ftt.replace(R.id.nav_host_fragment, DetailCategoryFragment.newInstance(category), DetailCategoryFragment::class.java.simpleName)
-        ftt.commitAllowingStateLoss()
-    }
-
-
 }

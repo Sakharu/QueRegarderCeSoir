@@ -1,4 +1,4 @@
-package com.fspt.android_monclubetmoi.`object`
+package com.sakharu.queregardercesoir.util
 
 import android.content.Context
 import android.view.MotionEvent

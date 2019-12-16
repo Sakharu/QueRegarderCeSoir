@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.dao.CategoryDAO
+import com.sakharu.queregardercesoir.data.locale.dao.GenreDAO
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
@@ -22,6 +23,7 @@ abstract class AppDatabase : RoomDatabase()
     abstract fun movieDAO(): MovieDAO
     abstract fun categoryDAO(): CategoryDAO
     abstract fun movieInCategoryDAO(): MovieInCategoryDAO
+    abstract fun genreDAO(): GenreDAO
     companion object
     {
         fun buildInstance(context: Context) = Room

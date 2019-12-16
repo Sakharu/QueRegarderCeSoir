@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.home.category.detail
+package com.sakharu.queregardercesoir.ui.movieList
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Transformations
@@ -14,7 +14,7 @@ import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_UPCOMING_ID
 import kotlinx.coroutines.Dispatchers
 
-class DetailCategoryViewModel : ViewModel()
+class MovieListCategoryViewModel : ViewModel()
 {
     lateinit var category : Category
 
@@ -25,7 +25,7 @@ class DetailCategoryViewModel : ViewModel()
 
     private fun getmoviesIdInSelectedCategoryByPage(page:Int) : LiveData<List<MovieInCategory>> =
         liveData(Dispatchers.IO) {
-            val liste = MovieRepository.getMovieInCategory(category.id!!,lastTimeStamp)
+            val liste = MovieRepository.getMovieInCategoryLive(category.id!!,lastTimeStamp)
             emitSource(liste)
             downloadMovies(page)
         }
@@ -36,7 +36,7 @@ class DetailCategoryViewModel : ViewModel()
     fun getMoviesLiveList(page: Int) : LiveData<List<Movie>> =
         Transformations.switchMap(getmoviesIdInSelectedCategoryByPage(page))
         {
-            MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+            MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
         }
 
     private suspend fun downloadMovies(page:Int)

@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.home.category.listCategory
+package com.sakharu.queregardercesoir.ui.home.category
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.ui.home.category.listCategory.littleMovie.LittleMovieAdapter
+import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
 
 class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAndList> = arrayListOf())
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -25,22 +25,24 @@ class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAn
         holder.recyclerLittleMovie.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             setHasFixedSize(true)
-            adapter = LittleMovieAdapter(context,movieListInArrayList[position].movieList)
+            adapter = LittleMovieAdapter(movieListInArrayList[position].movieList)
         }
     }
 
 
     fun refreshOrAddACategory(category: Category, position: Int, newList:List<Movie>)
     {
-
+        //ajout de la catégorie
         if (this.movieListInArrayList.isEmpty() || position>=movieListInArrayList.size)
         {
             this.movieListInArrayList.add(CategoryAndList(category, newList.toMutableList()))
             movieListInArrayList.sortBy { it.category.id }
             notifyItemInserted(position)
         }
+        //refresh de la catégorie
         else
         {
+
             this.movieListInArrayList[position] = CategoryAndList(category, newList.toMutableList())
             notifyItemChanged(position)
         }

@@ -1,6 +1,9 @@
-package com.sakharu.queregardercesoir.data.remote
+package com.sakharu.queregardercesoir.data.remote.webservice
 
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseAuth
+import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseMovieDetail
+import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseResult
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -36,15 +39,18 @@ interface MovieService
                                   @Query("page") page:Int = 1) : ResponseResult<Movie>
 
     @GET("movie/{id}")
-    suspend fun getMovieDetail(@Path("id")id:Long,@Query("api_key") api_key:String = API_KEY,
+    suspend fun getMovieDetail(@Path("id")id:Long, @Query("api_key") api_key:String = API_KEY,
                                @Query("language") language:String = "fr-FR"): ResponseMovieDetail
 
     companion object
     {
         private const val BASE_ADRESS="https://api.themoviedb.org/3/"
         const val API_KEY : String ="378e894543dbaa8f54acecd7e63168b1"
-        const val IMAGE_PREFIX : String ="https://image.tmdb.org/t/p/w185/"
-        const val NUMBER_MOVIES_RETRIEVE_BY_REQUEST =20
+        const val IMAGE_PREFIX_POSTER : String ="https://image.tmdb.org/t/p/w185/"
+        const val IMAGE_PREFIX_POSTER_HIRES : String ="https://image.tmdb.org/t/p/w780/"
+        const val IMAGE_PREFIX_BACKDROP : String ="https://image.tmdb.org/t/p/w780/"
+        const val IMAGE_PREFIX_BACKDROP_HIRES : String ="https://image.tmdb.org/t/p/w1280/"
+        const val NUMBER_MOVIES_RETRIEVE_BY_REQUEST = 20
 
         fun create(): MovieService
         {

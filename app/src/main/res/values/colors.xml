@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FFFFFF</color>
-    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorPrimary">#455a64</color>
+    <color name="colorPrimaryDark">#1c313a</color>
+    <color name="colorPrimaryLight">#718792</color>
     <color name="colorAccent">#FFEB3B</color>
     <color name="colorBaseText">#FFFFFF</color>
     <color name="colorAnimationLoading">#50FFFFFF</color>
@@ -9,4 +10,5 @@
     <color name="colorBaseBackround80">#80263238</color>
     <color name="colorInactiveIconBottomNav">#b0bec5</color>
     <color name="colorActiveIconBottomNav">#000000</color>
+    <color name="colorPorgressBarProgression">#00BCD4</color>
 </resources>

@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.home.category.listCategory
+package com.sakharu.queregardercesoir.ui.home.category
 
 import android.view.View
 import android.widget.ImageView

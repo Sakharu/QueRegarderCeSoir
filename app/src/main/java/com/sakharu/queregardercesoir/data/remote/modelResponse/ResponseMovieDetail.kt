@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.data.remote
+package com.sakharu.queregardercesoir.data.remote.modelResponse
 
 import com.google.gson.annotations.SerializedName
 import com.sakharu.queregardercesoir.data.locale.model.Genre

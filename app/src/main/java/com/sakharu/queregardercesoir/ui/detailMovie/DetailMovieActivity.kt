@@ -1,23 +1,29 @@
 package com.sakharu.queregardercesoir.ui.detailMovie
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.drawable.Drawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.observe
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
+import com.sakharu.queregardercesoir.ui.FullscreenActivity
 import com.sakharu.queregardercesoir.R
+import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.MovieService
-import com.sakharu.queregardercesoir.util.EXTRA_MOVIE_ID
-import com.sakharu.queregardercesoir.util.ViewModelFactory
+import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
+import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_detail_movie.*
+import java.text.SimpleDateFormat
+import java.util.*
 
 class DetailMovieActivity : AppCompatActivity()
 {
     private lateinit var detailMovieViewModel: DetailMovieViewModel
+    private lateinit var observer:Observer<List<Genre>>
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -26,15 +32,23 @@ class DetailMovieActivity : AppCompatActivity()
 
         detailMovieViewModel = ViewModelProvider(this, ViewModelFactory()).get(DetailMovieViewModel::class.java)
 
+        observer = Observer {
+            afficherGenres(it)
+        }
 
         val id = intent.getLongExtra(EXTRA_MOVIE_ID,-1)
         if (id==-1L)
         //TODO FERMER ACTIVITE AFFICHER ERREUR
+            finish()
         else
+        {
             detailMovieViewModel.getMovieById(id).observe(this, Observer<Movie> {
                 afficherMovie(this,it)
+                //detailMovieViewModel.getGenresFromMovie(it).removeObserver(observer)
+                detailMovieViewModel.getGenresFromMovie(it).observe(this,observer)
             })
 
+        }
         backButtonMovieDetail.setOnClickListener{finish()}
     }
 
@@ -43,20 +57,22 @@ class DetailMovieActivity : AppCompatActivity()
         //Affichage du poster
         if (!movie.posterImg.isNullOrEmpty())
             Glide.with(context)
-                .load(MovieService.IMAGE_PREFIX + movie.posterImg)
-                .placeholder(R.drawable.film_poster_placeholder)
-                .fallback(R.drawable.film_poster_placeholder)
+                .load(MovieService.IMAGE_PREFIX_POSTER + movie.posterImg)
                 .error(R.drawable.film_poster_placeholder)
-                .transition(DrawableTransitionOptions.withCrossFade())
+                .dontAnimate()
                 .into(imgPosterMovieDetail)
         else
             Glide.with(context).load(R.drawable.film_poster_placeholder).into(imgPosterMovieDetail)
 
+        imgPosterMovieDetail.setOnClickListener{
+            startActivity(Intent(this@DetailMovieActivity, FullscreenActivity::class.java)
+                .putExtra(EXTRA_IMAGE_URL,movie.posterImg).putExtra(EXTRA_TYPE_IMAGE, TYPE_POSTER))
+        }
+
         //Affichage de l'image de fond
-        if (!movie.posterImg.isNullOrEmpty())
+        if (!movie.backdropImg.isNullOrEmpty())
             Glide.with(context)
-                .load(MovieService.IMAGE_PREFIX + movie.backdropImg)
-                .placeholder(R.drawable.large_movie_placeholder)
+                .load(MovieService.IMAGE_PREFIX_BACKDROP + movie.backdropImg)
                 .fallback(R.drawable.large_movie_placeholder)
                 .error(R.drawable.large_movie_placeholder)
                 .transition(DrawableTransitionOptions.withCrossFade())
@@ -64,32 +80,65 @@ class DetailMovieActivity : AppCompatActivity()
         else
             Glide.with(context).load(R.drawable.large_movie_placeholder).into(imgBackdropMovieDetail)
 
+        imgBackdropMovieDetail.setOnClickListener{
+            startActivity(Intent(this@DetailMovieActivity, FullscreenActivity::class.java)
+                .putExtra(EXTRA_IMAGE_URL,movie.backdropImg).putExtra(EXTRA_TYPE_IMAGE, TYPE_BACKDROP))
+        }
 
         titleMovieDetail.text = movie.title
 
-        overviewMovieDetail.text = movie.overview
+        overviewMovieDetail.text = getString(R.string.overviewPrefix,movie.overview)
 
-        //genresMovieDetail.text = movie.genresId
+        popularityMovieDetail.text = getString(R.string.popularityPrefix,movie.popularity)
 
-        popularityMovieDetail.text = movie.popularity.toString()
-
-        if (movie.vote_average!=null)
+        if (movie.vote_average!=null && movie.vote_average!=0.0)
         {
-            textAverageVoteMovieDetail.text = movie.vote_average!!.toString()
+            textAverageVoteMovieDetail.text = getString(R.string.voteAveragePrefix,movie.vote_average!!)
             progressBarAverageVoteMovieDetail.progress = movie.vote_average!!.toInt()
             progressBarAverageVoteMovieDetail.max = 10
+            textAverageVoteMovieDetail.show()
+            progressBarAverageVoteMovieDetail.show()
+        }
+        else
+        {
+            textAverageVoteMovieDetail.hide()
+            progressBarAverageVoteMovieDetail.hide()
         }
 
-        if (movie.vote_count!=null)
-            voteCountMovieDetail.text = movie.vote_count.toString()
+        if (movie.vote_count!=null && movie.vote_count!=0)
+        {
+            voteCountMovieDetail.show()
+            voteCountMovieDetail.text = getString(R.string.voteCountPrefix,movie.vote_count)
+        }
+        else
+            voteCountMovieDetail.hide()
 
-        if (movie.original_title!=null)
-            originalTitleMovieDetail.text = movie.original_title
+        if (!movie.original_title.isNullOrEmpty())
+        {
+            originalTitleMovieDetail.show()
+            originalTitleMovieDetail.text = getString(R.string.originalTitlePrefix,movie.original_title)
+        }
+        else
+            originalTitleMovieDetail.hide()
 
         if (!movie.releaseDate.isNullOrEmpty())
-            releaseDateMovieDetail.text = movie.releaseDate
+        {
+            val americanDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(movie.releaseDate!!)
+            val date = SimpleDateFormat("dd MMMM yyyy",Locale.getDefault()).format(americanDate!!)
+            releaseDateMovieDetail.text = getString(R.string.releaseDatePrefix,date)
+            releaseDateMovieDetail.show()
+        }
+        else
+            releaseDateMovieDetail.hide()
 
+    }
 
-
+    private fun afficherGenres(listGenre:List<Genre>)
+    {
+        val names = listGenre.joinToString { it.name }
+        if (names.isNotEmpty())
+            genresMovieDetail.text = getString(R.string.genrePrefix,names)
+        else
+            genresMovieDetail.hide()
     }
 }

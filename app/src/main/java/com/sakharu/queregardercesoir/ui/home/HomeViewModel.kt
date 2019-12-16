@@ -12,7 +12,6 @@ import com.sakharu.queregardercesoir.util.CATEGORY_POPULAR_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_UPCOMING_ID
 import kotlinx.coroutines.Dispatchers
-import org.jetbrains.anko.doAsync
 
 class HomeViewModel : ViewModel()
 {
@@ -22,7 +21,7 @@ class HomeViewModel : ViewModel()
     */
     var categoriesLiveList : LiveData<List<Category>> = liveData (Dispatchers.IO)
     {
-        emitSource(MovieRepository.getAllCategories())
+        emitSource(MovieRepository.getAllCategoriesLive())
     }
 
     /************************************
@@ -34,7 +33,7 @@ class HomeViewModel : ViewModel()
     */
     var moviesInPopularCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategory(CATEGORY_POPULAR_ID))
+        emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_POPULAR_ID))
         MovieRepository.downloadPopularMovies()
     }
 
@@ -44,7 +43,7 @@ class HomeViewModel : ViewModel()
     */
     var popularMoviesLiveList = Transformations.switchMap(moviesInPopularCategory)
     {
-        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -56,7 +55,7 @@ class HomeViewModel : ViewModel()
      */
     var moviesInTopRatedCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategory(CATEGORY_TOPRATED_ID))
+        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_TOPRATED_ID))
         MovieRepository.downloadTopRatedMovies()
     }
 
@@ -66,7 +65,7 @@ class HomeViewModel : ViewModel()
     */
     var topRatedMoviesLiveList = Transformations.switchMap(moviesInTopRatedCategory)
     {
-        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -78,7 +77,7 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategory(CATEGORY_NOWPLAYING_ID))
+        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_NOWPLAYING_ID))
         MovieRepository.downloadNowPlayingMovies()
     }
 
@@ -88,7 +87,7 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMoviesLiveList = Transformations.switchMap(nowPlayingMovieInCategory)
     {
-        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -100,7 +99,7 @@ class HomeViewModel : ViewModel()
     */
     var upcomingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategory(CATEGORY_UPCOMING_ID))
+        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_UPCOMING_ID))
         MovieRepository.downloadUpcomingMovies()
     }
 
@@ -110,7 +109,7 @@ class HomeViewModel : ViewModel()
     */
     var upcomingMoviesLiveList = Transformations.switchMap(upcomingMovieInCategory)
     {
-        MovieRepository.getMoviesFromCategory(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
 
@@ -123,7 +122,7 @@ class HomeViewModel : ViewModel()
     */
     var getAllMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getAllMoviesInCategory())
+        emitSource(MovieRepository.getAllMoviesInCategoryLive())
     }
 
 }

@@ -4,6 +4,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:theme="@style/AppTheme"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
     android:layout_margin="8dp">
 
     <ImageView
@@ -12,7 +15,8 @@
         android:layout_height="166dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:transitionName="@string/transitionMovieListToDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/placeholder_poster_home" />
+        app:srcCompat="@drawable/example_poster" />
 </androidx.constraintlayout.widget.ConstraintLayout>
