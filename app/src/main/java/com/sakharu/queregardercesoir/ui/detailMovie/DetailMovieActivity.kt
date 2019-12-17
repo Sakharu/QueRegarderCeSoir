@@ -2,19 +2,17 @@ package com.sakharu.queregardercesoir.ui.detailMovie
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.drawable.Drawable
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.request.RequestListener
-import com.sakharu.queregardercesoir.ui.FullscreenActivity
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
+import com.sakharu.queregardercesoir.ui.FullscreenActivity
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import java.text.SimpleDateFormat
@@ -87,7 +85,11 @@ class DetailMovieActivity : AppCompatActivity()
 
         titleMovieDetail.text = movie.title
 
-        overviewMovieDetail.text = getString(R.string.overviewPrefix,movie.overview)
+        if (movie.overview.isNotEmpty())
+            //overviewMovieDetail.text = getString(R.string.overviewPrefix,movie.overview)
+            overviewMovieDetail.text = movie.overview
+        else
+            overviewMovieDetail.setInvisible()
 
         popularityMovieDetail.text = getString(R.string.popularityPrefix,movie.popularity)
 
@@ -98,11 +100,13 @@ class DetailMovieActivity : AppCompatActivity()
             progressBarAverageVoteMovieDetail.max = 10
             textAverageVoteMovieDetail.show()
             progressBarAverageVoteMovieDetail.show()
+            peopleIconDetailMovie.show()
         }
         else
         {
             textAverageVoteMovieDetail.hide()
             progressBarAverageVoteMovieDetail.hide()
+            peopleIconDetailMovie.hide()
         }
 
         if (movie.vote_count!=null && movie.vote_count!=0)
@@ -113,23 +117,40 @@ class DetailMovieActivity : AppCompatActivity()
         else
             voteCountMovieDetail.hide()
 
-        if (!movie.original_title.isNullOrEmpty())
+        if (!movie.original_title.isNullOrEmpty() && movie.original_title!=movie.title)
         {
             originalTitleMovieDetail.show()
             originalTitleMovieDetail.text = getString(R.string.originalTitlePrefix,movie.original_title)
+            iconTranslateMovieDetail.show()
         }
         else
+        {
+            iconTranslateMovieDetail.hide()
             originalTitleMovieDetail.hide()
+        }
 
         if (!movie.releaseDate.isNullOrEmpty())
         {
-            val americanDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(movie.releaseDate!!)
-            val date = SimpleDateFormat("dd MMMM yyyy",Locale.getDefault()).format(americanDate!!)
-            releaseDateMovieDetail.text = getString(R.string.releaseDatePrefix,date)
-            releaseDateMovieDetail.show()
+            try
+            {
+                val americanDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(movie.releaseDate!!)
+                val date = SimpleDateFormat("dd MMMM yyyy",Locale.getDefault()).format(americanDate!!)
+                releaseDateMovieDetail.text = getString(R.string.releaseDatePrefix,date)
+                releaseDateMovieDetail.show()
+                iconTranslateMovieDetail.show()
+            }
+            catch (e:Exception)
+            {
+                e.printStackTrace()
+                releaseDateMovieDetail.hide()
+                iconTranslateMovieDetail.hide()
+            }
         }
         else
+        {
             releaseDateMovieDetail.hide()
+            iconTranslateMovieDetail.hide()
+        }
 
     }
 
@@ -142,3 +163,4 @@ class DetailMovieActivity : AppCompatActivity()
             genresMovieDetail.hide()
     }
 }
+

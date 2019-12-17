@@ -16,6 +16,12 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="TextInputError" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorBaseText</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
     <style name="CategoryOverviewStyle" parent="TextAppearance.AppCompat">
         <item name="android:textColor">@color/colorBaseText</item>
         <item name="android:fontFamily">@font/roboto</item>
@@ -26,6 +32,24 @@
         <item name="fontFamily">@font/roboto</item>
         <item name="android:textSize">9sp</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="TextInputLayoutTheme" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="hintTextAppearance">@style/HintText</item>
+        <item name="errorTextAppearance">@style/ErrorText</item>
+        <item name="counterTextAppearance">@style/HintText</item>
+    </style>
+
+
+    <style name="ErrorText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HintText" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@color/colorInactiveIconBottomNav</item>
+        <item name="android:textSize">14sp</item>
+
     </style>
 
 </resources>

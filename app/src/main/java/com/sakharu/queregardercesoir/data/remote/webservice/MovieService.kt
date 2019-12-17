@@ -42,6 +42,14 @@ interface MovieService
     suspend fun getMovieDetail(@Path("id")id:Long, @Query("api_key") api_key:String = API_KEY,
                                @Query("language") language:String = "fr-FR"): ResponseMovieDetail
 
+    @GET("search/movie")
+    suspend fun searchMovieFromQuery(@Query("api_key") api_key:String = API_KEY,
+                                     @Query("language") language:String = "fr-FR",
+                                     @Query("region") region:String = "FR",
+                                     @Query("page") page:Int = 1,
+                                     @Query("query") query:String) : ResponseResult<Movie>
+
+
     companion object
     {
         private const val BASE_ADRESS="https://api.themoviedb.org/3/"

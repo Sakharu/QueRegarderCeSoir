@@ -19,7 +19,6 @@
             android:adjustViewBounds="true"
             android:maxHeight="300dp"
             android:scaleType="fitStart"
-            android:transitionName="@string/transitionMovieListToDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -31,6 +30,7 @@
             android:layout_height="220dp"
             android:layout_marginTop="80dp"
             android:layout_marginEnd="16dp"
+            android:transitionName="@string/transitionMovieListToDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -77,10 +77,11 @@
             android:id="@+id/popularityMovieDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
-            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toEndOf="@+id/whatshotIconDetailMovie"
             app:layout_constraintTop_toBottomOf="@+id/genresMovieDetail"
             tools:text="Popularité : 14.673" />
 
@@ -91,6 +92,7 @@
             android:layout_marginTop="16dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toEndOf="@+id/peopleIconDetailMovie"
             app:layout_constraintStart_toStartOf="@+id/popularityMovieDetail"
             app:layout_constraintTop_toBottomOf="@+id/popularityMovieDetail"
             tools:text="Note moyenne : 6.5/10" />
@@ -115,7 +117,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintTop_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
             tools:text="15416 votes" />
 
@@ -123,21 +125,23 @@
             android:id="@+id/originalTitleMovieDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
-            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toEndOf="@+id/iconTranslateMovieDetail"
             app:layout_constraintTop_toBottomOf="@+id/releaseDateMovieDetail"
-            tools:text="200 000$ de budget" />
+            tools:text="Infinite Wars" />
 
         <TextView
             android:id="@+id/releaseDateMovieDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
-            app:layout_constraintStart_toStartOf="@+id/overviewMovieDetail"
+            app:layout_constraintStart_toEndOf="@+id/iconDateMovieDetail"
             app:layout_constraintTop_toBottomOf="@+id/voteCountMovieDetail"
             tools:text="Date de sortie : 04/12/2019" />
 
@@ -153,5 +157,43 @@
             android:tint="@color/colorBaseBackround"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/imgBackdropMovieDetail" />
+
+        <ImageView
+            android:id="@+id/peopleIconDetailMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail"
+            app:srcCompat="@drawable/ic_people_white_24dp" />
+
+        <ImageView
+            android:id="@+id/whatshotIconDetailMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/popularityMovieDetail"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/popularityMovieDetail"
+            app:srcCompat="@drawable/ic_whatshot_white_24dp" />
+
+        <ImageView
+            android:id="@+id/iconDateMovieDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/releaseDateMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/peopleIconDetailMovie"
+            app:layout_constraintTop_toTopOf="@+id/releaseDateMovieDetail"
+            app:srcCompat="@drawable/ic_date_range_white_24dp" />
+
+        <ImageView
+            android:id="@+id/iconTranslateMovieDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/originalTitleMovieDetail"
+            app:layout_constraintEnd_toEndOf="@+id/whatshotIconDetailMovie"
+            app:layout_constraintTop_toTopOf="@+id/originalTitleMovieDetail"
+            app:srcCompat="@drawable/ic_translate_white_24dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

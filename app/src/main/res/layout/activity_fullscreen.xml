@@ -10,10 +10,24 @@
         android:id="@+id/fullscreenImageView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:scaleType="centerInside"
+        android:adjustViewBounds="true"
+        android:scaleType="fitCenter"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@drawable/large_movie_placeholder" />
+
+    <ImageButton
+        android:id="@+id/backButtonFullscreenImage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="24dp"
+        android:background="@drawable/background_back_button"
+        android:padding="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/ic_arrow_back_white_24dp"
+        android:tint="@color/colorBaseBackround"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

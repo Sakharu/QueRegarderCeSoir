@@ -29,7 +29,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleCategoryHome"
-        tools:listitem="@layout/item_movie_home" >
+        tools:listitem="@layout/item_little_movie" >
 
     </androidx.recyclerview.widget.RecyclerView>
 

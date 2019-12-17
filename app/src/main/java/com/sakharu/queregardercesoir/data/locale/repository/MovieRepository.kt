@@ -24,7 +24,7 @@ object MovieRepository
     private lateinit var movieInCategoryDAO: MovieInCategoryDAO
     private lateinit var genreDAO: GenreDAO
 
-    private val service = MovieService.create()
+    private val movieService = MovieService.create()
 
     fun initialize(application: Application)
     {
@@ -70,10 +70,10 @@ object MovieRepository
             movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*page,timeStamp))
             MovieListCategoryViewModel.lastTimeStamp = timeStamp
         }
-
     }
 
-    fun getAllMoviesInCategoryLive() : LiveData<List<MovieInCategory>> = movieInCategoryDAO.getAllMoviesInCategory()
+    fun getAllMoviesInCategoryLive() : LiveData<List<MovieInCategory>>
+            = movieInCategoryDAO.getAllMoviesInCategory()
 
     fun getMoviesFromCategoryLive(popularMoviesListId:List<Long>): LiveData<List<Movie>>
             = movieDAO.getMoviesByListId(popularMoviesListId)
@@ -84,7 +84,11 @@ object MovieRepository
     fun getFirstMoviesInCategoryFromCategoryId(id:Long): LiveData<List<MovieInCategory>> =
         movieInCategoryDAO.getFirstMoviesIdFromCategoryID(id)
 
-    fun deleteDeprecatedMoviesInCategory(listId : List<Long>) = movieInCategoryDAO.deleteOldMoviesInCategory(listId)
+    fun deleteDeprecatedMoviesInCategory(listId : List<Long>)
+            = movieInCategoryDAO.deleteOldMoviesInCategory(listId)
+
+    fun getMoviesFromTitleSearch(search:String)
+            = movieDAO.getMoviesFromTitleSearch(search)
 
     /*
         GENRE
@@ -100,7 +104,7 @@ object MovieRepository
 
     suspend fun downloadPopularMovies(page:Int=1)
     {
-        val lastPopularMovies = service.getPopularMovies(page = page)
+        val lastPopularMovies = movieService.getPopularMovies(page = page)
         val idCategory = insertCategory(CATEGORY_POPULAR_ID, CATEGORY_POPULAR_NAME,
             CATEGORY_POPULAR_OVERVIEW)
         insertAllMovies(lastPopularMovies.results)
@@ -109,7 +113,7 @@ object MovieRepository
 
     suspend fun downloadTopRatedMovies(page:Int=1)
     {
-        val topRatedMovies = service.getTopRatedMovies(page = page)
+        val topRatedMovies = movieService.getTopRatedMovies(page = page)
         val idCategory = insertCategory(CATEGORY_TOPRATED_ID, CATEGORY_TOPRATED_NAME,
             CATEGORY_TOPRATED_OVERVIEW)
         insertAllMovies(topRatedMovies.results)
@@ -118,7 +122,7 @@ object MovieRepository
 
     suspend fun downloadNowPlayingMovies(page:Int=1)
     {
-        val newPlayingMovies = service.getNowPlayingMovies(page = page)
+        val newPlayingMovies = movieService.getNowPlayingMovies(page = page)
         val idCategory = insertCategory(CATEGORY_NOWPLAYING_ID, CATEGORY_NOWPLAYING_NAME,
         CATEGORY_NOWPLAYING_OVERVIEW)
         insertAllMovies(newPlayingMovies.results)
@@ -127,7 +131,7 @@ object MovieRepository
 
     suspend fun downloadUpcomingMovies(page:Int=1)
     {
-        val upcomingMovies = service.getUpcomingMovies(page = page)
+        val upcomingMovies = movieService.getUpcomingMovies(page = page)
         val idCategory = insertCategory(CATEGORY_UPCOMING_ID, CATEGORY_UPCOMING_NAME,
             CATEGORY_UPCOMING_OVERVIEW)
         insertAllMovies(upcomingMovies.results)
@@ -136,12 +140,18 @@ object MovieRepository
 
     suspend fun downloadMovieDetail(id:Long)
     {
-        val movieResult = service.getMovieDetail(id = id)
+        val movieResult = movieService.getMovieDetail(id = id)
         val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
             movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
             movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count)
         insertMovie(movie)
         insertAllGenre(movieResult.genres)
+    }
+
+    suspend fun searchMovie(query : String)
+    {
+        val movieResult = movieService.searchMovieFromQuery(query = query)
+        insertAllMovies(movieResult.results)
     }
 }
 

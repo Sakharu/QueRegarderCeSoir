@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/posterItemMovieResultSearch"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:transitionName="@string/transitionMovieListToDetail"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@drawable/example_poster" />
+
+    <TextView
+        android:id="@+id/titleMovieResultSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/voteAverageMovieResultSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/posterItemMovieResultSearch"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Pulp fiction" />
+
+    <TextView
+        android:id="@+id/voteAverageMovieResultSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:textColor="@color/colorInactiveIconBottomNav"
+        app:layout_constraintBottom_toTopOf="@+id/releaseYearMovieResultSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/posterItemMovieResultSearch"
+        app:layout_constraintTop_toBottomOf="@+id/titleMovieResultSearch"
+        tools:text="7.7/10 sur 5400 votes" />
+
+    <TextView
+        android:id="@+id/releaseYearMovieResultSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorInactiveIconBottomNav"
+        app:layout_constraintBottom_toBottomOf="@+id/posterItemMovieResultSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/voteAverageMovieResultSearch"
+        app:layout_constraintTop_toBottomOf="@+id/voteAverageMovieResultSearch"
+        tools:text="2015" />
+</androidx.constraintlayout.widget.ConstraintLayout>

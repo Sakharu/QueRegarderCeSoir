@@ -70,7 +70,6 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener
          */
         if (intent.action== ACTION_LOAD_MORE_CATEGORY_DETAIL)
         {
-
             page = intent.getIntExtra(EXTRA_PAGE,page)
             movieListCategoryViewModel.getMoviesLiveList(page).removeObserver(observer)
             movieListCategoryViewModel.getMoviesLiveList(page).observe(this, observer)
@@ -93,7 +92,7 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)
     {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MovieListActivity,
-            androidx.core.util.Pair<View,String>(imageView,movie.posterImg))
+            androidx.core.util.Pair<View,String>(imageView,getString(R.string.transitionMovieListToDetail)))
 
         startActivity(Intent(this, DetailMovieActivity::class.java).
             putExtra(EXTRA_MOVIE_ID,movie.id),options.toBundle())

@@ -3,6 +3,7 @@ package com.sakharu.queregardercesoir.util
 /*
     CATEGORIES
  */
+const val NUMBER_OF_CATEGORIES=4
 
 const val CATEGORY_POPULAR_NAME = "Les plus populaires"
 const val CATEGORY_POPULAR_ID = 1L
@@ -31,6 +32,7 @@ const val EXTRA_TYPE_IMAGE="ExtraTypeImage"
 const val TYPE_POSTER="TypePoster"
 const val TYPE_BACKDROP="TypeBackdrop"
 const val EXTRA_CATEGORY = "category"
+const val EXTRA_TITLE_SEARCH = "ExtraTitleSearch"
 
 /*
    PARAMETRES

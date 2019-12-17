@@ -30,8 +30,7 @@ class HomeFragment : Fragment()
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        categoryMovieAdapter =
-            CategoryMovieAdapter()
+        categoryMovieAdapter = CategoryMovieAdapter()
         recyclerCategory = root.findViewById(R.id.recyclerHomePopularMovies)
         recyclerCategory.apply {
             layoutManager = LinearLayoutManager(context!!,LinearLayoutManager.VERTICAL,false)
@@ -102,6 +101,7 @@ class HomeFragment : Fragment()
         //datent de plus de 3 jours
         homeViewModel.getAllMoviesInCategory.observe(viewLifecycleOwner, Observer<List<MovieInCategory>>
         {
+
             //on fait tout le traitement dans un thread secondaire pour ne pas affecter l'ux
             doAsync {
                 val listMovieInCategoryDeprecated =

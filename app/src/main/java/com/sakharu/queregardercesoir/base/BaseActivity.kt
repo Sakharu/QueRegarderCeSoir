@@ -1,12 +1,14 @@
 package com.sakharu.queregardercesoir.base
 
-import android.app.Dialog
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
-import android.widget.ProgressBar
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
@@ -14,8 +16,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 open class BaseActivity : AppCompatActivity()
 {
     private lateinit var mIntentFilter: IntentFilter
-    private var progressBar : ProgressBar? = null
-    private var dialog : Dialog? = null
 
     /*********************
      * CYCLE DE VIE
@@ -55,6 +55,49 @@ open class BaseActivity : AppCompatActivity()
     fun ajouterActionAIntentFilter(action:String)
     {
         mIntentFilter.addAction(action)
+    }
+
+    /**
+     * CLAVIER
+     */
+    fun hideKeyboard()
+    {
+        val imm = getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+        var view = currentFocus
+        if (view == null)
+            view = View(this)
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
+    }
+
+    /**
+     * DIALOG BOX
+     */
+
+    fun showDialogBox(titleRef:Int, message:Int, positiveButtonMessage:Int, negativeButtonMessage:Int?, fonctionOui:()->Unit , fonctionNon:()->Unit)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.apply {
+            setTitle(titleRef)
+            setMessage(message)
+            setPositiveButton(positiveButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionOui() }
+            if(negativeButtonMessage!=null)
+                setNegativeButton(negativeButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionNon() }
+        }
+
+        builder.create().show()
+    }
+
+    fun showDialogBox(titleRef:String, message:String, positiveButtonMessage:String, negativeButtonMessage:String, fonctionOui:()->Unit , fonctionNon:()->Unit)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.apply {
+            setTitle(titleRef)
+            setMessage(message)
+            setPositiveButton(positiveButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionOui() }
+            setNegativeButton(negativeButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionNon() }
+        }
+
+        builder.create().show()
     }
 
 

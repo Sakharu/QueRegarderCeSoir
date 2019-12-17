@@ -10,16 +10,15 @@ import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
 
 class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAndList> = arrayListOf())
-    : RecyclerView.Adapter<RecyclerView.ViewHolder>()
+    : RecyclerView.Adapter<CategoryMovieHolder>()
 {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder =
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryMovieHolder =
         CategoryMovieHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_category_home, parent, false))
 
     override fun getItemCount(): Int = movieListInArrayList.size
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int)
+    override fun onBindViewHolder(holder: CategoryMovieHolder, position: Int)
     {
-        holder as CategoryMovieHolder
         val category = movieListInArrayList[position].category
         holder.titleCategory.text = category.name
         holder.recyclerLittleMovie.apply {
@@ -42,9 +41,12 @@ class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAn
         //refresh de la catégorie
         else
         {
-
-            this.movieListInArrayList[position] = CategoryAndList(category, newList.toMutableList())
-            notifyItemChanged(position)
+            //on considère que si le premier id de chaque liste
+            if (newList.isNotEmpty() && this.movieListInArrayList[position].movieList.last().id != newList.last().id)
+            {
+                this.movieListInArrayList[position] = CategoryAndList(category, newList.toMutableList())
+                notifyItemChanged(position)
+            }
         }
     }
 

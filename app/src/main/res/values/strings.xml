@@ -22,7 +22,7 @@
     <!-- DETAIL D'UN FILM -->
     <string name="genrePrefix">Genre : %1$s</string>
     <string name="popularityPrefix">Popularite : %1$.2f</string>
-    <string name="voteAveragePrefix">Note moyenne :  %1$.2f/10</string>
+    <string name="voteAveragePrefix">Note moyenne :  %1$.1f/10</string>
     <string name="voteCountPrefix">Sur %1$d votes</string>
     <string name="releaseDatePrefix">Date de sortie : %1$s</string>
     <string name="budgetPrefix">Budget : %1$f\$</string>
@@ -31,5 +31,20 @@
 
     <!-- TRANSITIONS -->
     <string name="transitionMovieListToDetail">transitionMovieListToDetail</string>
+
+    <!-- RECHRCHE DE FILM -->
+    <string name="searchTitleFragment">Rechercher un film</string>
+    <string name="hintSearchTitle">Rechercher par titre*</string>
+    <string name="searchButton">Rechercher</string>
+    <string name="advancedSearch"><u>Recherche avancée</u></string>
+    <string name="emptyFieldTitle">Le titre est vide</string>
+    <string name="tooShortFieldTitle">Le titre doit faire plus de 3 caractères</string>
+    <string name="averageVoteOnTotalVote">%1$.1f/10 sur %2$d votes</string>
+
+    <!-- RESULTAT RECHERCHE FILM -->
+    <string name="resultSearchTitle">Recherche : \"%1$s\"</string>
+
+    <!-- FULLSCREEN IMAGE -->
+    <string name="errorRetrievingImage">Une erreur est survenue durant la récupération de l\'image</string>
 
 </resources>
