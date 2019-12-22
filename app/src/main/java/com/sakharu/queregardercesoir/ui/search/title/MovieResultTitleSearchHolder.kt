@@ -12,4 +12,5 @@ class MovieResultTitleSearchHolder(itemView : View) : RecyclerView.ViewHolder(it
     var titleMovie : TextView = itemView.findViewById(R.id.titleMovieResultSearch)
     var yearMovie : TextView = itemView.findViewById(R.id.releaseYearMovieResultSearch)
     var voteAverage : TextView = itemView.findViewById(R.id.voteAverageMovieResultSearch)
+    var genresMovie : TextView = itemView.findViewById(R.id.genresMovieResultSearch)
 }

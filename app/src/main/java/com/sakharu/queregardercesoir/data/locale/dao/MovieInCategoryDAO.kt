@@ -14,10 +14,10 @@ interface MovieInCategoryDAO
     @Query("SELECT * FROM movieInCategory WHERE id = :id")
     fun getById(id:Long) : LiveData<MovieInCategory>
 
-    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory AND addedTimestamp>:lastTimeStamp ORDER BY addedTimestamp DESC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
+    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory AND addedTimestamp>=:lastTimeStamp ORDER BY addedTimestamp DESC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
     fun getMoviesIdFromCategoryId(idCategory:Long, lastTimeStamp:Long) : LiveData<List<MovieInCategory>>
 
-    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory ORDER BY `order` ASC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
+    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory ORDER BY page,`order` ASC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
     fun getFirstMoviesIdFromCategoryID(idCategory:Long) : LiveData<List<MovieInCategory>>
 
     @Query("SELECT * FROM movieInCategory")

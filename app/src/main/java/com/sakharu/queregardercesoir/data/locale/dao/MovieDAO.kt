@@ -1,11 +1,10 @@
 package com.sakharu.queregardercesoir.data.locale.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+
 
 @Dao
 interface MovieDAO
@@ -16,8 +15,11 @@ interface MovieDAO
     @Query("SELECT * FROM movie ")
     fun getAll() : LiveData<List<Movie>>
 
-    @Query("SELECT * FROM movie WHERE title LIKE '%' || :search  || '%' ORDER BY title")
+    @Query("SELECT * FROM movie WHERE title LIKE '%' || :search  || '%' OR original_title LIKE '%' || :search  || '%' ORDER BY title")
     fun getMoviesFromTitleSearch(search:String) : LiveData<List<Movie>>
+
+    @RawQuery(observedEntities = [Movie::class])
+    fun getMoviesFromCharacRaw(query: SupportSQLiteQuery?): LiveData<List<Movie>>
 
     @Query("SELECT * FROM movie WHERE id = :id")
     fun getById(id:Long) : LiveData<Movie>

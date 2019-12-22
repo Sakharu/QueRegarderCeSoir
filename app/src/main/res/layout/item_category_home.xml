@@ -4,11 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:theme="@style/AppTheme"
-    android:clickable="true"
-    android:focusable="true"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:background="@color/colorBaseBackround">
+    android:background="@color/colorBaseBackround"
+    android:theme="@style/AppTheme">
 
     <TextView
         android:id="@+id/titleCategoryHome"
@@ -17,6 +14,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Les films du moment" />
@@ -25,12 +23,27 @@
         android:id="@+id/recyclerCategoryHome"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:layout_marginTop="1dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/titleCategoryHome"
-        tools:listitem="@layout/item_little_movie" >
+        tools:listitem="@layout/item_little_movie">
 
     </androidx.recyclerview.widget.RecyclerView>
+
+    <ImageButton
+        android:id="@+id/seeMoreImageButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorBaseBackround"
+        android:clickable="true"
+        android:focusable="true"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:padding="5dp"
+        app:layout_constraintBottom_toBottomOf="@+id/titleCategoryHome"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/titleCategoryHome"
+        app:srcCompat="@drawable/ic_more_white_24dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

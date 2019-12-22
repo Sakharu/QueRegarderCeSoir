@@ -17,9 +17,6 @@ data class Category(
     var id:Long?,
 
     @field:SerializedName("name")
-    var name:String="unknown",
-
-    @field:SerializedName("overview")
-    var overview:String="unknown"
+    var name:String="unknown"
 
 ) : Serializable

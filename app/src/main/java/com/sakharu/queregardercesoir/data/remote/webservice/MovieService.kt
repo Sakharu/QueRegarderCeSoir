@@ -33,8 +33,8 @@ interface MovieService
                                     @Query("language") language:String = "fr-FR",
                                     @Query("page") page:Int = 1) : ResponseResult<Movie>
 
-    @GET("movie/upcoming")
-    suspend fun getUpcomingMovies(@Query("api_key") api_key:String = API_KEY,
+    @GET("trending/movie/week")
+    suspend fun getTrendingMovies(@Query("api_key") api_key:String = API_KEY,
                                   @Query("language") language:String = "fr-FR",
                                   @Query("page") page:Int = 1) : ResponseResult<Movie>
 
@@ -48,6 +48,24 @@ interface MovieService
                                      @Query("region") region:String = "FR",
                                      @Query("page") page:Int = 1,
                                      @Query("query") query:String) : ResponseResult<Movie>
+
+    @GET("discover/movie")
+    suspend fun searchMovieFromCharacs(@Query("api_key") api_key:String = API_KEY,
+                                       @Query("language") language:String = "fr-FR",
+                                       @Query("region") region:String = "FR",
+                                       @Query("page") page:Int = 1,
+                                       @Query("sort_by") sortBy:String?=null,
+                                       @Query("release_date.gte") releaseDateGte:String?=null,
+                                       @Query("release_date.lte") releaseDatelte:String?=null,
+                                       @Query("vote_average.gte") voteAverageGte:Double?=null,
+                                       @Query("year") year:Int?=null,
+                                       @Query("with_genres") withGenres:String?=null) : ResponseResult<Movie>
+
+    @GET("movie/{id}/similar")
+    suspend fun getSimilarMoviesFromMovieId(@Path("id")id:Long,
+                                  @Query("api_key") api_key:String = API_KEY,
+                                  @Query("language") language:String = "fr-FR",
+                                  @Query("page") page:Int = 1) : ResponseResult<Movie>
 
 
     companion object

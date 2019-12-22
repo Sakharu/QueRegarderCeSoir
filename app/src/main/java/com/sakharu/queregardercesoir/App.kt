@@ -1,6 +1,8 @@
 package com.sakharu.queregardercesoir
 
 import android.app.Application
+import com.sakharu.queregardercesoir.data.locale.repository.CategoryRepository
+import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 
 class App:Application()
@@ -8,10 +10,7 @@ class App:Application()
     override fun onCreate() {
         super.onCreate()
         MovieRepository.initialize(this)
-    }
-
-    companion object {
-        //index du dernier pokemon téléchargé
-        var indexactuel:Int=1
+        GenreRepository.initialize(this)
+        CategoryRepository.initialize(this)
     }
 }

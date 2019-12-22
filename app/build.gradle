@@ -67,6 +67,7 @@ dependencies {
     implementation "com.squareup.okhttp3:logging-interceptor:$rootProject.loggingInterceptorVersion"
     implementation "org.jetbrains.anko:anko:$anko_version"
     implementation "androidx.paging:paging-runtime:$rootProject.pagingVersion"
+    implementation "androidx.preference:preference-ktx:$rootProject.preferenceManagerVersion"
 
 
     testImplementation 'junit:junit:4.12'

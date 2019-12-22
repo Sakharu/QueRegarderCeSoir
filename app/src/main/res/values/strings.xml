@@ -2,8 +2,8 @@
     <string name="app_name">Que regarder ce soir</string>
 
     <!-- BOTTOM NAVIGATION VIEW -->
-    <string name="title_home">Home</string>
-    <string name="title_search">Rechercher</string>
+    <string name="title_home">Accueil</string>
+    <string name="title_discover">Découvrir</string>
     <string name="title_lists">Listes</string>
 
     <!-- CATEGORIES -->
@@ -18,33 +18,81 @@
 
     <string name="category_upcoming_name">Bientôt en salle</string>
     <string name="category_upcoming_overview">Les fims prochainement en salle près de chez vous.</string>
+    <string name="seeMore">Voir plus</string>
 
     <!-- DETAIL D'UN FILM -->
     <string name="genrePrefix">Genre : %1$s</string>
-    <string name="popularityPrefix">Popularite : %1$.2f</string>
-    <string name="voteAveragePrefix">Note moyenne :  %1$.1f/10</string>
+    <string name="averageVoteDetail">Note moyenne</string>
+    <string name="popularityPrefix">Score de popularite : %1$.2f</string>
     <string name="voteCountPrefix">Sur %1$d votes</string>
     <string name="releaseDatePrefix">Date de sortie : %1$s</string>
     <string name="budgetPrefix">Budget : %1$f\$</string>
     <string name="overviewPrefix">Synopsis : %1$s</string>
     <string name="originalTitlePrefix">Titre original : %1$s</string>
+    <string name="similarMovies">Films similaires</string>
 
     <!-- TRANSITIONS -->
     <string name="transitionMovieListToDetail">transitionMovieListToDetail</string>
 
-    <!-- RECHRCHE DE FILM -->
-    <string name="searchTitleFragment">Rechercher un film</string>
-    <string name="hintSearchTitle">Rechercher par titre*</string>
-    <string name="searchButton">Rechercher</string>
-    <string name="advancedSearch"><u>Recherche avancée</u></string>
-    <string name="emptyFieldTitle">Le titre est vide</string>
-    <string name="tooShortFieldTitle">Le titre doit faire plus de 3 caractères</string>
-    <string name="averageVoteOnTotalVote">%1$.1f/10 sur %2$d votes</string>
+    <!-- DECOUVERTE DE FILM -->
+    <string name="askForFavoriteGenre">Vous n\'avez pas encore défini vos genres de films favoris.\n
+    Faites-le pour que l\'on puisse vous proposer de nouveaux films à découvrir !</string>
+    <string name="validate">Valider</string>
+
 
     <!-- RESULTAT RECHERCHE FILM -->
-    <string name="resultSearchTitle">Recherche : \"%1$s\"</string>
+    <string name="resultSearchTitle">Resultat de la recherche</string>
+    <string name="noFilmFromTitleSearch">Aucun film ne correspond à la recherche</string>
+
+    <!-- RECHERCHE AVANCEE -->
+    <string name="genres">Genres</string>
+    <string name="searchForGenres">Rechercher des genres</string>
+    <string name="advancedSearch">Recherche avancée</string>
+    <string name="year">Année</string>
+    <string-array name="greaterLowerYear">
+        <item>Avant</item>
+        <item>Pendant</item>
+        <item>Après</item>
+    </string-array>
+    <string name="hintYear">1850 → 2030</string>
+    <string name="voteAverage">Note moyenne minimale</string>
+    <string name="yearInvalid">L\'année entrée est invalide, elle doit être comprise entre 1850 et 2014</string>
+    <string name="baseAverageVote">3.0</string>
+    <string name="everyFieldEmpty">Veuillez remplir au moins champs</string>
+    <string name="sortBy">Trier par</string>
+    <string-array name="sortBySearch">
+        <item>Popularité</item>
+        <item>Date de sortie</item>
+        <item>Note moyenne</item>
+    </string-array>
+    <string name="searchButton">Rechercher</string>
+    <string name="advancedSearchUnderline"><u>Recherche avancée</u></string>
+    <string name="advancedSearchDesc">Vous pouvez rechercher par genre, année ou note via la recherche avancée.</string>
 
     <!-- FULLSCREEN IMAGE -->
     <string name="errorRetrievingImage">Une erreur est survenue durant la récupération de l\'image</string>
+
+    <!-- USER LIST -->
+    <string name="favorite">Favoris</string>
+    <string name="planToWatch">A voir</string>
+    <string name="completed">Déjà vu</string>
+
+    <!-- CONTENT DESCRIPTION -->
+    <string name="backButtonContentDesc">Bouton retour</string>
+    <string name="posterMovieContentDesc">Affiche du film</string>
+    <string name="backdropMovieContentDesc">Image d\'arrière plan du film</string>
+    <string name="peopleIconContentDesc">Icône communauté</string>
+    <string name="whatsHotIconContentDesc">Icône tendance</string>
+    <string name="calendarIconContentDesc">Icône calendrier</string>
+    <string name="translateIconContentDesc">Icône traduction</string>
+    <string name="fullscreenContentDesc">Image en plein écran</string>
+
+    <!-- RECHERCHE PAR TITRE -->
+    <string name="averageVoteOnTotalVotes">%1$.1f/10 sur %2$d votes</string>
+    <string name="averageVoteOnTotalVote">%1$.1f/10 sur %2$d vote</string>
+    <string name="hintSearchTitle">Rechercher par titre</string>
+    <string name="searchTitleFragment">Rechercher un film</string>
+    <string name="emptyFieldTitle">Le titre est vide</string>
+    <string name="tooShortFieldTitle">Le titre doit faire plus de 3 caractères</string>
 
 </resources>

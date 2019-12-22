@@ -13,7 +13,7 @@ import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.locale.dao.MovieInCategoryDAO
-import com.sakharu.queregardercesoir.util.Converters
+import com.sakharu.queregardercesoir.data.locale.converters.Converters
 
 
 @Database(entities = [Movie::class, Genre::class, Category::class, MovieInCategory::class], version = 1, exportSchema = false)

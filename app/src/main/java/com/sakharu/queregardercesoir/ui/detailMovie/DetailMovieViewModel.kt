@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import kotlinx.coroutines.Dispatchers
 
@@ -20,6 +21,12 @@ class DetailMovieViewModel : ViewModel()
     fun getGenresFromMovie(movie:Movie) : LiveData<List<Genre>> =
         liveData(Dispatchers.IO)
         {
-            emitSource(MovieRepository.getGenresFromMovie(movie))
+            emitSource(GenreRepository.getGenresFromMovie(movie))
+        }
+
+    fun getSimilarMovies(id: Long) : LiveData<List<Movie>> =
+        liveData(Dispatchers.IO)
+        {
+            emitSource(MovieRepository.getMoviesFromListIdLive(MovieRepository.downloadSimilarMovies(id)))
         }
 }

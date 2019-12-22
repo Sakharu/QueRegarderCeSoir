@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.util
+package com.sakharu.queregardercesoir.data.locale.converters
 
 import androidx.room.TypeConverter
 import com.google.gson.Gson

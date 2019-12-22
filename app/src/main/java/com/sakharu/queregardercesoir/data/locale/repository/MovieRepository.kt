@@ -2,17 +2,14 @@ package com.sakharu.queregardercesoir.data.locale.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.sakharu.queregardercesoir.data.locale.AppDatabase
-import com.sakharu.queregardercesoir.data.locale.dao.CategoryDAO
-import com.sakharu.queregardercesoir.data.locale.dao.GenreDAO
 import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
 import com.sakharu.queregardercesoir.data.locale.dao.MovieInCategoryDAO
-import com.sakharu.queregardercesoir.data.locale.model.Category
-import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
-import com.sakharu.queregardercesoir.ui.movieList.MovieListCategoryViewModel
+import com.sakharu.queregardercesoir.ui.movieList.MovieListViewModel
 import com.sakharu.queregardercesoir.util.*
 
 
@@ -20,9 +17,7 @@ object MovieRepository
 {
     private lateinit var database: AppDatabase
     private lateinit var movieDAO: MovieDAO
-    private lateinit var categoryDAO: CategoryDAO
     private lateinit var movieInCategoryDAO: MovieInCategoryDAO
-    private lateinit var genreDAO: GenreDAO
 
     private val movieService = MovieService.create()
 
@@ -30,9 +25,7 @@ object MovieRepository
     {
         database = AppDatabase.buildInstance(application)
         movieDAO = database.movieDAO()
-        categoryDAO = database.categoryDAO()
         movieInCategoryDAO = database.movieInCategoryDAO()
-        genreDAO = database.genreDAO()
     }
 
     /***********************
@@ -49,33 +42,21 @@ object MovieRepository
     fun getMovieLiveById(id: Long): LiveData<Movie> = movieDAO.getById(id)
 
     /*
-        CATEGORY
-     */
-
-    suspend fun insertCategory(id:Long,name:String,overview:String) = categoryDAO.insert(Category(id, name, overview))
-
-    fun getAllCategoriesLive() : LiveData<List<Category>> = categoryDAO.getAllCategories()
-
-
-
-    /*
         MOVIEINCATEGORY
      */
 
     suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long, page: Int)
     {
+        val timeStamp = System.currentTimeMillis()
         for (i in idMovieList.indices)
-        {
-            val timeStamp = System.currentTimeMillis()
-            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*page,timeStamp))
-            MovieListCategoryViewModel.lastTimeStamp = timeStamp
-        }
+            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*(page-1),page,timeStamp))
+        MovieListViewModel.lastTimeStamp = timeStamp
     }
 
     fun getAllMoviesInCategoryLive() : LiveData<List<MovieInCategory>>
             = movieInCategoryDAO.getAllMoviesInCategory()
 
-    fun getMoviesFromCategoryLive(popularMoviesListId:List<Long>): LiveData<List<Movie>>
+    fun getMoviesFromListIdLive(popularMoviesListId:List<Long>): LiveData<List<Movie>>
             = movieDAO.getMoviesByListId(popularMoviesListId)
 
     fun getMovieInCategoryLive(id:Long, lastTimestamp:Long=0): LiveData<List<MovieInCategory>> =
@@ -90,52 +71,98 @@ object MovieRepository
     fun getMoviesFromTitleSearch(search:String)
             = movieDAO.getMoviesFromTitleSearch(search)
 
-    /*
-        GENRE
-     */
-    suspend fun insertAllGenre(genreList:List<Genre>) = genreDAO.insertAll(genreList)
+    fun getMoviesFromCharacSearch(sortBy:String,voteAverageGte:Double=0.0, genresId:List<String> = listOf(),
+                                  yearGte:String?=null,yearLte:String?=null,yearDuring:Int?=null,year: Int?):LiveData<List<Movie>>
+    {
+        //SI LES DONNEES SONT PASSEES ON LES AJOUTE A LA REQUETE
+        val yearGteQuery = if (yearGte!=null) "AND releaseYear>$year" else ""
+        val yearLteQuery = if (yearLte!=null) "AND releaseYear<$year" else ""
+        val yearDuringQuery = if (yearDuring!=null) "AND releaseYear=$year" else ""
 
-    fun getGenresFromMovie(movie: Movie) = genreDAO.getGenreFromListId(movie.genresId)
+        //ON RAJOUTE A LA REQUETE L'ORDONNENCEMENT EN FONCTION DE CE QUI A ETE PASSE EN PARAMETRE
+        val sortByQuery = when (sortBy)
+        {
+            POPULARITYDEQC -> "popularity DESC"
+            RELEASEDATEDESC -> "releaseYear DESC"
+            else -> "vote_average DESC"
+        }
+
+        /*ON CONSTRUIT LA PARTIE DES GENRES DE LA REQUETES GRACE A LA CONCATENATION
+        ON PARCOURT LA LISTE DES ID DE GENRES SELECTIONNES ET ON L'AJOUTE A LA REQUETE
+        EXEMPLE DE REQUETE
+            SELECT * FROM movie WHERE vote_average>3.0 AND genresId LIKE '%' || 28  || '%' AND genresId LIKE '%' ||  16  || '%'
+             AND releaseYear<2020  ORDER BY popularity DESC
+         */
+        val  genresQuery = if (genresId.any { it.isNotEmpty() })
+        {
+            var andGenres = "AND"
+            for (id in genresId)
+                andGenres+=" genresId LIKE '%' || $id  || '%' AND"
+            andGenres.removeSuffix("AND")
+        }
+        else
+            ""
+
+        val query = "SELECT * FROM movie WHERE vote_average>$voteAverageGte"  +
+                " $genresQuery $yearGteQuery $yearLteQuery $yearDuringQuery ORDER BY $sortByQuery"
+        return movieDAO.getMoviesFromCharacRaw(SimpleSQLiteQuery(query))
+    }
+
+
+    private fun addYearToMovies(movies:List<Movie>) : List<Movie>
+    {
+        for (movie in movies)
+            addYearToMovie(movie)
+        return movies
+    }
+
+    private fun addYearToMovie(movie:Movie) : Movie
+    {
+        if (!movie.releaseDate.isNullOrEmpty())
+            try { movie.releaseYear=movie.releaseDate?.substring(0,4)?.toInt() }
+            catch (e:Exception){e.printStackTrace()}
+        return movie
+    }
 
 
     /***********************
      *  REGION REMOTE
      **********************/
 
-    suspend fun downloadPopularMovies(page:Int=1)
-    {
-        val lastPopularMovies = movieService.getPopularMovies(page = page)
-        val idCategory = insertCategory(CATEGORY_POPULAR_ID, CATEGORY_POPULAR_NAME,
-            CATEGORY_POPULAR_OVERVIEW)
-        insertAllMovies(lastPopularMovies.results)
-        insertMovieListInCategory(lastPopularMovies.results.map { it.id }, idCategory,page)
-    }
-
-    suspend fun downloadTopRatedMovies(page:Int=1)
+    suspend fun downloadTopRatedMovies(page:Int=1) : Int
     {
         val topRatedMovies = movieService.getTopRatedMovies(page = page)
-        val idCategory = insertCategory(CATEGORY_TOPRATED_ID, CATEGORY_TOPRATED_NAME,
-            CATEGORY_TOPRATED_OVERVIEW)
-        insertAllMovies(topRatedMovies.results)
+        val idCategory = CategoryRepository.insertCategory(
+            CATEGORY_TOPRATED_ID,
+            CATEGORY_TOPRATED_NAME
+        )
+        insertAllMovies(addYearToMovies(topRatedMovies.results))
         insertMovieListInCategory(topRatedMovies.results.map { it.id }, idCategory,page)
+        return topRatedMovies.total_pages
     }
 
-    suspend fun downloadNowPlayingMovies(page:Int=1)
+    suspend fun downloadNowPlayingMovies(page:Int=1) : Int
     {
         val newPlayingMovies = movieService.getNowPlayingMovies(page = page)
-        val idCategory = insertCategory(CATEGORY_NOWPLAYING_ID, CATEGORY_NOWPLAYING_NAME,
-        CATEGORY_NOWPLAYING_OVERVIEW)
-        insertAllMovies(newPlayingMovies.results)
+        val idCategory = CategoryRepository.insertCategory(
+            CATEGORY_NOWPLAYING_ID,
+            CATEGORY_NOWPLAYING_NAME
+        )
+        insertAllMovies(addYearToMovies(newPlayingMovies.results))
         insertMovieListInCategory(newPlayingMovies.results.map { it.id }, idCategory,page)
+        return newPlayingMovies.total_pages
     }
 
-    suspend fun downloadUpcomingMovies(page:Int=1)
+    suspend fun downloadTrendingMovies(page:Int=1) : Int
     {
-        val upcomingMovies = movieService.getUpcomingMovies(page = page)
-        val idCategory = insertCategory(CATEGORY_UPCOMING_ID, CATEGORY_UPCOMING_NAME,
-            CATEGORY_UPCOMING_OVERVIEW)
-        insertAllMovies(upcomingMovies.results)
+        val upcomingMovies = movieService.getTrendingMovies(page = page)
+        val idCategory = CategoryRepository.insertCategory(
+            CATEGORY_TRENDING_ID,
+            CATEGORY_TRENDING_NAME
+        )
+        insertAllMovies(addYearToMovies(upcomingMovies.results))
         insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory,page)
+        return upcomingMovies.total_pages
     }
 
     suspend fun downloadMovieDetail(id:Long)
@@ -143,16 +170,38 @@ object MovieRepository
         val movieResult = movieService.getMovieDetail(id = id)
         val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
             movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
-            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count)
-        insertMovie(movie)
-        insertAllGenre(movieResult.genres)
+            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,null)
+        insertMovie(addYearToMovie(movie))
+        GenreRepository.insertAllGenre(movieResult.genres)
     }
 
-    suspend fun searchMovie(query : String)
+    suspend fun searchMovieFromQuery(query : String, page: Int=1) : Int
     {
-        val movieResult = movieService.searchMovieFromQuery(query = query)
-        insertAllMovies(movieResult.results)
+        val movieResult = movieService.searchMovieFromQuery(query = query,page = page)
+        insertAllMovies( addYearToMovies(movieResult.results))
+        return movieResult.total_pages
     }
+
+    suspend fun searchMovieFromCharacteristics(page:Int=1,sortBy:String?=null,voteAverageGte:Double?=null, withGenres:String?=null,
+                                               releaseDateGte:String?=null,releaseDateLte:String?=null,year:Int?=null): Int {
+        val returnResult = movieService.searchMovieFromCharacs(
+            page = page, sortBy = sortBy,
+            releaseDateGte = releaseDateGte,
+            releaseDatelte = releaseDateLte,
+            voteAverageGte = voteAverageGte,
+            withGenres = withGenres, year=year)
+        val movieResult = returnResult.results
+        insertAllMovies(addYearToMovies(movieResult))
+        return returnResult.total_pages
+    }
+
+    suspend fun downloadSimilarMovies(movieId:Long) : List<Long>
+    {
+        val similarMovies = movieService.getSimilarMoviesFromMovieId(movieId).results
+        insertAllMovies(similarMovies)
+        return similarMovies.map { it.id }
+    }
+
 }
 
 

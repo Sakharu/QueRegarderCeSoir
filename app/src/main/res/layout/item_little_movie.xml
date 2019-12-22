@@ -3,17 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:theme="@style/AppTheme"
+    android:layout_margin="4dp"
+    android:background="@color/colorBaseText"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    android:layout_margin="8dp">
+    android:theme="@style/AppTheme">
 
     <ImageView
         android:id="@+id/posterItemMovieHome"
         android:layout_width="120dp"
         android:layout_height="166dp"
         android:adjustViewBounds="true"
+        android:contentDescription="@string/posterMovieContentDesc"
+        android:padding="2dp"
         android:scaleType="fitXY"
         android:transitionName="@string/transitionMovieListToDetail"
         app:layout_constraintStart_toStartOf="parent"

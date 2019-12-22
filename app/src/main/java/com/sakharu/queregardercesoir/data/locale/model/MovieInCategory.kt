@@ -32,6 +32,9 @@ data class MovieInCategory(
     @field:SerializedName("order")
     var order:Int,
 
+    @field:SerializedName("page")
+    var page:Int,
+
     @field:SerializedName("addedTimestamp")
     var addedTimestamp:Long
 

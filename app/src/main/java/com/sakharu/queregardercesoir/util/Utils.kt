@@ -3,7 +3,7 @@ package com.sakharu.queregardercesoir.util
 
 
 
-class Util
+class Utils
 {
     companion object
     {

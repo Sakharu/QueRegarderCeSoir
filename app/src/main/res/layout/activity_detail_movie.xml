@@ -1,27 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorBaseBackround"
     android:paddingBottom="16dp"
     android:theme="@style/AppTheme">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:fitsSystemWindows="false"
         tools:context=".ui.detailMovie.DetailMovieActivity">
+
+        <include
+            android:id="@+id/topbar"
+            layout="@layout/action_bar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/imgBackdropMovieDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:adjustViewBounds="true"
+            android:contentDescription="@string/backdropMovieContentDesc"
             android:maxHeight="300dp"
             android:scaleType="fitStart"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topbar"
             tools:srcCompat="@drawable/large_movie_placeholder" />
 
         <ImageView
@@ -30,10 +40,11 @@
             android:layout_height="220dp"
             android:layout_marginTop="80dp"
             android:layout_marginEnd="16dp"
+            android:contentDescription="@string/posterMovieContentDesc"
             android:transitionName="@string/transitionMovieListToDetail"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topbar"
             tools:srcCompat="@drawable/example_poster" />
 
         <TextView
@@ -53,14 +64,14 @@
             android:id="@+id/overviewMovieDetail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/titleMovieDetail"
-            tools:text="Synopsis : Evadé d'un centre de redressement, El Jaibo, jeune Mexicain laissé à lui-même, prend la tete d'une bande de jeunes délinquants de Mexico. Le vieux mendiant aveugle Don Carmelo, sur le point d'être volé, blesse l'un deux avec la pointe de sa canne..." />
+            tools:text=" vadé d'un centre de redressement, El Jaibo, jeune Mexicain laissé à lui-même, prend la tete d'une bande de jeunes délinquants de Mexico. Le vieux mendiant aveugle Don Carmelo, sur le point d'être volé, blesse l'un deux avec la pointe de sa canne..." />
 
         <TextView
             android:id="@+id/genresMovieDetail"
@@ -83,42 +94,46 @@
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
             app:layout_constraintStart_toEndOf="@+id/whatshotIconDetailMovie"
             app:layout_constraintTop_toBottomOf="@+id/genresMovieDetail"
-            tools:text="Popularité : 14.673" />
+            tools:text="Score de popularité : 14.673" />
 
         <TextView
             android:id="@+id/textAverageVoteMovieDetail"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/averageVoteDetail"
             android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
+            app:layout_constraintBottom_toTopOf="@+id/voteCountMovieDetail"
             app:layout_constraintStart_toEndOf="@+id/peopleIconDetailMovie"
             app:layout_constraintStart_toStartOf="@+id/popularityMovieDetail"
-            app:layout_constraintTop_toBottomOf="@+id/popularityMovieDetail"
-            tools:text="Note moyenne : 6.5/10" />
+            app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail" />
 
         <ProgressBar
             android:id="@+id/progressBarAverageVoteMovieDetail"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:max="10"
-            android:progress="5"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="32dp"
+            android:background="@drawable/circle_shape"
+            android:max="100"
+            android:progress="68"
             android:progressBackgroundTint="@color/colorBaseText"
+            android:progressDrawable="@drawable/progress_drawable_vote_movie"
             android:progressTint="@color/colorPorgressBarProgression"
-            app:layout_constraintEnd_toEndOf="@+id/textAverageVoteMovieDetail"
-            app:layout_constraintStart_toStartOf="@+id/textAverageVoteMovieDetail"
-            app:layout_constraintTop_toBottomOf="@+id/textAverageVoteMovieDetail" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/textAverageVoteMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/popularityMovieDetail" />
 
         <TextView
             android:id="@+id/voteCountMovieDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="@+id/progressBarAverageVoteMovieDetail"
-            app:layout_constraintTop_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/textAverageVoteMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/textAverageVoteMovieDetail"
             tools:text="15416 votes" />
 
         <TextView
@@ -142,27 +157,15 @@
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="@+id/overviewMovieDetail"
             app:layout_constraintStart_toEndOf="@+id/iconDateMovieDetail"
-            app:layout_constraintTop_toBottomOf="@+id/voteCountMovieDetail"
+            app:layout_constraintTop_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
             tools:text="Date de sortie : 04/12/2019" />
-
-        <ImageButton
-            android:id="@+id/backButtonMovieDetail"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/background_back_button"
-            android:padding="8dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/ic_arrow_back_white_24dp"
-            android:tint="@color/colorBaseBackround"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imgBackdropMovieDetail" />
 
         <ImageView
             android:id="@+id/peopleIconDetailMovie"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:contentDescription="@string/peopleIconContentDesc"
             app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail"
@@ -173,6 +176,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:contentDescription="@string/whatsHotIconContentDesc"
             app:layout_constraintBottom_toBottomOf="@+id/popularityMovieDetail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/popularityMovieDetail"
@@ -182,6 +186,7 @@
             android:id="@+id/iconDateMovieDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/calendarIconContentDesc"
             app:layout_constraintBottom_toBottomOf="@+id/releaseDateMovieDetail"
             app:layout_constraintStart_toStartOf="@+id/peopleIconDetailMovie"
             app:layout_constraintTop_toTopOf="@+id/releaseDateMovieDetail"
@@ -191,9 +196,46 @@
             android:id="@+id/iconTranslateMovieDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:contentDescription="@string/calendarIconContentDesc"
             app:layout_constraintBottom_toBottomOf="@+id/originalTitleMovieDetail"
             app:layout_constraintEnd_toEndOf="@+id/whatshotIconDetailMovie"
             app:layout_constraintTop_toTopOf="@+id/originalTitleMovieDetail"
             app:srcCompat="@drawable/ic_translate_white_24dp" />
+
+        <TextView
+            android:id="@+id/titleSimilarMoviesDetail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="8dp"
+            android:text="@string/similarMovies"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/originalTitleMovieDetail" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerSimilarMovies"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/titleSimilarMoviesDetail"
+            tools:listitem="@layout/item_little_movie" />
+
+        <TextView
+            android:id="@+id/textVoteMovieDetail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPorgressBarProgression"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintEnd_toEndOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintStart_toStartOf="@+id/progressBarAverageVoteMovieDetail"
+            app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail"
+            tools:text="68" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

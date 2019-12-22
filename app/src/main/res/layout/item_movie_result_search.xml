@@ -3,8 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/posterItemMovieResultSearch"
@@ -12,6 +12,7 @@
         android:layout_height="150dp"
         android:adjustViewBounds="true"
         android:scaleType="fitXY"
+        android:contentDescription="@string/posterMovieContentDesc"
         android:transitionName="@string/transitionMovieListToDetail"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -27,6 +28,7 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/voteAverageMovieResultSearch"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/posterItemMovieResultSearch"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Pulp fiction" />
@@ -40,6 +42,7 @@
         android:textColor="@color/colorInactiveIconBottomNav"
         app:layout_constraintBottom_toTopOf="@+id/releaseYearMovieResultSearch"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/posterItemMovieResultSearch"
         app:layout_constraintTop_toBottomOf="@+id/titleMovieResultSearch"
         tools:text="7.7/10 sur 5400 votes" />
@@ -49,9 +52,23 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/colorInactiveIconBottomNav"
-        app:layout_constraintBottom_toBottomOf="@+id/posterItemMovieResultSearch"
+        app:layout_constraintBottom_toTopOf="@+id/genresMovieResultSearch"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="@+id/voteAverageMovieResultSearch"
         app:layout_constraintTop_toBottomOf="@+id/voteAverageMovieResultSearch"
         tools:text="2015" />
+
+    <TextView
+        android:id="@+id/genresMovieResultSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textStyle="italic"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/releaseYearMovieResultSearch"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="@+id/releaseYearMovieResultSearch"
+        app:layout_constraintTop_toBottomOf="@+id/releaseYearMovieResultSearch"
+        tools:text="Aventure, Action, Science-fiction" />
 </androidx.constraintlayout.widget.ConstraintLayout>

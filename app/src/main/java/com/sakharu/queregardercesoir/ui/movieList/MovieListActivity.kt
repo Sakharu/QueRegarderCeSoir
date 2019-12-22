@@ -9,31 +9,33 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.sakharu.queregardercesoir.R
-import com.sakharu.queregardercesoir.base.BaseActivity
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
+import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
-import kotlinx.android.synthetic.main.fragment_detail_category.*
+import kotlinx.android.synthetic.main.activity_detail_category.*
 
 
-class MovieListActivity : BaseActivity(),OnMovieClickListener
+class MovieListActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedListener
 {
-    private lateinit var movieListCategoryViewModel: MovieListCategoryViewModel
+    private lateinit var movieListViewModel: MovieListViewModel
     private lateinit var littleMoviePagingAdapter: LittleMovieAdapter
     private lateinit var observer : Observer<List<Movie>>
-    private var page=1
+    private var currentPage=1
+    private var isLoading=false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.fragment_detail_category)
+        setContentView(R.layout.activity_detail_category)
 
-        ajouterActionAIntentFilter(ACTION_LOAD_MORE_CATEGORY_DETAIL)
+        MovieListViewModel.lastTimeStamp=0
 
-        littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(),true,this)
+        littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(), this, this)
         recyclerCategoryDetails.apply {
             layoutManager = GridLayoutManager(this@MovieListActivity,3)
             setHasFixedSize(true)
@@ -41,48 +43,38 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener
         }
 
         observer = Observer {
-            littleMoviePagingAdapter.addData(it)
+            if (it.size>currentPage* MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST)
+                onBottomReached()
+
+            if (it.isNotEmpty())
+                littleMoviePagingAdapter.addData(it)
+            else
+                onBottomReached()
             loadingMoreAnimationDetailCategory.hide()
             isLoading=false
         }
 
-        backButtonCategoryDetail.setOnClickListener{
-            finish()
-        }
+        movieListViewModel = ViewModelProvider(this, ViewModelFactory()).get(MovieListViewModel::class.java)
+        movieListViewModel.category = intent.getSerializableExtra(EXTRA_CATEGORY) as Category
 
-        movieListCategoryViewModel = ViewModelProvider(this, ViewModelFactory()).get(MovieListCategoryViewModel::class.java)
-        movieListCategoryViewModel.category = intent.getSerializableExtra(EXTRA_CATEGORY) as Category
-
-        nameCategoryDetail.text = movieListCategoryViewModel.category.name
-        overviewCategoryDetail.text = movieListCategoryViewModel.category.overview
+        setUpActionBar(movieListViewModel.category.name)
 
         //on charge les films populaires lorsqu'on en a en BD
-        movieListCategoryViewModel.getMoviesLiveList(page).observe(this, observer)
-        listePageChargee.add(page)
+        movieListViewModel.getMoviesLiveList(currentPage).observe(this, observer)
     }
 
-    override fun doOnReceive(intent: Intent)
+    override fun onBottomReached()
     {
-        super.doOnReceive(intent)
-        /*
-        Si l'adapter notifie le fragment qu'il a chargé les derniers items de la liste,
-        on va télécharger et afficher les films de la page suivante
-         */
-        if (intent.action== ACTION_LOAD_MORE_CATEGORY_DETAIL)
+        if (!isLoading && currentPage<=movieListViewModel.totalPages)
         {
-            page = intent.getIntExtra(EXTRA_PAGE,page)
-            movieListCategoryViewModel.getMoviesLiveList(page).removeObserver(observer)
-            movieListCategoryViewModel.getMoviesLiveList(page).observe(this, observer)
+            currentPage++
+            movieListViewModel.getMoviesLiveList(currentPage-1).removeObserver(observer)
+            movieListViewModel.getMoviesLiveList(currentPage).observe(this, observer)
             loadingMoreAnimationDetailCategory.show()
-            listePageChargee.add(page)
+            isLoading=true
         }
     }
 
-    companion object
-    {
-        var isLoading=true
-        var listePageChargee= arrayListOf<Int>()
-    }
 
     /*
     Si l'adapter notifie l'activite qu'un film a été touché, on ouvre l'activite de tail

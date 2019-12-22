@@ -12,13 +12,13 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.sakharu.queregardercesoir.ui.search.SearchFragment"
-        android:label="@string/title_search"
-        tools:layout="@layout/fragment_search" />
+        android:id="@+id/navigation_discover"
+        android:name="com.sakharu.queregardercesoir.ui.discover.DiscoverFragment"
+        android:label="@string/title_discover"
+        tools:layout="@layout/fragment_discover" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_userList"
         android:name="com.sakharu.queregardercesoir.ui.userList.UserListFragment"
         android:label="@string/title_lists"
         tools:layout="@layout/fragment_list" />

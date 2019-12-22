@@ -42,7 +42,10 @@ data class Movie (
     var budget:Int?,
 
     @field:SerializedName("vote_count")
-    var vote_count:Int?
+    var vote_count:Int?,
+
+    @field:SerializedName("releaseYear")
+    var releaseYear:Int?
 )
 {
     override fun equals(other: Any?): Boolean{

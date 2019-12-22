@@ -1,17 +1,32 @@
 package com.sakharu.queregardercesoir.ui.home.category
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.ui.movieList.MovieListActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
+import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.util.EXTRA_CATEGORY
+import com.sakharu.queregardercesoir.util.NUMBER_OF_CATEGORIES
 
-class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAndList> = arrayListOf())
+class CategoryMovieAdapter(private var movieListInArrayList: ArrayList<CategoryAndList> = ArrayList(NUMBER_OF_CATEGORIES),
+                           private var onMovieClickListener: OnMovieClickListener?=null)
     : RecyclerView.Adapter<CategoryMovieHolder>()
 {
+    //on rempli la liste avec 4 catégories et films vides afin de pouvoir manipuler
+    //plus facilement les positions ensuite
+    init
+    {
+        for (i in 0 until NUMBER_OF_CATEGORIES)
+            movieListInArrayList.add(CategoryAndList(Category(null,""), arrayListOf()))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryMovieHolder =
         CategoryMovieHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_category_home, parent, false))
 
@@ -24,31 +39,43 @@ class CategoryMovieAdapter(private var movieListInArrayList:ArrayList<CategoryAn
         holder.recyclerLittleMovie.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             setHasFixedSize(true)
-            adapter = LittleMovieAdapter(movieListInArrayList[position].movieList)
+            adapter = LittleMovieAdapter(
+                movieListInArrayList[position].movieList.toMutableList(),
+                onMovieClickListener=onMovieClickListener
+            )
+        }
+
+        holder.itemView.findViewById<ImageButton>(R.id.seeMoreImageButton).setOnClickListener{
+            holder.itemView.context.startActivity(Intent(holder.itemView.context, MovieListActivity::class.java)
+                .putExtra(EXTRA_CATEGORY,category))
         }
     }
 
-
     fun refreshOrAddACategory(category: Category, position: Int, newList:List<Movie>)
     {
-        //ajout de la catégorie
-        if (this.movieListInArrayList.isEmpty() || position>=movieListInArrayList.size)
+        //ajout de la catégorie et des films
+        if (this.movieListInArrayList[position].movieList.isEmpty())
         {
-            this.movieListInArrayList.add(CategoryAndList(category, newList.toMutableList()))
-            movieListInArrayList.sortBy { it.category.id }
-            notifyItemInserted(position)
+            this.movieListInArrayList[position] = CategoryAndList(category,newList)
+            notifyItemChanged(position)
         }
         //refresh de la catégorie
         else
         {
-            //on considère que si le premier id de chaque liste
-            if (newList.isNotEmpty() && this.movieListInArrayList[position].movieList.last().id != newList.last().id)
+            if (newList.isNotEmpty())
             {
-                this.movieListInArrayList[position] = CategoryAndList(category, newList.toMutableList())
-                notifyItemChanged(position)
+                //si la taille de la liste des films à changé ou que les derniers id sont pas les mêmes
+                //on part du principe que la liste a changé et qu'l faut refresh
+                if (position<this.movieListInArrayList.size ||
+                    this.movieListInArrayList[position].movieList.isNotEmpty() ||
+                    this.movieListInArrayList[position].movieList.last().id != newList.last().id)
+                {
+                    this.movieListInArrayList[position].movieList = newList.toMutableList()
+                    notifyItemChanged(position)
+                }
             }
         }
     }
 
-    data class CategoryAndList(var category: Category,var movieList: MutableList<Movie>)
+    data class CategoryAndList(var category: Category,var movieList: List<Movie>)
 }

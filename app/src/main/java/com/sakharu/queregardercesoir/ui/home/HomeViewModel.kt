@@ -6,57 +6,37 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
+import com.sakharu.queregardercesoir.data.locale.repository.CategoryRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import com.sakharu.queregardercesoir.util.CATEGORY_NOWPLAYING_ID
-import com.sakharu.queregardercesoir.util.CATEGORY_POPULAR_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
-import com.sakharu.queregardercesoir.util.CATEGORY_UPCOMING_ID
+import com.sakharu.queregardercesoir.util.CATEGORY_TRENDING_ID
 import kotlinx.coroutines.Dispatchers
 
 class HomeViewModel : ViewModel()
 {
-
+    var refreshData=true
     /*
       on récupère toutes les catégories de la BD
     */
     var categoriesLiveList : LiveData<List<Category>> = liveData (Dispatchers.IO)
     {
-        emitSource(MovieRepository.getAllCategoriesLive())
+        emitSource(CategoryRepository.getAllCategoriesLive())
     }
 
-    /************************************
-     * POPULAR MOVIES
-     ***********************************/
-    /*
-        Récupération des films populaires du moment : on récupère les ID de films qui apparaissent dans
-        la table ID
-    */
-    var moviesInPopularCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
-    {
-        emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_POPULAR_ID))
-        MovieRepository.downloadPopularMovies()
-    }
-
-    /*
-        On récupère la liste des film populairs une fois qu'on a récupéré les ID nécessaires
-        de la table MovieInCategory
-    */
-    var popularMoviesLiveList = Transformations.switchMap(moviesInPopularCategory)
-    {
-        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
-    }
 
     /************************************
      * TOPRATED MOVIES
      ***********************************/
-     /*
-        Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
-        la table ID
-     */
+    /*
+       Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
+       la table ID
+    */
     var moviesInTopRatedCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_TOPRATED_ID))
-        MovieRepository.downloadTopRatedMovies()
+        if (refreshData)
+            MovieRepository.downloadTopRatedMovies()
+        emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_TOPRATED_ID))
     }
 
     /*
@@ -65,7 +45,7 @@ class HomeViewModel : ViewModel()
     */
     var topRatedMoviesLiveList = Transformations.switchMap(moviesInTopRatedCategory)
     {
-        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -77,8 +57,9 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_NOWPLAYING_ID))
-        MovieRepository.downloadNowPlayingMovies()
+        if (refreshData)
+            MovieRepository.downloadNowPlayingMovies()
+        emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_NOWPLAYING_ID))
     }
 
     /*
@@ -87,29 +68,30 @@ class HomeViewModel : ViewModel()
     */
     var nowPlayingMoviesLiveList = Transformations.switchMap(nowPlayingMovieInCategory)
     {
-        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
-     * UPCOMING MOVIES
+     * TRENDING MOVIES
      ***********************************/
     /*
        Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
        la table ID
     */
-    var upcomingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
+    var trendingMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getMovieInCategoryLive(CATEGORY_UPCOMING_ID))
-        MovieRepository.downloadUpcomingMovies()
+        if (refreshData)
+            MovieRepository.downloadTrendingMovies()
+        emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_TRENDING_ID))
     }
 
     /*
         On récupère la liste des film populairs une fois qu'on a récupéré les ID nécessaires
         de la table MovieInCategory
     */
-    var upcomingMoviesLiveList = Transformations.switchMap(upcomingMovieInCategory)
+    var trendingMoviesLiveList = Transformations.switchMap(trendingMoviesInCategory)
     {
-        MovieRepository.getMoviesFromCategoryLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
 
