@@ -71,18 +71,20 @@ object MovieRepository
     fun getMoviesFromTitleSearch(search:String)
             = movieDAO.getMoviesFromTitleSearch(search)
 
-    fun getMoviesFromCharacSearch(sortBy:String,voteAverageGte:Double=0.0, genresId:List<String> = listOf(),
-                                  yearGte:String?=null,yearLte:String?=null,yearDuring:Int?=null,year: Int?):LiveData<List<Movie>>
+    fun getMoviesFromCharacSearch(sortBy: String, voteAverageGte: Double = 0.0, genresId: List<String> = listOf(),
+        yearGte: String? = null, yearLte: String? = null, yearDuring: Int? = null,
+        year: Int?, certification: String?):LiveData<List<Movie>>
     {
         //SI LES DONNEES SONT PASSEES ON LES AJOUTE A LA REQUETE
         val yearGteQuery = if (yearGte!=null) "AND releaseYear>$year" else ""
         val yearLteQuery = if (yearLte!=null) "AND releaseYear<$year" else ""
         val yearDuringQuery = if (yearDuring!=null) "AND releaseYear=$year" else ""
+        val certificationQuery = if (certification!=null) "AND certification='$certification'" else ""
 
         //ON RAJOUTE A LA REQUETE L'ORDONNENCEMENT EN FONCTION DE CE QUI A ETE PASSE EN PARAMETRE
         val sortByQuery = when (sortBy)
         {
-            POPULARITYDEQC -> "popularity DESC"
+            POPULARITYDESC -> "popularity DESC"
             RELEASEDATEDESC -> "releaseYear DESC"
             else -> "vote_average DESC"
         }
@@ -104,15 +106,36 @@ object MovieRepository
             ""
 
         val query = "SELECT * FROM movie WHERE vote_average>$voteAverageGte"  +
-                " $genresQuery $yearGteQuery $yearLteQuery $yearDuringQuery ORDER BY $sortByQuery"
+                " $genresQuery $yearGteQuery $yearLteQuery $yearDuringQuery $certificationQuery" +
+                " ORDER BY $sortByQuery"
         return movieDAO.getMoviesFromCharacRaw(SimpleSQLiteQuery(query))
     }
 
 
-    private fun addYearToMovies(movies:List<Movie>) : List<Movie>
+    fun getSuggestedMoviesFromGenres(genresId: List<Long>):LiveData<List<Movie>>
+    {
+        /*ON CONSTRUIT LA PARTIE DES GENRES DE LA REQUETES GRACE A LA CONCATENATION
+        ON PARCOURT LA LISTE DES ID DE GENRES SELECTIONNES ET ON L'AJOUTE A LA REQUETE
+        EXEMPLE DE REQUETE
+        SELECT * FROM movie WHERE vote_average>3.0 AND genresId LIKE '%' || 28  || '%' OR genresId LIKE '%' ||  16  || '%'  ORDER BY popularity DESC
+         */
+
+        var orGenres = ""
+        for (id in genresId)
+            orGenres+=" genresId LIKE '%' || $id  || '%' OR"
+        orGenres = orGenres.removeSuffix("OR")
+
+        val query = "SELECT * FROM movie WHERE $orGenres ORDER BY RANDOM()"
+        return movieDAO.getMoviesFromCharacRaw(SimpleSQLiteQuery(query))
+    }
+
+    private fun addYearAndCertificationsToMovies(movies: List<Movie>, certification: String?=null) : List<Movie>
     {
         for (movie in movies)
+        {
+            movie.certification=certification
             addYearToMovie(movie)
+        }
         return movies
     }
 
@@ -123,6 +146,8 @@ object MovieRepository
             catch (e:Exception){e.printStackTrace()}
         return movie
     }
+
+
 
 
     /***********************
@@ -136,7 +161,7 @@ object MovieRepository
             CATEGORY_TOPRATED_ID,
             CATEGORY_TOPRATED_NAME
         )
-        insertAllMovies(addYearToMovies(topRatedMovies.results))
+        insertAllMovies(addYearAndCertificationsToMovies(topRatedMovies.results))
         insertMovieListInCategory(topRatedMovies.results.map { it.id }, idCategory,page)
         return topRatedMovies.total_pages
     }
@@ -148,7 +173,7 @@ object MovieRepository
             CATEGORY_NOWPLAYING_ID,
             CATEGORY_NOWPLAYING_NAME
         )
-        insertAllMovies(addYearToMovies(newPlayingMovies.results))
+        insertAllMovies(addYearAndCertificationsToMovies(newPlayingMovies.results))
         insertMovieListInCategory(newPlayingMovies.results.map { it.id }, idCategory,page)
         return newPlayingMovies.total_pages
     }
@@ -160,7 +185,7 @@ object MovieRepository
             CATEGORY_TRENDING_ID,
             CATEGORY_TRENDING_NAME
         )
-        insertAllMovies(addYearToMovies(upcomingMovies.results))
+        insertAllMovies(addYearAndCertificationsToMovies(upcomingMovies.results))
         insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory,page)
         return upcomingMovies.total_pages
     }
@@ -170,7 +195,8 @@ object MovieRepository
         val movieResult = movieService.getMovieDetail(id = id)
         val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
             movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
-            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,null)
+            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,
+            null,null)
         insertMovie(addYearToMovie(movie))
         GenreRepository.insertAllGenre(movieResult.genres)
     }
@@ -178,20 +204,25 @@ object MovieRepository
     suspend fun searchMovieFromQuery(query : String, page: Int=1) : Int
     {
         val movieResult = movieService.searchMovieFromQuery(query = query,page = page)
-        insertAllMovies( addYearToMovies(movieResult.results))
+        insertAllMovies( addYearAndCertificationsToMovies(movieResult.results))
         return movieResult.total_pages
     }
 
     suspend fun searchMovieFromCharacteristics(page:Int=1,sortBy:String?=null,voteAverageGte:Double?=null, withGenres:String?=null,
-                                               releaseDateGte:String?=null,releaseDateLte:String?=null,year:Int?=null): Int {
+                                               releaseDateGte:String?=null,releaseDateLte:String?=null,year:Int?=null,
+                                               certificationCountry:String?=null, certification:String?=null): Int {
         val returnResult = movieService.searchMovieFromCharacs(
-            page = page, sortBy = sortBy,
+            page = page,
+            sortBy = sortBy,
             releaseDateGte = releaseDateGte,
             releaseDatelte = releaseDateLte,
             voteAverageGte = voteAverageGte,
-            withGenres = withGenres, year=year)
+            withGenres = withGenres,
+            year=year,
+            certificationCountry = certificationCountry,
+            certification = certification)
         val movieResult = returnResult.results
-        insertAllMovies(addYearToMovies(movieResult))
+        insertAllMovies(addYearAndCertificationsToMovies(movieResult,certification))
         return returnResult.total_pages
     }
 
@@ -202,6 +233,16 @@ object MovieRepository
         return similarMovies.map { it.id }
     }
 
+    suspend fun downloadSuggestedMovies(page:Int=1,sortBy:String?=null, withGenres:String?=null): Int
+    {
+        val returnResult = movieService.searchForSuggestedMovies(
+            page = page,
+            sortBy = sortBy,
+            withGenres = withGenres)
+        val movieResult = returnResult.results
+        insertAllMovies(addYearAndCertificationsToMovies(movieResult))
+        return returnResult.total_pages
+    }
 }
 
 

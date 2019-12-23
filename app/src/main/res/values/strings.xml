@@ -20,6 +20,19 @@
     <string name="category_upcoming_overview">Les fims prochainement en salle près de chez vous.</string>
     <string name="seeMore">Voir plus</string>
 
+    <!-- RECHERCHES COURANTES -->
+    <array name="usualSearchestTitles">
+        <item>La crème des films récents</item>
+        <item>Ma famille d\'abord</item>
+        <item>Les succès de la décénnie</item>
+    </array>
+
+    <array name="usualSearchestSubTitles">
+        <item>Les films les mieux notés des 5 dernières années</item>
+        <item>Les meilleurs films tous publics de ces 20 dernières années</item>
+        <item>Les plus grands succès critiques de ces 10 dernières années</item>
+    </array>
+
     <!-- DETAIL D'UN FILM -->
     <string name="genrePrefix">Genre : %1$s</string>
     <string name="averageVoteDetail">Note moyenne</string>
@@ -38,7 +51,11 @@
     <string name="askForFavoriteGenre">Vous n\'avez pas encore défini vos genres de films favoris.\n
     Faites-le pour que l\'on puisse vous proposer de nouveaux films à découvrir !</string>
     <string name="validate">Valider</string>
-
+    <string name="usualSearches">Recherches populaires</string>
+    <string name="suggestionMoviesTitle">Suggestions basés sur vos genres favoris</string>
+    <string name="discoverTitleFragment">Découvrez de nouveaux films</string>
+    <string name="askForFavoritesGenreButton">Le faire maintenant</string>
+    <string name="percent">%1$d&#65130;</string>
 
     <!-- RESULTAT RECHERCHE FILM -->
     <string name="resultSearchTitle">Resultat de la recherche</string>
@@ -88,8 +105,8 @@
     <string name="fullscreenContentDesc">Image en plein écran</string>
 
     <!-- RECHERCHE PAR TITRE -->
-    <string name="averageVoteOnTotalVotes">%1$.1f/10 sur %2$d votes</string>
-    <string name="averageVoteOnTotalVote">%1$.1f/10 sur %2$d vote</string>
+    <string name="averageVoteOnTotalVotes">%1$d&#65130; sur %2$d votes</string>
+    <string name="averageVoteOnTotalVote">%1$d&#65130;sur %2$d vote</string>
     <string name="hintSearchTitle">Rechercher par titre</string>
     <string name="searchTitleFragment">Rechercher un film</string>
     <string name="emptyFieldTitle">Le titre est vide</string>

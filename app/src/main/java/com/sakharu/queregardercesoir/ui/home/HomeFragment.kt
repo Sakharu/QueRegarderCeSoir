@@ -81,6 +81,7 @@ class HomeFragment : Fragment(), OnMovieClickListener
 
         //on lance la suppression de toutes les liaisons entre les movies et les category lorsqu'elles
         //datent de plus de 3 jours
+        //TODO A DEPLACER DANS LE VIEWMODEL
         homeViewModel.getAllMoviesInCategory.observe(viewLifecycleOwner, Observer<List<MovieInCategory>>
         {
 

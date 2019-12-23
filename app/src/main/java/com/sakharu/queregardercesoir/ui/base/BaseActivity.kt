@@ -9,7 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.sakharu.queregardercesoir.R
-import com.sakharu.queregardercesoir.TitleSearchingActivity
+import com.sakharu.queregardercesoir.ui.search.title.TitleSearchingActivity
 
 
 open class BaseActivity : AppCompatActivity()
@@ -40,7 +40,8 @@ open class BaseActivity : AppCompatActivity()
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.searchAppBar ->
         {
-            startActivity(Intent(this,TitleSearchingActivity::class.java))
+            startActivity(Intent(this,
+                TitleSearchingActivity::class.java))
             true
         }
         else -> true

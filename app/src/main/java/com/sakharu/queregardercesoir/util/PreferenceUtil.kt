@@ -77,25 +77,30 @@ class PreferenceUtil
 
         fun setLongArray(context: Context, key: String, array: ArrayList<Long>) {
             val set = HashSet<String>()
-            for (l in array) {
+            for (l in array)
                 set.add(l.toString())
-            }
-            val preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context)//context.getSharedPreferences(STORAGE, Context.MODE_PRIVATE);
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             val editor = preferences.edit()
             editor.putStringSet(key, set)
             editor.apply()
         }
 
         fun getLongArray(context: Context, key: String): ArrayList<Long> {
-            val preferences = android.preference.PreferenceManager.getDefaultSharedPreferences(context)//context.getSharedPreferences(STORAGE, Context.MODE_PRIVATE);
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
             val set = preferences.getStringSet(key, null)
             val tmp = ArrayList<String>()
-            tmp.addAll(set!!)
-            val res = ArrayList<Long>()
-            for (s in tmp) {
-                res.add(java.lang.Long.parseLong(s))
+            return try {
+                tmp.addAll(set!!)
+                val res = ArrayList<Long>()
+                for (s in tmp)
+                    res.add(java.lang.Long.parseLong(s))
+                res
             }
-            return res
+            catch (e:Exception){
+                e.printStackTrace()
+                arrayListOf()
+            }
+
         }
 
 

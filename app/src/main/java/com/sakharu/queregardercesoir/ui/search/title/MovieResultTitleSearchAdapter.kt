@@ -48,10 +48,10 @@ class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
             //pour l'orthographe
             if (movie.vote_count!!>1)
                 holder.voteAverage.text = holder.voteAverage.context.getString(R.string.averageVoteOnTotalVotes,
-                    movie.vote_average,movie.vote_count)
+                    (movie.vote_average!!*10).toInt(),movie.vote_count)
             else
                 holder.voteAverage.text = holder.voteAverage.context.getString(R.string.averageVoteOnTotalVote,
-                    movie.vote_average,movie.vote_count)
+                    (movie.vote_average!!*10).toInt(),movie.vote_count)
             holder.voteAverage.show()
         }
         else
@@ -59,8 +59,7 @@ class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
 
         holder.titleMovie.text = movie.title
 
-        val genresNameList = genresList.filter { movie.genresId.contains(it.id) }.joinToString { it.name }
-        holder.genresMovie.text = genresNameList
+        holder.genresMovie.text = genresList.filter { movie.genresId.contains(it.id) }.joinToString { it.name }
 
         if (!movie.releaseDate.isNullOrEmpty())
         {
@@ -109,10 +108,8 @@ class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
                 auparavant, le recyclerview ne se rafraîchit pas, on recharge donc toute la liste dans
                 ces cas là
             */
-            if (oldPosition==0)
-                notifyDataSetChanged()
-            else
-                notifyItemRangeInserted(oldPosition, listeMovie.size)
+
+            notifyItemRangeInserted(oldPosition, listeMovie.size)
         }
     }
 

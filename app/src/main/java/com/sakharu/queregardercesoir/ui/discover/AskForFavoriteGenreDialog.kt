@@ -2,6 +2,7 @@ package com.sakharu.queregardercesoir.ui.discover
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Intent
 import android.view.View
 import android.view.Window
 import android.widget.Button
@@ -9,6 +10,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
+import com.sakharu.queregardercesoir.util.ACTION_FAVORITE_GENRE_VALIDATE
 import com.sakharu.queregardercesoir.util.PREFERENCE_IDS_FAVORITES_GENRES
 import com.sakharu.queregardercesoir.util.PreferenceUtil
 
@@ -27,6 +29,7 @@ class AskForFavoriteGenreDialog
 
             findViewById<Button>(R.id.validateButtonDialogFavoriteGenre).setOnClickListener{
                 PreferenceUtil.setLongArray(activity,PREFERENCE_IDS_FAVORITES_GENRES,listIdOfSelectedGenre)
+                activity.sendBroadcast(Intent(ACTION_FAVORITE_GENRE_VALIDATE))
                 dismiss()
             }
         }

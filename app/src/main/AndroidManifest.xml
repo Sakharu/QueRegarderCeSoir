@@ -15,7 +15,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".TitleSearchingActivity"></activity>
+        <activity android:name=".ui.search.title.TitleSearchingActivity"></activity>
         <activity
             android:name=".ui.search.advanced.AdvancedSearchActivity"
             android:label="@string/advancedSearch"
@@ -23,7 +23,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.search.title.ResultSearchActivity"
+            android:name=".ui.search.advanced.ResultSearchActivity"
             android:label="@string/app_name"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait"

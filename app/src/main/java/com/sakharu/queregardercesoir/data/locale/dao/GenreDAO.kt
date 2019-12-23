@@ -19,7 +19,7 @@ interface GenreDAO
     @Query("SELECT * FROM genre ORDER BY name")
     fun getAllGenres() : LiveData<List<Genre>>
 
-    @Query("SELECT count(*) FROM genre ORDER BY name")
+    @Query("SELECT count(*) FROM genre ")
     fun getNumberGenres() : Int
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

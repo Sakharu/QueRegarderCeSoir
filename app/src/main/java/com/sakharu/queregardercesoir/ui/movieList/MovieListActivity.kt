@@ -38,7 +38,7 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedLi
         littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(), this, this)
         recyclerCategoryDetails.apply {
             layoutManager = GridLayoutManager(this@MovieListActivity,3)
-            setHasFixedSize(true)
+            setHasFixedSize(false)
             adapter = littleMoviePagingAdapter
         }
 

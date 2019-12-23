@@ -1,0 +1,4 @@
+déplacer les categories à insérer au démarrage dans le viewModel (cf usualSearch)
+corriger fautes orthographes
+refonte design
+toute la partie des listes

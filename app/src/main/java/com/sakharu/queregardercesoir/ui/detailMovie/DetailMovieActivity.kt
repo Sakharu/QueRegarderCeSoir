@@ -119,8 +119,8 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 
         if (movie.vote_average!=null && movie.vote_average!=0.0)
         {
-            progressBarAverageVoteMovieDetail.progress = movie.vote_average!!.toInt()*10
-            textVoteMovieDetail.text = movie.vote_average.toString()
+            progressBarAverageVoteMovieDetail.progress = (movie.vote_average!!*10).toInt()
+            textVoteMovieDetail.text = (movie.vote_average!!*10).toInt().toString()
             progressBarAverageVoteMovieDetail.max = 100
             textAverageVoteMovieDetail.show()
             progressBarAverageVoteMovieDetail.show()

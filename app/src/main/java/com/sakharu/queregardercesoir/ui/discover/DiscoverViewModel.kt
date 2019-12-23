@@ -3,22 +3,21 @@ package com.sakharu.queregardercesoir.ui.discover
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
+import androidx.lifecycle.viewModelScope
 import com.sakharu.queregardercesoir.data.locale.model.Genre
+import com.sakharu.queregardercesoir.data.locale.model.Movie
+import com.sakharu.queregardercesoir.data.locale.model.UsualSearch
 import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
+import com.sakharu.queregardercesoir.data.locale.repository.UsualSearchRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class DiscoverViewModel : ViewModel()
 {
-    var totalPagesSearch = 0
 
-    fun searchMovieFromCharacteristics(page:Int=1, sortBy:String, voteAverageGte:Double=0.0, withGenres:String?=null,
-                                       yearDateGte:String?=null, yearDateLte:String?=null, duringYear:Int?=null,year:Int)= liveData(Dispatchers.IO)
-    {
-        totalPagesSearch = MovieRepository.searchMovieFromCharacteristics(page,sortBy,voteAverageGte,withGenres,yearDateGte,yearDateLte,duringYear)
-        val genresId = withGenres?.split(",") ?: listOf()
-        emitSource(MovieRepository.getMoviesFromCharacSearch(sortBy,voteAverageGte,genresId.filter { it.isNotEmpty() },yearDateGte,yearDateLte,duringYear,year))
-    }
+    var totalPagesSuggestions = 0
+    var refreshSuggestedMovies = true
 
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
@@ -27,5 +26,27 @@ class DiscoverViewModel : ViewModel()
         emitSource(GenreRepository.getAllGenre())
     }
 
+    var nbUsualSearches :LiveData<Int> = UsualSearchRepository.getNumberUsualSearches()
 
+    var getAllUsualSearchesListLive : LiveData<List<UsualSearch>> = UsualSearchRepository.getAllUsualSearches()
+
+    fun insertUsualSearches(arrayTitles: Array<String>, arraySubTitle: Array<String>,nbUsualSearch: Int) =
+        viewModelScope.launch {
+            if (nbUsualSearch==0)
+            {
+                val listUsualSearch = arrayListOf<UsualSearch>()
+                for (i in arrayTitles.indices)
+                    listUsualSearch.add(UsualSearch(i,arrayTitles[i],arraySubTitle[i]))
+                UsualSearchRepository.insertAllUsualSearches(listUsualSearch)
+            }
+        }
+
+    fun getSuggestedMovies(page:Int,genresId:ArrayList<Long>) : LiveData<List<Movie>> = liveData(Dispatchers.IO)
+    {
+        if (refreshSuggestedMovies)
+            MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
+        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId))
+    }
 }
+
+

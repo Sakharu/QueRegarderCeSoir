@@ -16,4 +16,5 @@
     <color name="colorChipBackgroundSelected">#4BF3E1</color>
     <color name="colorProgressVoteMovie">#007DD6</color>
     <color name="colorBackgroundActionbar">#000000</color>
+    <color name="colorBackgroundCardSuggestedMovie">#80000000</color>
 </resources>

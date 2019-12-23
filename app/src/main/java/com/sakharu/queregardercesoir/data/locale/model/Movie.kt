@@ -45,11 +45,33 @@ data class Movie (
     var vote_count:Int?,
 
     @field:SerializedName("releaseYear")
-    var releaseYear:Int?
+    var releaseYear:Int?,
+
+    @field:SerializedName("certification")
+    var certification:String?
 )
 {
     override fun equals(other: Any?): Boolean{
         return this.id == (other as Movie).id
+    }
+
+    override fun hashCode(): Int
+    {
+        var result = id.hashCode()
+        result = 31 * result + title.hashCode()
+        result = 31 * result + genresId.hashCode()
+        result = 31 * result + overview.hashCode()
+        result = 31 * result + popularity.hashCode()
+        result = 31 * result + (posterImg?.hashCode() ?: 0)
+        result = 31 * result + (backdropImg?.hashCode() ?: 0)
+        result = 31 * result + (releaseDate?.hashCode() ?: 0)
+        result = 31 * result + (original_title?.hashCode() ?: 0)
+        result = 31 * result + (vote_average?.hashCode() ?: 0)
+        result = 31 * result + (budget ?: 0)
+        result = 31 * result + (vote_count ?: 0)
+        result = 31 * result + (releaseYear ?: 0)
+        result = 31 * result + (certification?.hashCode() ?: 0)
+        return result
     }
 
 }

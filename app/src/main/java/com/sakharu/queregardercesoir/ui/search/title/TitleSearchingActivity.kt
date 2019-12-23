@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir
+package com.sakharu.queregardercesoir.ui.search.title
 
 import android.content.Intent
 import android.os.Bundle
@@ -12,13 +12,13 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.ui.search.title.MovieResultTitleSearchAdapter
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_title_searching.*
 
@@ -66,13 +66,14 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
 
         setUpActionBar(getString(R.string.searchTitleFragment))
 
-        titleSearchingViewModel = ViewModelProvider(this, ViewModelFactory()).get(TitleSearchingViewModel::class.java)
+        titleSearchingViewModel = ViewModelProvider(this, ViewModelFactory()).get(
+            TitleSearchingViewModel::class.java)
 
         searchTitleAdapter = MovieResultTitleSearchAdapter(arrayListOf(), arrayListOf(),this,this)
 
         recyclerResultTitleSearch.apply {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
-            setHasFixedSize(true)
+            setHasFixedSize(false)
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
             adapter = searchTitleAdapter
         }

@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.search.title
+package com.sakharu.queregardercesoir.ui.search.advanced
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +16,8 @@ import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.ui.discover.DiscoverViewModel
+import com.sakharu.queregardercesoir.ui.search.SearchViewModel
+import com.sakharu.queregardercesoir.ui.search.title.MovieResultTitleSearchAdapter
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_result_advanced_search.*
 import java.util.*
@@ -25,7 +26,7 @@ import java.util.*
 class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReachedListener
 {
     private lateinit var searchTitleAdapter : MovieResultTitleSearchAdapter
-    private lateinit var discoverViewModel: DiscoverViewModel
+    private lateinit var searchViewModel: SearchViewModel
     private var currentPage=1
     private var sortBy : String="popularity"
     private var before:String?=null
@@ -35,6 +36,7 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
     private var averageVoteMin:Double=0.0
     private var genresId:String?=null
     private var isLoading=false
+    private var certification:String?=null
     private var movieObserver : Observer<List<Movie>> = Observer {
         //Si la liste contient plus d'éléments que ceux récupérés via l'api dans cette session
         //on appelle onBottomReached afin de récupérer les pages suivantes et potentiellement corriger les positions
@@ -43,7 +45,7 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
 
         if (it.isEmpty())
         {
-            if (discoverViewModel.totalPagesSearch==0)
+            if (searchViewModel.totalPagesSearch==0)
             {
                 noFilmFromTitleSearch.show()
                 noFilmFromTitleSearch.text = getString(R.string.noFilmFromTitleSearch)
@@ -65,9 +67,9 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
         {
             searchTitleAdapter.addGenres(it)
 
-            discoverViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
-                genresId,after,before,during,year).observe(this,movieObserver)
-            discoverViewModel.genresListLive.removeObservers(this)
+            searchViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
+                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).observe(this,movieObserver)
+            searchViewModel.genresListLive.removeObservers(this)
         }
     }
 
@@ -76,25 +78,26 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_result_advanced_search)
 
-        discoverViewModel = ViewModelProvider(this, ViewModelFactory()).get(DiscoverViewModel::class.java)
+        searchViewModel = ViewModelProvider(this, ViewModelFactory()).get(SearchViewModel::class.java)
 
-        discoverViewModel.genresListLive.observe(this,genreObserver)
+        searchViewModel.genresListLive.observe(this,genreObserver)
 
-        searchTitleAdapter = MovieResultTitleSearchAdapter(arrayListOf(), arrayListOf(),this,this)
+        searchTitleAdapter = MovieResultTitleSearchAdapter(arrayListOf(), arrayListOf(), this, this)
 
         recyclerAdvancedTitleMovie.apply {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
-            setHasFixedSize(true)
+            setHasFixedSize(false)
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
             adapter = searchTitleAdapter
         }
         loadingMoreAnimationResultAdvancedSearch.show()
 
         sortBy = intent.getStringExtra(EXTRA_SORTBY).orEmpty()
-        val beforeAfter = intent.getIntExtra(EXTRA_IS_BEFORE,0)
+        val beforeAfter = intent.getIntExtra(EXTRA_BEFORE_DURING_AFTER,0)
         year = intent.getIntExtra(EXTRA_YEAR,Calendar.getInstance().get(Calendar.YEAR))
         averageVoteMin = intent.getDoubleExtra(EXTRA_AVERAGE_VOTE_MIN,0.0)
         genresId = intent.getStringExtra(EXTRA_GENRES)
+        certification = intent.getStringExtra(EXTRA_CERTIFICATION)
 
         when(beforeAfter)
         {
@@ -118,16 +121,16 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
     override fun onBottomReached()
     {
         //Si on a atteint la dernière page, on arrête d'écouter la page en cours et on s'abonne à la page suivante
-        if (currentPage-1<discoverViewModel.totalPagesSearch && !isLoading)
+        if (currentPage-1<searchViewModel.totalPagesSearch && !isLoading)
         {
             currentPage++
             //si on est dans le cas d'une recherche par titre
 
-            discoverViewModel.searchMovieFromCharacteristics(currentPage-1,sortBy,averageVoteMin,
-                genresId,after,before,during,year).removeObservers(this)
+            searchViewModel.searchMovieFromCharacteristics(currentPage-1,sortBy,averageVoteMin,
+                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).removeObservers(this)
             //on se désabonne de la page précédente et on s'abonne à la page suivante
-            discoverViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
-                genresId,after,before,during,year).observe(this,movieObserver)
+            searchViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
+                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).observe(this,movieObserver)
 
             loadingMoreAnimationResultAdvancedSearch.show()
             isLoading=true

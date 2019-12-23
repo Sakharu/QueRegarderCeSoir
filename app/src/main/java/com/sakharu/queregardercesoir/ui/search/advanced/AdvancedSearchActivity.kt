@@ -10,15 +10,14 @@ import com.google.android.material.chip.Chip
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
-import com.sakharu.queregardercesoir.ui.discover.DiscoverViewModel
-import com.sakharu.queregardercesoir.ui.search.title.ResultSearchActivity
+import com.sakharu.queregardercesoir.ui.search.SearchViewModel
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_advanced_search.*
 import java.util.*
 
 class AdvancedSearchActivity : BaseActivity()
 {
-    private lateinit var discoverViewModel : DiscoverViewModel
+    private lateinit var searchViewModel : SearchViewModel
     private var listIdOfSelectedGenre = linkedSetOf<Long>()
     private var genreObserver = Observer<List<Genre>> {
             for (genre in it)
@@ -42,14 +41,13 @@ class AdvancedSearchActivity : BaseActivity()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_advanced_search)
 
-        backButtonAdvancedSearch.setOnClickListener{
-            onBackPressed()
-        }
-
-        discoverViewModel = ViewModelProvider(this, ViewModelFactory()).get(DiscoverViewModel::class.java)
-        discoverViewModel.genresListLive.observe(this,genreObserver)
+        searchViewModel = ViewModelProvider(this, ViewModelFactory()).get(SearchViewModel::class.java)
+        searchViewModel.genresListLive.observe(this,genreObserver)
 
         editTextYearAdvanceSearch.setText((Calendar.getInstance().get(Calendar.YEAR)+1).toString())
+
+        setUpActionBar(getString(R.string.advancedSearch),true)
+
 
         seekbarAverageVoteAdvancedSearch.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekbar: SeekBar?, progess: Int, fromUser: Boolean)
@@ -77,16 +75,17 @@ class AdvancedSearchActivity : BaseActivity()
             {
                 val sortBy = when(spinnerSortAdvancedSearch.selectedItemPosition)
                 {
-                    0-> POPULARITYDEQC
+                    0-> POPULARITYDESC
                     1-> RELEASEDATEDESC
                     else-> VOTEAVERAGEDESC
                 }
-                val intentAdvancedSearch = Intent(this,ResultSearchActivity::class.java)
+                val intentAdvancedSearch = Intent(this,
+                    ResultSearchActivity::class.java)
                 intentAdvancedSearch.apply {
                     if (listIdOfSelectedGenre.isNotEmpty())
                         putExtra(EXTRA_GENRES,listIdOfSelectedGenre.joinToString { it.toString() })
                     putExtra(EXTRA_SORTBY,sortBy)
-                    putExtra(EXTRA_IS_BEFORE,spinnerGreaterLowerYear.selectedItemPosition)
+                    putExtra(EXTRA_BEFORE_DURING_AFTER,spinnerGreaterLowerYear.selectedItemPosition)
                     putExtra(EXTRA_YEAR, year)
                     putExtra(EXTRA_AVERAGE_VOTE_MIN, voteAverageMinAdvancedSearch.text.toString().toDouble())
                 }

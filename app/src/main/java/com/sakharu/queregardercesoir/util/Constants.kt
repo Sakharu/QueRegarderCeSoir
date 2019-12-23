@@ -17,6 +17,7 @@ const val CATEGORY_NOWPLAYING_ID=3L
 /*
     ACTIONS & EXTRA
  */
+const val ACTION_FAVORITE_GENRE_VALIDATE="ActionFavoriteGenreValidate"
 const val EXTRA_MOVIE_ID="ExtraMovieID"
 const val EXTRA_MOVIE_NAME="ExtraMovieName"
 const val EXTRA_IMAGE_URL="ExtraImageURL"
@@ -25,15 +26,16 @@ const val TYPE_POSTER="TypePoster"
 const val TYPE_BACKDROP="TypeBackdrop"
 const val EXTRA_CATEGORY = "category"
 const val EXTRA_SORTBY = "ExtraSortBy"
-const val EXTRA_IS_BEFORE = "ExtraIsBefore"
+const val EXTRA_BEFORE_DURING_AFTER = "ExtraIsBefore"
 const val EXTRA_YEAR= "ExtraYear"
 const val EXTRA_AVERAGE_VOTE_MIN = "ExtraAverageVoteMin"
 const val EXTRA_GENRES = "ExtraGenres"
+const val EXTRA_CERTIFICATION = "ExtraCertification"
 
 /*
   PARAMETRES DE TRI
  */
-const val POPULARITYDEQC = "popularity.desc"
+const val POPULARITYDESC = "popularity.desc"
 const val RELEASEDATEDESC = "release_date.desc"
 const val VOTEAVERAGEDESC = "vote_average.desc"
 
@@ -46,4 +48,18 @@ const val NUMBER_OF_DAYS_DEPRECATED_MOVIEINCATEGORY=3
     NOM DES PREFERENCES
  */
 const val PREFERENCE_LAST_TIMESTAMP_HOME="PreferenceLastTimeStampHome"
+const val PREFERENCE_LAST_TIMESTAMP_DISCOVER="PreferenceLastTimeStampDiscover"
 const val PREFERENCE_IDS_FAVORITES_GENRES="PreferenceIdsFavoritesGenres"
+
+/*
+    ID DES RECHERCHES COURANTES
+ */
+const val ID_BEST_RECENT_MOVIES=0
+const val ID_MY_FAMILY_FIRST=1
+const val ID_SUCCES_OF_LAST_TEN_YEARS=2
+
+/*
+    CERTIFICATIONS
+ */
+const val CERTIFICATION_FRANCE_NO_AGE_REQUIRED="U"
+const val CERTIFICATION_FRANCE="FR"

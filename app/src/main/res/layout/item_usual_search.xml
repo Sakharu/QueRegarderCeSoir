@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorBaseBackround">
+
+    <TextView
+        android:id="@+id/titleUsualSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@color/colorBaseBackround"
+        android:textColor="@color/colorBaseText"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@+id/nextButtonUsualSearch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="La crème de 2019" />
+
+    <TextView
+        android:id="@+id/subtitleUsualSearch"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="16dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/titleUsualSearch"
+        app:layout_constraintStart_toStartOf="@+id/titleUsualSearch"
+        app:layout_constraintTop_toBottomOf="@+id/titleUsualSearch"
+        tools:text="Les films les mieux notés de l'année 2019" />
+
+    <ImageButton
+        android:id="@+id/nextButtonUsualSearch"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@color/colorInactiveIconBottomNav"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_keyboard_arrow_right_white_24dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

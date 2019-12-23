@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir
+package com.sakharu.queregardercesoir.ui.search.title
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorBaseBackround">
+
+        <ImageView
+            android:id="@+id/posterSuggestedMovie"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            app:layout_constraintEnd_toStartOf="@+id/constraintLayout"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:srcCompat="@drawable/example_poster" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/frameLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/posterSuggestedMovie"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/genreSuggestedMovie"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="Action, aventure, science-fiction" />
+
+            <TextView
+                android:id="@+id/overviewSuggestedMovie"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="16dp"
+                android:ellipsize="end"
+                android:maxLines="14"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/genreSuggestedMovie"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/voteSuggestedMovie"
+                tools:text="Evadé d'un centre de redressement, El Jaibo, jeune Mexicain laissé à lui-même, prend la tete d'une bande de jeunes délinquants de Mexico. Le vieux mendiant aveugle Don Carmelo, sur le point d'être volé, blesse l'un deux avec la pointe de sa canne...  Evadé d'un centre de redressement, El Jaibo, jeune Mexicain laissé à lui-même, prend la tete d'une bande de jeunes délinquants de Mexico. Le vieux mendiant aveugle Don Carmelo, sur le point d'être volé, blesse l'un deux avec la pointe de sa canne... " />
+
+            <TextView
+                android:id="@+id/voteSuggestedMovie"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="7.6/10" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <FrameLayout
+            android:id="@+id/frameLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBackgroundCardSuggestedMovie"
+            android:minHeight="75dp"
+            app:layout_constraintBottom_toBottomOf="@+id/posterSuggestedMovie"
+            app:layout_constraintEnd_toEndOf="@+id/posterSuggestedMovie"
+            app:layout_constraintStart_toStartOf="@+id/posterSuggestedMovie">
+
+            <TextView
+                android:id="@+id/titleSuggestedMovie"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="8dp"
+                android:alpha="1"
+                android:ellipsize="end"
+                android:maxLines="3"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:text="Dragon Ball Z : Les aventures du sayien légendaire Broly" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.cardview.widget.CardView>

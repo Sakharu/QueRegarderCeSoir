@@ -59,7 +59,21 @@ interface MovieService
                                        @Query("release_date.lte") releaseDatelte:String?=null,
                                        @Query("vote_average.gte") voteAverageGte:Double?=null,
                                        @Query("year") year:Int?=null,
-                                       @Query("with_genres") withGenres:String?=null) : ResponseResult<Movie>
+                                       @Query("certification_country") certificationCountry:String?=null,
+                                       @Query("certification") certification:String?=null,
+                                       @Query("with_genres") withGenres:String?=null,
+                                       @Query("vote_count.gte") voteCountGte:Int=5
+                                       ) : ResponseResult<Movie>
+
+    @GET("discover/movie")
+    suspend fun searchForSuggestedMovies(@Query("api_key") api_key:String = API_KEY,
+                                       @Query("language") language:String = "fr-FR",
+                                       @Query("region") region:String = "FR",
+                                       @Query("page") page:Int = 1,
+                                       @Query("sort_by") sortBy:String?=null,
+                                       @Query("with_genres") withGenres:String?=null,
+                                       @Query("vote_count.gte") voteCountGte:Int=3
+    ) : ResponseResult<Movie>
 
     @GET("movie/{id}/similar")
     suspend fun getSimilarMoviesFromMovieId(@Path("id")id:Long,
