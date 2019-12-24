@@ -1,28 +1,38 @@
 package com.sakharu.queregardercesoir.ui.search.title
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class TitleSearchingViewModel : ViewModel()
 {
-    var totalPagesSearch = 0
+    var totalPagesSearch = 1
+    var query:MutableLiveData<String> = MutableLiveData()
+    var page:Int=1
 
-    fun searchMovieByTitle(query:String,page:Int=1) : LiveData<List<Movie>> = liveData (
+    val searchMovieByTitle : LiveData<List<Movie>> = liveData (
         Dispatchers.IO)
     {
-        totalPagesSearch = MovieRepository.searchMovieFromQuery(query,page)
         emitSource(MovieRepository.getMoviesFromTitleSearch(query))
     }
 
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
-        GenreRepository.downloadAllGenre()
+        if(GenreRepository.getNumberGenres()==0)
+            GenreRepository.downloadAllGenre()
         emitSource(GenreRepository.getAllGenre())
     }
+
+    fun downloadSearchingMoviesFromQuery() =
+        viewModelScope.launch {
+            if (page<=totalPagesSearch)
+            {
+                totalPagesSearch = MovieRepository.searchMovieFromQuery(query.value!!,page)
+                page++
+            }
+        }
 }

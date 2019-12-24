@@ -50,16 +50,18 @@ class LittleMovieAdapter(
         notifyDataSetChanged()
     }
 
-    fun addData(newMovies:List<Movie>)
+    fun addData(newMovies:List<Movie>) : Int
     {
         /*
         On ajoute à la liste actuelle les nouveaux films récupérés
          */
+        val oldPosition = listeMovie.size
         if (newMovies.isNotEmpty())
         {
-            val oldPosition = listeMovie.size
             this.listeMovie.addAll(newMovies.filter { !listeMovie.contains(it) })
-            notifyItemRangeInserted(oldPosition, listeMovie.size)
+            if (oldPosition!=listeMovie.size)
+                notifyItemRangeInserted(oldPosition, listeMovie.size)
         }
+        return oldPosition
     }
 }

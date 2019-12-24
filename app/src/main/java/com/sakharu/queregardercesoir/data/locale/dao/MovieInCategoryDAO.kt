@@ -14,8 +14,8 @@ interface MovieInCategoryDAO
     @Query("SELECT * FROM movieInCategory WHERE id = :id")
     fun getById(id:Long) : LiveData<MovieInCategory>
 
-    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory AND addedTimestamp>=:lastTimeStamp ORDER BY addedTimestamp DESC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
-    fun getMoviesIdFromCategoryId(idCategory:Long, lastTimeStamp:Long) : LiveData<List<MovieInCategory>>
+    @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory AND page = :page ORDER BY `order`LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
+    fun getMoviesIdFromCategoryId(idCategory:Long,page:Int) : LiveData<List<MovieInCategory>>
 
     @Query("SELECT * FROM movieInCategory WHERE idCategory = :idCategory ORDER BY page,`order` ASC LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
     fun getFirstMoviesIdFromCategoryID(idCategory:Long) : LiveData<List<MovieInCategory>>
@@ -28,7 +28,4 @@ interface MovieInCategoryDAO
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(movieInCategory: MovieInCategory)
-
-    @Query("DELETE FROM movieInCategory WHERE id in (:movieInCategoryId)")
-    fun deleteOldMoviesInCategory(movieInCategoryId:List<Long>)
 }

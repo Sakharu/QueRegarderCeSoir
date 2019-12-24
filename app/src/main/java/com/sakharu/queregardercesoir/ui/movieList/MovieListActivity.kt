@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
@@ -25,15 +24,12 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedLi
     private lateinit var movieListViewModel: MovieListViewModel
     private lateinit var littleMoviePagingAdapter: LittleMovieAdapter
     private lateinit var observer : Observer<List<Movie>>
-    private var currentPage=1
     private var isLoading=false
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_category)
-
-        MovieListViewModel.lastTimeStamp=0
 
         littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(), this, this)
         recyclerCategoryDetails.apply {
@@ -43,15 +39,14 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedLi
         }
 
         observer = Observer {
-            if (it.size>currentPage* MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST)
-                onBottomReached()
-
             if (it.isNotEmpty())
+            {
                 littleMoviePagingAdapter.addData(it)
+                loadingMoreAnimationDetailCategory.hide()
+                isLoading=false
+            }
             else
                 onBottomReached()
-            loadingMoreAnimationDetailCategory.hide()
-            isLoading=false
         }
 
         movieListViewModel = ViewModelProvider(this, ViewModelFactory()).get(MovieListViewModel::class.java)
@@ -60,16 +55,14 @@ class MovieListActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedLi
         setUpActionBar(movieListViewModel.category.name)
 
         //on charge les films populaires lorsqu'on en a en BD
-        movieListViewModel.getMoviesLiveList(currentPage).observe(this, observer)
+        movieListViewModel.getMoviesLiveList.observe(this, observer)
     }
 
     override fun onBottomReached()
     {
-        if (!isLoading && currentPage<=movieListViewModel.totalPages)
+        if (!isLoading)
         {
-            currentPage++
-            movieListViewModel.getMoviesLiveList(currentPage-1).removeObserver(observer)
-            movieListViewModel.getMoviesLiveList(currentPage).observe(this, observer)
+            movieListViewModel.downloadMovies()
             loadingMoreAnimationDetailCategory.show()
             isLoading=true
         }

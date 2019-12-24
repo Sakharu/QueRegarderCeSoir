@@ -15,7 +15,7 @@ interface MovieDAO
     @Query("SELECT * FROM movie ")
     fun getAll() : LiveData<List<Movie>>
 
-    @Query("SELECT * FROM movie WHERE title LIKE '%' || :search  || '%' OR original_title LIKE '%' || :search  || '%' ORDER BY title")
+    @Query("SELECT * FROM movie WHERE title LIKE '%' || :search  || '%' OR original_title LIKE '%' || :search  || '%'")
     fun getMoviesFromTitleSearch(search:String) : LiveData<List<Movie>>
 
     @RawQuery(observedEntities = [Movie::class])

@@ -14,8 +14,10 @@ class DetailMovieViewModel : ViewModel()
 {
     fun getMovieById(id:Long) : LiveData<Movie> =
         liveData(Dispatchers.IO) {
-            emitSource(MovieRepository.getMovieLiveById(id))
-            MovieRepository.downloadMovieDetail(id)
+            val movie = MovieRepository.getMovieLiveById(id)
+            emitSource(movie)
+            val isSuggested = if (movie.value!=null) movie.value!!.isSuggested else null
+            MovieRepository.downloadMovieDetail(id,isSuggested)
         }
 
     fun getGenresFromMovie(movie:Movie) : LiveData<List<Genre>> =

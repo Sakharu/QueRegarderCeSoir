@@ -17,49 +17,48 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
-class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
-                                    private var genresList : List<Genre>,
-                                    private var onMovieClickListener: OnMovieClickListener?=null,
-                                    private var onBottomReachedListener: OnBottomReachedListener?=null)
-    : RecyclerView.Adapter<MovieResultTitleSearchHolder>()
+class TitleSearchMovieAdapter(private var listeMovie: MutableList<Movie>,
+                              private var genresList : List<Genre>,
+                              private var onMovieClickListener: OnMovieClickListener?=null,
+                              private var onBottomReachedListener: OnBottomReachedListener?=null)
+    : RecyclerView.Adapter<TitleSearchMovieHolder>()
 {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MovieResultTitleSearchHolder =
-        MovieResultTitleSearchHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_movie_result_search, parent, false))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TitleSearchMovieHolder =
+        TitleSearchMovieHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_movie_result_search, parent, false))
 
     override fun getItemCount(): Int = listeMovie.size
 
-    override fun onBindViewHolder(holder: MovieResultTitleSearchHolder, position: Int)
+    override fun onBindViewHolder(movieHolder: TitleSearchMovieHolder, position: Int)
     {
         val movie = listeMovie[position]
         if (!movie.posterImg.isNullOrEmpty())
-            Glide.with(holder.itemView)
+            Glide.with(movieHolder.itemView)
                 .load(MovieService.IMAGE_PREFIX_POSTER + movie.posterImg)
                 .placeholder(R.drawable.film_poster_placeholder)
                 .fallback(R.drawable.film_poster_placeholder)
                 .error(R.drawable.film_poster_placeholder)
                 .transition(DrawableTransitionOptions.withCrossFade())
-                .into(holder.posterImg)
+                .into(movieHolder.posterImg)
         else
-            Glide.with(holder.itemView).load(R.drawable.film_poster_placeholder).into(holder.posterImg)
+            Glide.with(movieHolder.itemView).load(R.drawable.film_poster_placeholder).into(movieHolder.posterImg)
 
         if (movie.vote_average!=null && movie.vote_average!=0.0 && movie.vote_count!=null && movie.vote_count!=0)
         {
-
             //pour l'orthographe
             if (movie.vote_count!!>1)
-                holder.voteAverage.text = holder.voteAverage.context.getString(R.string.averageVoteOnTotalVotes,
+                movieHolder.voteAverage.text = movieHolder.voteAverage.context.getString(R.string.averageVoteOnTotalVotes,
                     (movie.vote_average!!*10).toInt(),movie.vote_count)
             else
-                holder.voteAverage.text = holder.voteAverage.context.getString(R.string.averageVoteOnTotalVote,
+                movieHolder.voteAverage.text = movieHolder.voteAverage.context.getString(R.string.averageVoteOnTotalVote,
                     (movie.vote_average!!*10).toInt(),movie.vote_count)
-            holder.voteAverage.show()
+            movieHolder.voteAverage.show()
         }
         else
-            holder.voteAverage.setInvisible()
+            movieHolder.voteAverage.setInvisible()
 
-        holder.titleMovie.text = movie.title
+        movieHolder.titleMovie.text = movie.title
 
-        holder.genresMovie.text = genresList.filter { movie.genresId.contains(it.id) }.joinToString { it.name }
+        movieHolder.genresMovie.text = genresList.filter { movie.genresId.contains(it.id) }.joinToString { it.name }
 
         if (!movie.releaseDate.isNullOrEmpty())
         {
@@ -67,24 +66,24 @@ class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
             {
                 val americanDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(movie.releaseDate!!)
                 val date = SimpleDateFormat("yyyy", Locale.getDefault()).format(americanDate!!)
-                holder.yearMovie.text = date
-                holder.yearMovie.show()
+                movieHolder.yearMovie.text = date
+                movieHolder.yearMovie.show()
             }
             catch (e:Exception)
             {
                 e.printStackTrace()
-                holder.yearMovie.setInvisible()
+                movieHolder.yearMovie.setInvisible()
             }
         }
         else
-            holder.yearMovie.setInvisible()
+            movieHolder.yearMovie.setInvisible()
 
         //on active la methode du listener afin de le prévenir qu'on a atteint le bas de la page
         if (position==listeMovie.size-1)
             onBottomReachedListener?.onBottomReached()
 
-        holder.itemView.setOnClickListener{
-            onMovieClickListener?.onClickOnMovie(listeMovie[position],holder.posterImg)
+        movieHolder.itemView.setOnClickListener{
+            onMovieClickListener?.onClickOnMovie(listeMovie[position],movieHolder.posterImg)
         }
     }
 
@@ -96,26 +95,31 @@ class MovieResultTitleSearchAdapter(private var listeMovie: MutableList<Movie>,
     /*
     On ajoute à la liste actuelle les nouveaux films récupérés
     */
-    fun addMovie(newMovies:List<Movie>)
+    //on retourne true si on a pas assez ajouté d'élement sinon false
+    //on retourne l'ancienne taille pour permettre au recyclerview de scroll aux nouveaux éléments
+    fun addMovie(newMovies:List<Movie>) : Pair<Boolean,Int>
     {
+        val oldPosition = listeMovie.size
         if (newMovies.isNotEmpty())
         {
-            val oldPosition = listeMovie.size
             this.listeMovie.addAll(newMovies.filter { !listeMovie.contains(it) })
             /*
-                si on notifie que des éléments ont été insérés alors qu'il n'y avait aucun élément
                 si on notifie que des éléments ont été insérés alors qu'il n'y avait aucun élément
                 auparavant, le recyclerview ne se rafraîchit pas, on recharge donc toute la liste dans
                 ces cas là
             */
+            if (oldPosition!=listeMovie.size)
+                notifyItemRangeInserted(oldPosition, listeMovie.size)
 
-            notifyItemRangeInserted(oldPosition, listeMovie.size)
         }
+        //si on a chargé moins de 10 nouveaux éléments, on retourne true afin de charger la page suivante si possible
+        return Pair(oldPosition+10>listeMovie.size,oldPosition)
     }
 
     fun clearAllMovies()
     {
+        val oldSize = listeMovie.size
         this.listeMovie.clear()
-        notifyDataSetChanged()
+        notifyItemRangeRemoved(0,oldSize)
     }
 }

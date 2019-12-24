@@ -4,18 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.util.OnBottomReachedListener
 
 class SuggestedMovieAdapter(private var movieList: MutableList<Movie>,
                             private var genresList:List<Genre>,
-                            private var onMovieClickListener: OnMovieClickListener?=null,
-                            private var onBottomReachedListener: OnBottomReachedListener?=null)
+                            private var onMovieClickListener: OnMovieClickListener?=null)
     : RecyclerView.Adapter<SuggestedMovieHolder>()
 {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SuggestedMovieHolder =
@@ -34,7 +31,6 @@ class SuggestedMovieAdapter(private var movieList: MutableList<Movie>,
                     .placeholder(R.drawable.film_poster_placeholder)
                     .fallback(R.drawable.film_poster_placeholder)
                     .error(R.drawable.film_poster_placeholder)
-                    .transition(DrawableTransitionOptions.withCrossFade())
                     .into(holder.posterMovie)
             else
                 Glide.with(holder.itemView).load(R.drawable.film_poster_placeholder).into(holder.posterMovie)
@@ -51,9 +47,6 @@ class SuggestedMovieAdapter(private var movieList: MutableList<Movie>,
             holder.itemView.setOnClickListener{
                 onMovieClickListener?.onClickOnMovie(movie,holder.posterMovie)
             }
-
-            if (position==movieList.size-1 && onBottomReachedListener!=null)
-                onBottomReachedListener!!.onBottomReached()
         }
 
     }
@@ -61,7 +54,8 @@ class SuggestedMovieAdapter(private var movieList: MutableList<Movie>,
     fun addGenres(genres:List<Genre>)
     {
         this.genresList=genres
-        notifyDataSetChanged()
+        if (this.movieList.isNotEmpty())
+            notifyDataSetChanged()
     }
 
     /*

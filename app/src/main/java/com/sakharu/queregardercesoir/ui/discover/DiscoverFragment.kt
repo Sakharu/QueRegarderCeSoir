@@ -7,10 +7,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import androidx.core.app.ActivityOptionsCompat
+import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,17 +17,18 @@ import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.base.BaseFragment
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
+import com.sakharu.queregardercesoir.ui.discover.suggestedMovie.SuggestMovieActivity
 import com.sakharu.queregardercesoir.ui.discover.suggestedMovie.SuggestedMovieAdapter
 import com.sakharu.queregardercesoir.ui.discover.usualSearch.OnUsualSearchClickListener
 import com.sakharu.queregardercesoir.ui.discover.usualSearch.UsualSearchAdapter
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.ui.search.advanced.AdvancedSearchActivity
-import com.sakharu.queregardercesoir.ui.search.advanced.ResultSearchActivity
+import com.sakharu.queregardercesoir.ui.search.advanced.AdvancedResultSearchActivity
 import com.sakharu.queregardercesoir.util.*
 import java.util.*
 
 
-class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClickListener, OnBottomReachedListener
+class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClickListener
 {
     private lateinit var discoverViewModel : DiscoverViewModel
     private lateinit var usualSearchAdapter : UsualSearchAdapter
@@ -38,8 +36,8 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
     private var suggestedMovieAdapter : SuggestedMovieAdapter?=null
     private lateinit var askForFavoriteGenreButton : Button
     private lateinit var askForFavoriteGenreTV : TextView
-    private var isLoading=false
-
+    private lateinit var loadingProgressBar : ProgressBar
+    private lateinit var seeMoreButton : ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -51,11 +49,13 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
     {
         val root = inflater.inflate(R.layout.fragment_discover, container, false)
 
-        discoverViewModel = ViewModelProvider(this, ViewModelFactory()).get(DiscoverViewModel::class.java)
+        discoverViewModel = ViewModelProvider(activity!!, ViewModelFactory()).get(DiscoverViewModel::class.java)
         (activity as BaseActivity).changeTitleFromActionbar(getString(R.string.discoverTitleFragment))
 
         askForFavoriteGenreButton = root.findViewById(R.id.noFavoritesGenreButton)
         askForFavoriteGenreTV = root.findViewById(R.id.noFavoritesGenreTV)
+        loadingProgressBar = root.findViewById(R.id.loadingMoreAnimationSuggestedMovies)
+        seeMoreButton = root.findViewById(R.id.seeMoreButtonDiscover)
 
         /**
          * RECHERCHES COURANTES
@@ -90,7 +90,7 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
          * SUGGESTIONS DE FILMS
          */
 
-        suggestedMovieAdapter = SuggestedMovieAdapter(arrayListOf(), arrayListOf(),this,this)
+        suggestedMovieAdapter = SuggestedMovieAdapter(arrayListOf(), arrayListOf(),this)
 
         root.findViewById<RecyclerView>(R.id.recyclerSuggestionsMovies).apply {
             layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
@@ -137,19 +137,29 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
             if (DateUtils.isToday(PreferenceUtil.getLong(context, PREFERENCE_LAST_TIMESTAMP_DISCOVER,0)))
                 discoverViewModel.refreshSuggestedMovies=false
 
-            discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genreIdsFavorites).observe(viewLifecycleOwner,
-                Observer {
-                    if (it.isNotEmpty())
-                        suggestedMovieAdapter!!.addMovie(it)
-                })
+            discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genreIdsFavorites).observe(viewLifecycleOwner, Observer {
+                loadingProgressBar.hide()
+                if (it.isNotEmpty())
+                {
+                    suggestedMovieAdapter!!.addMovie(it)
+                    PreferenceUtil.setLong(context, PREFERENCE_LAST_TIMESTAMP_DISCOVER,System.currentTimeMillis())
+                    seeMoreButton.show()
+                    //lorsque l'on a déjà les 20 films à afficher, on se désabonne des changements qui peuvent survenir dans la BD
+                    if (it.size==20)
+                        discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genreIdsFavorites).removeObservers(viewLifecycleOwner)
+                }
+            })
         }
 
+        seeMoreButton.setOnClickListener{
+            startActivity(Intent(context,SuggestMovieActivity::class.java).putExtra(EXTRA_GENRES,genreIdsFavorites.toLongArray()))
+        }
     }
 
     override fun onUsualSearchClick(idUsualSearch: Int)
     {
         //ON LANCE LA RECHERCHE LORS DE L'APPUI SUR UNE RECHERCHE COURANTE
-        val intentSearchActivity = Intent(context,ResultSearchActivity::class.java)
+        val intentSearchActivity = Intent(context,AdvancedResultSearchActivity::class.java)
             .putExtra(EXTRA_SORTBY, VOTEAVERAGEDESC).putExtra(EXTRA_BEFORE_DURING_AFTER,2)
 
         when(idUsualSearch)
@@ -177,25 +187,4 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
         if (activity!=null)
             startActivity(Intent(activity, DetailMovieActivity::class.java).putExtra(EXTRA_MOVIE_ID,movie.id))
     }
-
-    override fun onBottomReached()
-    {
-        //TODO CHARGER PAGE SUIVANTE
-        //Si on a atteint la dernière page, on arrête d'écouter la page en cours et on s'abonne à la page suivante
-        if (currentSuggestedMoviesPage-1<searchViewModel.totalPagesSearch && !isLoading)
-        {
-            currentSuggestedMoviesPage++
-            //si on est dans le cas d'une recherche par titre
-
-            searchViewModel.searchMovieFromCharacteristics(currentPage-1,sortBy,averageVoteMin,
-                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).removeObservers(this)
-            //on se désabonne de la page précédente et on s'abonne à la page suivante
-            searchViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
-                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).observe(this,movieObserver)
-
-            loadingMoreAnimationResultAdvancedSearch.show()
-            isLoading=true
-        }
-    }
-
 }

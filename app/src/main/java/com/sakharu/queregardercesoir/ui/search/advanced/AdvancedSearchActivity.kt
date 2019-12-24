@@ -10,7 +10,6 @@ import com.google.android.material.chip.Chip
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
-import com.sakharu.queregardercesoir.ui.search.SearchViewModel
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_advanced_search.*
 import java.util.*
@@ -80,7 +79,7 @@ class AdvancedSearchActivity : BaseActivity()
                     else-> VOTEAVERAGEDESC
                 }
                 val intentAdvancedSearch = Intent(this,
-                    ResultSearchActivity::class.java)
+                    AdvancedResultSearchActivity::class.java)
                 intentAdvancedSearch.apply {
                     if (listIdOfSelectedGenre.isNotEmpty())
                         putExtra(EXTRA_GENRES,listIdOfSelectedGenre.joinToString { it.toString() })

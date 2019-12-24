@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.search.advanced.ResultSearchActivity">
+    android:background="@color/colorBaseBackround"
+    tools:context=".ui.search.advanced.AdvancedResultSearchActivity">
 
     <include
         android:id="@+id/topbar"

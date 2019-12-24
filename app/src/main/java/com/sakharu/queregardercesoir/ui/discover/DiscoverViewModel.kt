@@ -16,8 +16,10 @@ import kotlinx.coroutines.launch
 class DiscoverViewModel : ViewModel()
 {
 
-    var totalPagesSuggestions = 0
+    var totalPagesSuggestions = 1
     var refreshSuggestedMovies = true
+    var genresId : ArrayList<Long> = arrayListOf()
+    var page=1
 
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
@@ -41,12 +43,23 @@ class DiscoverViewModel : ViewModel()
             }
         }
 
-    fun getSuggestedMovies(page:Int,genresId:ArrayList<Long>) : LiveData<List<Movie>> = liveData(Dispatchers.IO)
+    fun getSuggestedMovies(page:Int,genresId:ArrayList<Long> = this.genresId,orderBy:String="RANDOM()") : LiveData<List<Movie>> = liveData(Dispatchers.IO)
     {
         if (refreshSuggestedMovies)
-            MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
-        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId))
+            totalPagesSuggestions = MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
+        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId,orderBy = orderBy))
     }
+
+    val suggestMovies =  liveData(Dispatchers.IO)
+    {
+        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId,orderBy = "vote_average DESC",limit = ""))
+    }
+
+    fun downloadSuggestMovies(page:Int) =
+        viewModelScope.launch {
+            totalPagesSuggestions =MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
+        }
+
 }
 
 

@@ -14,7 +14,7 @@ import java.util.*
 
     les indices permettent de ne pas insérer plusieurs fois la même ligne, corrêlé avec le paramètre unique à true
  */
-@Entity(tableName = "movieInCategory",indices = [Index(value = ["idCategory","idMovie"], unique = true)])
+@Entity(tableName = "movieInCategory",indices = [Index(value = ["idCategory","idMovie","order"], unique = true)])
 data class MovieInCategory(
 
     @PrimaryKey(autoGenerate = true)
@@ -29,13 +29,12 @@ data class MovieInCategory(
     @field:SerializedName("idMovie")
     var idMovie:Long,
 
+
     @field:SerializedName("order")
     var order:Int,
 
     @field:SerializedName("page")
-    var page:Int,
+    var page:Int
 
-    @field:SerializedName("addedTimestamp")
-    var addedTimestamp:Long
 
 )

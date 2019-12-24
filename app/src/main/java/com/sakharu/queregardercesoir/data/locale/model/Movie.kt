@@ -48,7 +48,10 @@ data class Movie (
     var releaseYear:Int?,
 
     @field:SerializedName("certification")
-    var certification:String?
+    var certification:String?,
+
+    @field:SerializedName("isSuggested")
+    var isSuggested:Boolean?
 )
 {
     override fun equals(other: Any?): Boolean{

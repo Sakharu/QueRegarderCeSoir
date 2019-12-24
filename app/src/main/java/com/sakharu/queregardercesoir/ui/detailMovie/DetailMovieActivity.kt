@@ -25,7 +25,9 @@ import java.util.*
 class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 {
     private lateinit var detailMovieViewModel: DetailMovieViewModel
-    private lateinit var genresObserver:Observer<List<Genre>>
+    private var genresObserver:Observer<List<Genre>> = Observer {
+        afficherGenres(it)
+    }
     private lateinit var similarMoviesAdapter : LittleMovieAdapter
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -35,10 +37,6 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 
         detailMovieViewModel = ViewModelProvider(this, ViewModelFactory()).get(DetailMovieViewModel::class.java)
 
-        genresObserver = Observer {
-            afficherGenres(it)
-        }
-
         val id = intent.getLongExtra(EXTRA_MOVIE_ID,-1)
         if (id==-1L)
         //TODO FERMER ACTIVITE AFFICHER ERREUR
@@ -47,10 +45,9 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
         {
             detailMovieViewModel.getMovieById(id).observe(this, Observer<Movie> {
                 showMovieInformations(this,it)
-                detailMovieViewModel.getGenresFromMovie(it).removeObserver(genresObserver)
-                detailMovieViewModel.getGenresFromMovie(it).observe(this,genresObserver)
+                if (!detailMovieViewModel.getGenresFromMovie(it).hasObservers())
+                    detailMovieViewModel.getGenresFromMovie(it).observe(this,genresObserver)
             })
-
         }
 
         similarMoviesAdapter = LittleMovieAdapter(arrayListOf(),this)

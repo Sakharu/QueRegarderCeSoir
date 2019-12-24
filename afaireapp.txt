@@ -1,6 +1,0 @@
-A faire : 
-intégrer les limitations de page 
-refactorer les catégories dans le fichier string
-alléger l'affichage de la home (ne pas notifier l'adapter lorsque les données sont les mêmes)
-une activite qui permet de voir les images en grand
-lock les activites en portrait

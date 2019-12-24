@@ -78,28 +78,11 @@ class HomeFragment : Fragment(), OnMovieClickListener
         homeViewModel.trendingMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
             passDataToAdapterAndRefreshLoading(0,it)
         })
-
-        //on lance la suppression de toutes les liaisons entre les movies et les category lorsqu'elles
-        //datent de plus de 3 jours
-        //TODO A DEPLACER DANS LE VIEWMODEL
-        homeViewModel.getAllMoviesInCategory.observe(viewLifecycleOwner, Observer<List<MovieInCategory>>
-        {
-
-            //on fait tout le traitement dans un thread secondaire pour ne pas affecter l'ux
-            doAsync {
-                val listMovieInCategoryDeprecated =
-                    it.filter { movieInCategory ->
-                        Utils.differenceInDayFromActualTimestamp(movieInCategory.addedTimestamp)> NUMBER_OF_DAYS_DEPRECATED_MOVIEINCATEGORY
-                                && movieInCategory.id!=null}
-                        .map { it.id!! }
-
-                MovieRepository.deleteDeprecatedMoviesInCategory(listMovieInCategoryDeprecated)
-            }
-        })
     }
 
     private fun passDataToAdapterAndRefreshLoading(position: Int, movieList:List<Movie>)
     {
+        //TODO RESOUDRE CRASH ICI AU PREMIER DEMARRAGE
         categoryMovieAdapter.refreshOrAddACategory(homeViewModel.categoriesLiveList.value!![position],position,movieList)
         listCategoriesLoaded[position]=true
         checkIfLoadingIsFinish()

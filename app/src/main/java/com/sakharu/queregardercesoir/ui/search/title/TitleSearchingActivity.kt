@@ -15,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
@@ -25,19 +24,13 @@ import kotlinx.android.synthetic.main.activity_title_searching.*
 
 class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomReachedListener
 {
-    private lateinit var searchTitleAdapter : MovieResultTitleSearchAdapter
+    private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var titleSearchingViewModel : TitleSearchingViewModel
     private var currentPage=1
     private var isLoading=false
-    private var isWaitingForResult=false
     private var handler = Handler()
-    private var oldTitleSearched=""
 
     private var movieObserver : Observer<List<Movie>> = Observer {
-        //Si la liste contient plus d'éléments que ceux récupérés via l'api dans cette session
-        //on appelle onBottomReached afin de récupérer les pages suivantes et potentiellement corriger les positions
-        if (it.size>currentPage* MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST)
-            onBottomReached()
 
         if (it.isEmpty())
             if (titleSearchingViewModel.totalPagesSearch==0)
@@ -46,17 +39,19 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
                 onBottomReached()
         else
         {
-            searchTitleAdapter.addMovie(it)
+            val pair = searchTitleMovieAdapter.addMovie(it)
+            if (pair.first)
+                onBottomReached()
+            recyclerResultTitleSearch.scrollToPosition(pair.second)
             noMovieFromTitleSearch.hide()
         }
         loadingMoreAnimationResultSearch.hide()
         isLoading=false
-        isWaitingForResult=false
     }
 
     private var genreObserver : Observer<List<Genre>> = Observer {
         if (it.isNotEmpty())
-            searchTitleAdapter.addGenres(it)
+            searchTitleMovieAdapter.addGenres(it)
     }
 
     override fun onCreate(savedInstanceState: Bundle?)
@@ -69,23 +64,22 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
         titleSearchingViewModel = ViewModelProvider(this, ViewModelFactory()).get(
             TitleSearchingViewModel::class.java)
 
-        searchTitleAdapter = MovieResultTitleSearchAdapter(arrayListOf(), arrayListOf(),this,this)
+        titleSearchingViewModel.genresListLive.observe(this,genreObserver)
+
+        searchTitleMovieAdapter = TitleSearchMovieAdapter(arrayListOf(), arrayListOf(),this,this)
 
         recyclerResultTitleSearch.apply {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
-            setHasFixedSize(false)
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-            adapter = searchTitleAdapter
+            adapter = searchTitleMovieAdapter
         }
-
-        titleSearchingViewModel.genresListLive.observe(this,genreObserver)
 
         editSearchActionBar.addTextChangedListener(object : TextWatcher{
             override fun afterTextChanged(s: Editable?)
             {
                 //si l'utilisateur a au moins rentré 3 caractères et que l'on est pas en attente
                 //du résultat d'une requête
-                if (editSearchActionBar.text.toString().length >= 3 && !isWaitingForResult)
+                if (editSearchActionBar.text.toString().length >= 3 && !isLoading)
                 {
                     //si l'utilisateur ne tape rien pendant 1 seconde et demi, on lance la recherche automatiquement
                     handler.postDelayed({ launchRequest() },1000)
@@ -95,7 +89,6 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //En passant null pour le token, tous les callbacks et messages vont être supprimés
                 handler.removeCallbacksAndMessages(null)
-                titleSearchingViewModel.searchMovieByTitle(oldTitleSearched,currentPage).removeObservers(this@TitleSearchingActivity)
             }
         })
     }
@@ -115,26 +108,24 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
         if (currentPage-1<titleSearchingViewModel.totalPagesSearch && !isLoading)
         {
             isLoading=true
-            currentPage++
-            //si on est dans le cas d'une recherche par titre
-
-            titleSearchingViewModel.searchMovieByTitle(oldTitleSearched).removeObserver(movieObserver)
-            titleSearchingViewModel.searchMovieByTitle(editSearchActionBar.text.toString(),currentPage).observe(this,movieObserver)
-
             loadingMoreAnimationResultSearch.show()
+            currentPage++
+            titleSearchingViewModel.downloadSearchingMoviesFromQuery()
         }
     }
 
     private fun launchRequest()
     {
         isLoading=true
-        titleSearchingViewModel.searchMovieByTitle(oldTitleSearched,currentPage).removeObserver(movieObserver)
-        searchTitleAdapter.clearAllMovies()
-        currentPage = 1
-        titleSearchingViewModel.searchMovieByTitle(editSearchActionBar.text.toString()).observe(this@TitleSearchingActivity,movieObserver)
-        isWaitingForResult = true
-        oldTitleSearched = editSearchActionBar.text.toString()
         loadingMoreAnimationResultSearch.show()
+        searchTitleMovieAdapter.clearAllMovies()
+        currentPage = 1
+        titleSearchingViewModel.query.value =editSearchActionBar.text.toString()
+        titleSearchingViewModel.page = 1
+        titleSearchingViewModel.downloadSearchingMoviesFromQuery()
         hideKeyboard()
+        //si l'observer est déjà placé, refaire observe dessus ne changera rien
+        titleSearchingViewModel.searchMovieByTitle.observe(this@TitleSearchingActivity,movieObserver)
+
     }
 }

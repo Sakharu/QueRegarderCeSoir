@@ -2,6 +2,8 @@ package com.sakharu.queregardercesoir.data.locale.repository
 
 import android.app.Application
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.sqlite.db.SimpleSQLiteQuery
 import com.sakharu.queregardercesoir.data.locale.AppDatabase
 import com.sakharu.queregardercesoir.data.locale.dao.MovieDAO
@@ -47,10 +49,8 @@ object MovieRepository
 
     suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long, page: Int)
     {
-        val timeStamp = System.currentTimeMillis()
         for (i in idMovieList.indices)
-            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*(page-1),page,timeStamp))
-        MovieListViewModel.lastTimeStamp = timeStamp
+            movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*(page-1),page))
     }
 
     fun getAllMoviesInCategoryLive() : LiveData<List<MovieInCategory>>
@@ -59,17 +59,19 @@ object MovieRepository
     fun getMoviesFromListIdLive(popularMoviesListId:List<Long>): LiveData<List<Movie>>
             = movieDAO.getMoviesByListId(popularMoviesListId)
 
-    fun getMovieInCategoryLive(id:Long, lastTimestamp:Long=0): LiveData<List<MovieInCategory>> =
-        movieInCategoryDAO.getMoviesIdFromCategoryId(id,lastTimestamp)
+    fun getMovieInCategoryLive(id:Long, page:MutableLiveData<Int>): LiveData<List<MovieInCategory>> =
+        Transformations.switchMap(page) {
+            movieInCategoryDAO.getMoviesIdFromCategoryId(id,it)
+        }
+
 
     fun getFirstMoviesInCategoryFromCategoryId(id:Long): LiveData<List<MovieInCategory>> =
         movieInCategoryDAO.getFirstMoviesIdFromCategoryID(id)
 
-    fun deleteDeprecatedMoviesInCategory(listId : List<Long>)
-            = movieInCategoryDAO.deleteOldMoviesInCategory(listId)
-
-    fun getMoviesFromTitleSearch(search:String)
-            = movieDAO.getMoviesFromTitleSearch(search)
+    fun getMoviesFromTitleSearch(search:MutableLiveData<String>)
+            = Transformations.switchMap(search) {
+        movieDAO.getMoviesFromTitleSearch(it)
+    }
 
     fun getMoviesFromCharacSearch(sortBy: String, voteAverageGte: Double = 0.0, genresId: List<String> = listOf(),
         yearGte: String? = null, yearLte: String? = null, yearDuring: Int? = null,
@@ -112,12 +114,12 @@ object MovieRepository
     }
 
 
-    fun getSuggestedMoviesFromGenres(genresId: List<Long>):LiveData<List<Movie>>
+    fun getSuggestedMoviesFromGenres(genresId: List<Long>,orderBy:String="RANDOM()",limit:String="LIMIT 20"):LiveData<List<Movie>>
     {
         /*ON CONSTRUIT LA PARTIE DES GENRES DE LA REQUETES GRACE A LA CONCATENATION
         ON PARCOURT LA LISTE DES ID DE GENRES SELECTIONNES ET ON L'AJOUTE A LA REQUETE
         EXEMPLE DE REQUETE
-        SELECT * FROM movie WHERE vote_average>3.0 AND genresId LIKE '%' || 28  || '%' OR genresId LIKE '%' ||  16  || '%'  ORDER BY popularity DESC
+        SELECT * FROM movie WHERE vote_average>3.0 AND genresId LIKE '%' || 28  || '%' OR genresId LIKE '%' ||  16  || '%'
          */
 
         var orGenres = ""
@@ -125,7 +127,8 @@ object MovieRepository
             orGenres+=" genresId LIKE '%' || $id  || '%' OR"
         orGenres = orGenres.removeSuffix("OR")
 
-        val query = "SELECT * FROM movie WHERE $orGenres ORDER BY RANDOM()"
+        //le AND est prioritaire sur le OR donc on rajoute des parenthèses
+        val query = "SELECT * FROM movie WHERE ($orGenres) AND isSuggested=1 ORDER BY $orderBy $limit"
         return movieDAO.getMoviesFromCharacRaw(SimpleSQLiteQuery(query))
     }
 
@@ -146,9 +149,6 @@ object MovieRepository
             catch (e:Exception){e.printStackTrace()}
         return movie
     }
-
-
-
 
     /***********************
      *  REGION REMOTE
@@ -190,13 +190,13 @@ object MovieRepository
         return upcomingMovies.total_pages
     }
 
-    suspend fun downloadMovieDetail(id:Long)
+    suspend fun downloadMovieDetail(id:Long,isSuggested:Boolean?=null)
     {
         val movieResult = movieService.getMovieDetail(id = id)
         val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
             movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
             movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,
-            null,null)
+            null,null,isSuggested)
         insertMovie(addYearToMovie(movie))
         GenreRepository.insertAllGenre(movieResult.genres)
     }
@@ -233,13 +233,11 @@ object MovieRepository
         return similarMovies.map { it.id }
     }
 
-    suspend fun downloadSuggestedMovies(page:Int=1,sortBy:String?=null, withGenres:String?=null): Int
+    suspend fun downloadSuggestedMovies(page:Int=1, withGenres:String?=null): Int
     {
-        val returnResult = movieService.searchForSuggestedMovies(
-            page = page,
-            sortBy = sortBy,
-            withGenres = withGenres)
+        val returnResult = movieService.searchForSuggestedMovies(page = page, withGenres = withGenres)
         val movieResult = returnResult.results
+        movieResult.map { it.isSuggested=true }
         insertAllMovies(addYearAndCertificationsToMovies(movieResult))
         return returnResult.total_pages
     }

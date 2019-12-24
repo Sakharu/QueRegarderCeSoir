@@ -15,7 +15,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.search.title.TitleSearchingActivity"></activity>
+        <activity android:name=".ui.search.title.TitleSearchingActivity" />
+        <activity android:name=".ui.discover.suggestedMovie.SuggestMovieActivity" />
         <activity
             android:name=".ui.search.advanced.AdvancedSearchActivity"
             android:label="@string/advancedSearch"
@@ -23,7 +24,7 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" />
         <activity
-            android:name=".ui.search.advanced.ResultSearchActivity"
+            android:name=".ui.search.advanced.AdvancedResultSearchActivity"
             android:label="@string/app_name"
             android:parentActivityName=".ui.MainActivity"
             android:screenOrientation="portrait"

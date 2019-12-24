@@ -12,20 +12,18 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.ui.search.SearchViewModel
-import com.sakharu.queregardercesoir.ui.search.title.MovieResultTitleSearchAdapter
+import com.sakharu.queregardercesoir.ui.search.title.TitleSearchMovieAdapter
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_result_advanced_search.*
 import java.util.*
 
 
-class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReachedListener
+class AdvancedResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReachedListener
 {
-    private lateinit var searchTitleAdapter : MovieResultTitleSearchAdapter
+    private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var searchViewModel: SearchViewModel
     private var currentPage=1
     private var sortBy : String="popularity"
@@ -38,11 +36,6 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
     private var isLoading=false
     private var certification:String?=null
     private var movieObserver : Observer<List<Movie>> = Observer {
-        //Si la liste contient plus d'éléments que ceux récupérés via l'api dans cette session
-        //on appelle onBottomReached afin de récupérer les pages suivantes et potentiellement corriger les positions
-        if (it.size>currentPage*MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST)
-            onBottomReached()
-
         if (it.isEmpty())
         {
             if (searchViewModel.totalPagesSearch==0)
@@ -55,7 +48,10 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
         }
         else
         {
-            searchTitleAdapter.addMovie(it)
+            val pair = searchTitleMovieAdapter.addMovie(it)
+            if (pair.first)
+                onBottomReached()
+            recyclerAdvancedTitleMovie.scrollToPosition(pair.second)
             noFilmFromTitleSearch.hide()
         }
         loadingMoreAnimationResultAdvancedSearch.hide()
@@ -65,10 +61,9 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
     private var genreObserver : Observer<List<Genre>> = Observer {
         if (it.isNotEmpty())
         {
-            searchTitleAdapter.addGenres(it)
+            searchTitleMovieAdapter.addGenres(it)
 
-            searchViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
-                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).observe(this,movieObserver)
+            searchViewModel.searchMovieFromCharacteristics.observe(this,movieObserver)
             searchViewModel.genresListLive.removeObservers(this)
         }
     }
@@ -82,13 +77,13 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
 
         searchViewModel.genresListLive.observe(this,genreObserver)
 
-        searchTitleAdapter = MovieResultTitleSearchAdapter(arrayListOf(), arrayListOf(), this, this)
+        searchTitleMovieAdapter = TitleSearchMovieAdapter(arrayListOf(), arrayListOf(), this, this)
 
         recyclerAdvancedTitleMovie.apply {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(false)
             addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
-            adapter = searchTitleAdapter
+            adapter = searchTitleMovieAdapter
         }
         loadingMoreAnimationResultAdvancedSearch.show()
 
@@ -106,6 +101,11 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
             else-> after = "$year-01-01"
         }
 
+        searchViewModel.init(currentPage,sortBy,averageVoteMin,
+            genresId,after,before,during,year,CERTIFICATION_FRANCE,certification)
+
+        searchViewModel.downloadNextPage()
+
         setUpActionBar(getString(R.string.resultSearchTitle))
     }
 
@@ -121,17 +121,10 @@ class ResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBottomReach
     override fun onBottomReached()
     {
         //Si on a atteint la dernière page, on arrête d'écouter la page en cours et on s'abonne à la page suivante
-        if (currentPage-1<searchViewModel.totalPagesSearch && !isLoading)
+        if (!isLoading)
         {
             currentPage++
-            //si on est dans le cas d'une recherche par titre
-
-            searchViewModel.searchMovieFromCharacteristics(currentPage-1,sortBy,averageVoteMin,
-                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).removeObservers(this)
-            //on se désabonne de la page précédente et on s'abonne à la page suivante
-            searchViewModel.searchMovieFromCharacteristics(currentPage,sortBy,averageVoteMin,
-                genresId,after,before,during,year,CERTIFICATION_FRANCE,certification).observe(this,movieObserver)
-
+            searchViewModel.downloadNextPage()
             loadingMoreAnimationResultAdvancedSearch.show()
             isLoading=true
         }

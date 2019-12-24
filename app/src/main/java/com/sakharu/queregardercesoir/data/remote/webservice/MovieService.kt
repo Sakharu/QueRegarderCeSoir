@@ -62,7 +62,7 @@ interface MovieService
                                        @Query("certification_country") certificationCountry:String?=null,
                                        @Query("certification") certification:String?=null,
                                        @Query("with_genres") withGenres:String?=null,
-                                       @Query("vote_count.gte") voteCountGte:Int=5
+                                       @Query("vote_count.gte") voteCountGte:Int=3
                                        ) : ResponseResult<Movie>
 
     @GET("discover/movie")
@@ -70,9 +70,9 @@ interface MovieService
                                        @Query("language") language:String = "fr-FR",
                                        @Query("region") region:String = "FR",
                                        @Query("page") page:Int = 1,
-                                       @Query("sort_by") sortBy:String?=null,
+                                       @Query("sort_by") sortBy:String?="vote_average.desc",
                                        @Query("with_genres") withGenres:String?=null,
-                                       @Query("vote_count.gte") voteCountGte:Int=3
+                                       @Query("vote_count.gte") voteCountGte:Int=10
     ) : ResponseResult<Movie>
 
     @GET("movie/{id}/similar")
