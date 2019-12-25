@@ -42,7 +42,7 @@ const val VOTEAVERAGEDESC = "vote_average.desc"
 /*
    PARAMETRES
  */
-const val NUMBER_OF_DAYS_DEPRECATED_MOVIEINCATEGORY=3
+const val NUMBER_MIN_GENRES=15
 
 /*
     NOM DES PREFERENCES

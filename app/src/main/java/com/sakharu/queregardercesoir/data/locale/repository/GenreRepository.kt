@@ -41,5 +41,8 @@ object GenreRepository
     suspend fun downloadAllGenre()
     {
         insertAllGenre(genreService.getAllGenres().genres)
+        isAllGenreInDB = true
     }
+
+    var isAllGenreInDB = false
 }

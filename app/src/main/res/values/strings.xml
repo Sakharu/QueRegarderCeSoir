@@ -56,6 +56,7 @@
     <string name="discoverTitleFragment">Découvrez de nouveaux films</string>
     <string name="askForFavoritesGenreButton">Le faire maintenant</string>
     <string name="percent">%1$d&#65130;</string>
+    <string name="numberGenreSelected">Vous pouvez choisir jusqu\'à 5 genres.</string>
 
     <!-- RESULTAT RECHERCHE FILM -->
     <string name="resultSearchTitle">Resultat de la recherche</string>

@@ -23,7 +23,7 @@ class DiscoverViewModel : ViewModel()
 
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
-        if (GenreRepository.getNumberGenres()==0)
+        if (!GenreRepository.isAllGenreInDB)
             GenreRepository.downloadAllGenre()
         emitSource(GenreRepository.getAllGenre())
     }

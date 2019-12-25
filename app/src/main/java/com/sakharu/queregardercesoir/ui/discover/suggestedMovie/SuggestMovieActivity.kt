@@ -86,7 +86,7 @@ class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieCli
         if (intent.getLongArrayExtra(EXTRA_GENRES)!=null)
             genresId = intent.getLongArrayExtra(EXTRA_GENRES)!!.toCollection(ArrayList())
 
-        setUpActionBar(getString(R.string.resultSearchTitle))
+        setUpActionBar(getString(R.string.suggestionMoviesTitle))
     }
 
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)

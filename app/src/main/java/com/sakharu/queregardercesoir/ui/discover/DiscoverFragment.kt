@@ -33,6 +33,7 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
     private lateinit var discoverViewModel : DiscoverViewModel
     private lateinit var usualSearchAdapter : UsualSearchAdapter
     private var currentSuggestedMoviesPage = 1
+    private var genresFavoritesId:ArrayList<Long> = arrayListOf()
     private var suggestedMovieAdapter : SuggestedMovieAdapter?=null
     private lateinit var askForFavoriteGenreButton : Button
     private lateinit var askForFavoriteGenreTV : TextView
@@ -101,9 +102,11 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
         //Si l'utilisateur n'a pas renseigné ses films favoris on lui ouvre la boite de dialogue
         //qui permet de le faire et on affiche un message et un bouton pour pouvoir le faire à tout
         //moment
-        val genreIdsFavorites = PreferenceUtil.getLongArray(root.context, PREFERENCE_IDS_FAVORITES_GENRES)
-        if (genreIdsFavorites.isEmpty())
+        genresFavoritesId = PreferenceUtil.getLongArray(root.context, PREFERENCE_IDS_FAVORITES_GENRES)
+        if (genresFavoritesId.isEmpty())
         {
+            loadingProgressBar.hide()
+            seeMoreButton.hide()
             discoverViewModel.genresListLive.observe(viewLifecycleOwner, Observer {
                 AskForFavoriteGenreDialog().showDialog(activity!!,it)
             })
@@ -126,18 +129,20 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
     //va créer toute la mécanique de
     private fun launchSuggestedMovies(context:Context)
     {
-        val genreIdsFavorites = PreferenceUtil.getLongArray(context, PREFERENCE_IDS_FAVORITES_GENRES)
-        if (genreIdsFavorites.isNotEmpty())
+        genresFavoritesId = PreferenceUtil.getLongArray(context, PREFERENCE_IDS_FAVORITES_GENRES)
+        if (genresFavoritesId.isNotEmpty())
         {
             askForFavoriteGenreButton.hide()
             askForFavoriteGenreTV.hide()
+            loadingProgressBar.show()
+            seeMoreButton.show()
 
             discoverViewModel.genresListLive.observe(viewLifecycleOwner, Observer { suggestedMovieAdapter!!.addGenres(it) })
 
             if (DateUtils.isToday(PreferenceUtil.getLong(context, PREFERENCE_LAST_TIMESTAMP_DISCOVER,0)))
                 discoverViewModel.refreshSuggestedMovies=false
 
-            discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genreIdsFavorites).observe(viewLifecycleOwner, Observer {
+            discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genresFavoritesId).observe(viewLifecycleOwner, Observer {
                 loadingProgressBar.hide()
                 if (it.isNotEmpty())
                 {
@@ -146,13 +151,13 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
                     seeMoreButton.show()
                     //lorsque l'on a déjà les 20 films à afficher, on se désabonne des changements qui peuvent survenir dans la BD
                     if (it.size==20)
-                        discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genreIdsFavorites).removeObservers(viewLifecycleOwner)
+                        discoverViewModel.getSuggestedMovies(currentSuggestedMoviesPage,genresFavoritesId).removeObservers(viewLifecycleOwner)
                 }
             })
         }
 
         seeMoreButton.setOnClickListener{
-            startActivity(Intent(context,SuggestMovieActivity::class.java).putExtra(EXTRA_GENRES,genreIdsFavorites.toLongArray()))
+            startActivity(Intent(context,SuggestMovieActivity::class.java).putExtra(EXTRA_GENRES,genresFavoritesId.toLongArray()))
         }
     }
 

@@ -43,10 +43,12 @@ class AskForFavoriteGenreDialog
             chip.text = genre.name
             chip.id = genre.id.toInt()
             chip.setOnClickListener {
-                if (listIdOfSelectedGenre.contains(genre.id))
-                    listIdOfSelectedGenre.remove(genre.id)
-                else
-                    listIdOfSelectedGenre.add(genre.id)
+                when
+                {
+                    listIdOfSelectedGenre.contains(genre.id) -> listIdOfSelectedGenre.remove(genre.id)
+                    listIdOfSelectedGenre.size<5 -> listIdOfSelectedGenre.add(genre.id)
+                    else -> dialog?.findViewById<Button>(R.id.validateButtonDialogFavoriteGenre)?.performClick()
+                }
             }
             chipGroup.addView(chip as View)
         }
