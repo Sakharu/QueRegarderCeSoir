@@ -47,7 +47,6 @@ class AdvancedSearchActivity : BaseActivity()
 
         setUpActionBar(getString(R.string.advancedSearch),true)
 
-
         seekbarAverageVoteAdvancedSearch.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekbar: SeekBar?, progess: Int, fromUser: Boolean)
             {
@@ -59,37 +58,49 @@ class AdvancedSearchActivity : BaseActivity()
         })
 
         advanceSearchButton.setOnClickListener{
-            var year = -1
-            try
-            { year = editTextYearAdvanceSearch.text.toString().toInt() }
-            catch (e:Exception)
-            {
-                e.printStackTrace()
-                showLongToast(this,getString(R.string.yearInvalid))
-            }
+           validateForm()
+        }
 
-            if (year <1850 || year >2050)
-                showLongToast(this,getString(R.string.yearInvalid))
-            else
+        searchViewModel.errorNetwork.observe(this, Observer {
+            if (it)
+                showDialogNetworkError()
+        })
+    }
+
+    private fun validateForm()
+    {
+        var year = -1
+        try
+        {
+            year = editTextYearAdvanceSearch.text.toString().toInt()
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            showLongToast(this,getString(R.string.yearInvalid))
+        }
+
+        if (year <1850 || year >2050)
+            showLongToast(this,getString(R.string.yearInvalid))
+        else
+        {
+            val sortBy = when(spinnerSortAdvancedSearch.selectedItemPosition)
             {
-                val sortBy = when(spinnerSortAdvancedSearch.selectedItemPosition)
-                {
-                    0-> POPULARITYDESC
-                    1-> RELEASEDATEDESC
-                    else-> VOTEAVERAGEDESC
-                }
-                val intentAdvancedSearch = Intent(this,
-                    AdvancedResultSearchActivity::class.java)
-                intentAdvancedSearch.apply {
-                    if (listIdOfSelectedGenre.isNotEmpty())
-                        putExtra(EXTRA_GENRES,listIdOfSelectedGenre.joinToString { it.toString() })
-                    putExtra(EXTRA_SORTBY,sortBy)
-                    putExtra(EXTRA_BEFORE_DURING_AFTER,spinnerGreaterLowerYear.selectedItemPosition)
-                    putExtra(EXTRA_YEAR, year)
-                    putExtra(EXTRA_AVERAGE_VOTE_MIN, voteAverageMinAdvancedSearch.text.toString().toDouble())
-                }
-                startActivity(intentAdvancedSearch)
+                0-> POPULARITYDESC
+                1-> RELEASEDATEDESC
+                else-> VOTEAVERAGEDESC
             }
+            val intentAdvancedSearch = Intent(this, AdvancedResultSearchActivity::class.java)
+
+            intentAdvancedSearch.apply {
+                if (listIdOfSelectedGenre.isNotEmpty())
+                    putExtra(EXTRA_GENRES,listIdOfSelectedGenre.joinToString { it.toString() })
+                putExtra(EXTRA_SORTBY,sortBy)
+                putExtra(EXTRA_BEFORE_DURING_AFTER,spinnerGreaterLowerYear.selectedItemPosition)
+                putExtra(EXTRA_YEAR, year)
+                putExtra(EXTRA_AVERAGE_VOTE_MIN, voteAverageMinAdvancedSearch.text.toString().toDouble())
+            }
+            startActivity(intentAdvancedSearch)
         }
     }
 }

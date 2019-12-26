@@ -11,7 +11,6 @@ import com.sakharu.queregardercesoir.data.locale.dao.MovieInCategoryDAO
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
-import com.sakharu.queregardercesoir.ui.movieList.MovieListViewModel
 import com.sakharu.queregardercesoir.util.*
 
 
@@ -74,8 +73,8 @@ object MovieRepository
     }
 
     fun getMoviesFromCharacSearch(sortBy: String, voteAverageGte: Double = 0.0, genresId: List<String> = listOf(),
-        yearGte: String? = null, yearLte: String? = null, yearDuring: Int? = null,
-        year: Int?, certification: String?):LiveData<List<Movie>>
+                                  yearGte: String? = null, yearLte: String? = null, yearDuring: Int? = null,
+                                  year: Int?, certification: String?):LiveData<List<Movie>>
     {
         //SI LES DONNEES SONT PASSEES ON LES AJOUTE A LA REQUETE
         val yearGteQuery = if (yearGte!=null) "AND releaseYear>$year" else ""
@@ -156,90 +155,144 @@ object MovieRepository
 
     suspend fun downloadTopRatedMovies(page:Int=1) : Int
     {
-        val topRatedMovies = movieService.getTopRatedMovies(page = page)
-        val idCategory = CategoryRepository.insertCategory(
-            CATEGORY_TOPRATED_ID,
-            CATEGORY_TOPRATED_NAME
-        )
-        insertAllMovies(addYearAndCertificationsToMovies(topRatedMovies.results))
-        insertMovieListInCategory(topRatedMovies.results.map { it.id }, idCategory,page)
-        return topRatedMovies.total_pages
+        return try
+        {
+            val topRatedMovies = movieService.getTopRatedMovies(page = page)
+            insertAllMovies(addYearAndCertificationsToMovies(topRatedMovies.results))
+            insertMovieListInCategory(topRatedMovies.results.map { it.id }, CATEGORY_TOPRATED_ID,page)
+            topRatedMovies.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
+
     }
 
     suspend fun downloadNowPlayingMovies(page:Int=1) : Int
     {
-        val newPlayingMovies = movieService.getNowPlayingMovies(page = page)
-        val idCategory = CategoryRepository.insertCategory(
-            CATEGORY_NOWPLAYING_ID,
-            CATEGORY_NOWPLAYING_NAME
-        )
-        insertAllMovies(addYearAndCertificationsToMovies(newPlayingMovies.results))
-        insertMovieListInCategory(newPlayingMovies.results.map { it.id }, idCategory,page)
-        return newPlayingMovies.total_pages
+        return try
+        {
+            val newPlayingMovies = movieService.getNowPlayingMovies(page = page)
+            insertAllMovies(addYearAndCertificationsToMovies(newPlayingMovies.results))
+            insertMovieListInCategory(newPlayingMovies.results.map { it.id }, CATEGORY_NOWPLAYING_ID,page)
+            newPlayingMovies.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 
     suspend fun downloadTrendingMovies(page:Int=1) : Int
     {
-        val upcomingMovies = movieService.getTrendingMovies(page = page)
-        val idCategory = CategoryRepository.insertCategory(
-            CATEGORY_TRENDING_ID,
-            CATEGORY_TRENDING_NAME
-        )
-        insertAllMovies(addYearAndCertificationsToMovies(upcomingMovies.results))
-        insertMovieListInCategory(upcomingMovies.results.map { it.id }, idCategory,page)
-        return upcomingMovies.total_pages
+        return try
+        {
+            val upcomingMovies = movieService.getTrendingMovies(page = page)
+            insertAllMovies(addYearAndCertificationsToMovies(upcomingMovies.results))
+            insertMovieListInCategory(upcomingMovies.results.map { it.id }, CATEGORY_TRENDING_ID,page)
+            return upcomingMovies.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 
-    suspend fun downloadMovieDetail(id:Long,isSuggested:Boolean?=null)
+    suspend fun downloadMovieDetail(id:Long,isSuggested:Boolean?=null) : Int?
     {
-        val movieResult = movieService.getMovieDetail(id = id)
-        val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
-            movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
-            movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,
-            null,null,isSuggested)
-        insertMovie(addYearToMovie(movie))
-        GenreRepository.insertAllGenre(movieResult.genres)
+        return try
+        {
+            val movieResult = movieService.getMovieDetail(id = id)
+            val movie = Movie(movieResult.id,movieResult.title,movieResult.genres.map { it.id },movieResult.overview,
+                movieResult.popularity,movieResult.posterImg,movieResult.backdropImg,movieResult.releaseDate,
+                movieResult.original_title,movieResult.vote_average,movieResult.budget,movieResult.vote_count,
+                null,null,isSuggested)
+            insertMovie(addYearToMovie(movie))
+            GenreRepository.insertAllGenre(movieResult.genres)
+            null
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 
     suspend fun searchMovieFromQuery(query : String, page: Int=1) : Int
     {
-        val movieResult = movieService.searchMovieFromQuery(query = query,page = page)
-        insertAllMovies( addYearAndCertificationsToMovies(movieResult.results))
-        return movieResult.total_pages
+        return try
+        {
+            val movieResult = movieService.searchMovieFromQuery(query = query,page = page)
+            insertAllMovies( addYearAndCertificationsToMovies(movieResult.results))
+            return movieResult.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 
     suspend fun searchMovieFromCharacteristics(page:Int=1,sortBy:String?=null,voteAverageGte:Double?=null, withGenres:String?=null,
                                                releaseDateGte:String?=null,releaseDateLte:String?=null,year:Int?=null,
                                                certificationCountry:String?=null, certification:String?=null): Int {
-        val returnResult = movieService.searchMovieFromCharacs(
-            page = page,
-            sortBy = sortBy,
-            releaseDateGte = releaseDateGte,
-            releaseDatelte = releaseDateLte,
-            voteAverageGte = voteAverageGte,
-            withGenres = withGenres,
-            year=year,
-            certificationCountry = certificationCountry,
-            certification = certification)
-        val movieResult = returnResult.results
-        insertAllMovies(addYearAndCertificationsToMovies(movieResult,certification))
-        return returnResult.total_pages
+        return try
+        {
+            val returnResult = movieService.searchMovieFromCharacs(
+                page = page,
+                sortBy = sortBy,
+                releaseDateGte = releaseDateGte,
+                releaseDatelte = releaseDateLte,
+                voteAverageGte = voteAverageGte,
+                withGenres = withGenres,
+                year=year,
+                certificationCountry = certificationCountry,
+                certification = certification)
+            val movieResult = returnResult.results
+            insertAllMovies(addYearAndCertificationsToMovies(movieResult,certification))
+            return returnResult.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 
     suspend fun downloadSimilarMovies(movieId:Long) : List<Long>
     {
-        val similarMovies = movieService.getSimilarMoviesFromMovieId(movieId).results
-        insertAllMovies(similarMovies)
-        return similarMovies.map { it.id }
+        return try
+        {
+            val similarMovies = movieService.getSimilarMoviesFromMovieId(movieId).results
+            insertAllMovies(similarMovies)
+            similarMovies.map { it.id }
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            arrayListOf(ERROR_CODE.toLong())
+        }
     }
 
     suspend fun downloadSuggestedMovies(page:Int=1, withGenres:String?=null): Int
     {
-        val returnResult = movieService.searchForSuggestedMovies(page = page, withGenres = withGenres)
-        val movieResult = returnResult.results
-        movieResult.map { it.isSuggested=true }
-        insertAllMovies(addYearAndCertificationsToMovies(movieResult))
-        return returnResult.total_pages
+        return try
+        {
+            val returnResult = movieService.searchForSuggestedMovies(page = page, withGenres = withGenres)
+            val movieResult = returnResult.results
+            movieResult.map { it.isSuggested=true }
+            insertAllMovies(addYearAndCertificationsToMovies(movieResult))
+            return returnResult.total_pages
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            ERROR_CODE
+        }
     }
 }
 

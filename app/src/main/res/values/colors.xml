@@ -4,17 +4,34 @@
     <color name="colorPrimaryDark">#1C313A</color>
     <color name="colorPrimaryLight">#718792</color>
     <color name="colorAccent">#FFEB3B</color>
-    <color name="colorBaseText">#FFFFFF</color>
+    <color name="colorBaseTextTitle">#4EB1BA</color>
+    <color name="colorBaseText">#E9E9E9</color>
     <color name="colorAnimationLoading">#50FFFFFF</color>
-    <color name="colorBaseBackround">#616161</color>
+
+    <color name="colorBaseBackround">#222930</color>
     <color name="colorBaseBackround80">#80263238</color>
-    <color name="colorInactiveIconBottomNav">#B0BEC5</color>
-    <color name="colorActiveIconBottomNav">#000000</color>
-    <color name="colorPorgressBarProgression">#00BCD4</color>
     <color name="colorOnError">@android:color/holo_red_dark</color>
     <color name="colorChipBackground">#DEE9E9</color>
     <color name="colorChipBackgroundSelected">#4BF3E1</color>
     <color name="colorProgressVoteMovie">#007DD6</color>
-    <color name="colorBackgroundActionbar">#000000</color>
     <color name="colorBackgroundCardSuggestedMovie">#80000000</color>
+
+    <!-- DETAIL FILM PROGRESSBAR-->
+    <color name="colorPorgressBarProgression">#00BCD4</color>
+
+
+    <!-- ACTION BAR -->
+    <color name="colorTextActionBar">#FFFFFF</color>
+    <color name="colorTextSecondaryActionBar">#FFFFFF</color>
+    <color name="colorBackgroundActionBar">#616161</color>
+
+    <!-- STATUS BAR -->
+    <color name="colorBackgroundStatusBar">@color/colorBaseBackround</color>
+
+    <!-- BOTTOM NAVIGATION BAR -->
+    <color name="colorBackgroundBottomNavBar">#616161</color>
+    <color name="colorTextBottomNavBar">#eceff1</color>
+    <color name="colorIconBottomNavBar">#eceff1</color>
+    <color name="colorSelectedIconBottomNavBar">#bdbdbd</color>
+
 </resources>

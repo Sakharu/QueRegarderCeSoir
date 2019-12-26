@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.movieList.littleMovie
+package com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie
 
 import android.widget.ImageView
 import com.sakharu.queregardercesoir.data.locale.model.Movie

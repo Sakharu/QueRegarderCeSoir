@@ -13,10 +13,10 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
-import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.FullscreenActivity
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.LittleMovieAdapter
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_detail_movie.*
 import java.text.SimpleDateFormat
@@ -25,10 +25,9 @@ import java.util.*
 class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 {
     private lateinit var detailMovieViewModel: DetailMovieViewModel
-    private var genresObserver:Observer<List<Genre>> = Observer {
-        afficherGenres(it)
-    }
     private lateinit var similarMoviesAdapter : LittleMovieAdapter
+
+    private var genresObserver:Observer<List<Genre>> = Observer { afficherGenres(it) }
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
@@ -64,7 +63,10 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
                 titleSimilarMoviesDetail.hide()
         })
 
-
+        detailMovieViewModel.errorNetwork.observe(this, Observer {
+            if (it)
+                showDialogNetworkError()
+        })
     }
 
     private fun showMovieInformations(context: Context, movie: Movie)
@@ -111,8 +113,6 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
             overviewMovieDetail.text = movie.overview
         else
             overviewMovieDetail.setInvisible()
-
-        popularityMovieDetail.text = getString(R.string.popularityPrefix,movie.popularity)
 
         if (movie.vote_average!=null && movie.vote_average!=0.0)
         {

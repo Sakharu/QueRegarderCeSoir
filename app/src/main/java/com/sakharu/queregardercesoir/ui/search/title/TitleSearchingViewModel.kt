@@ -5,10 +5,12 @@ import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
+import com.sakharu.queregardercesoir.ui.base.BaseViewModel
+import com.sakharu.queregardercesoir.util.ERROR_CODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class TitleSearchingViewModel : ViewModel()
+class TitleSearchingViewModel : BaseViewModel()
 {
     var totalPagesSearch = 1
     var query:MutableLiveData<String> = MutableLiveData()
@@ -23,7 +25,8 @@ class TitleSearchingViewModel : ViewModel()
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
         if(GenreRepository.isAllGenreInDB)
-            GenreRepository.downloadAllGenre()
+            if (GenreRepository.downloadAllGenre() == ERROR_CODE)
+                setError()
         emitSource(GenreRepository.getAllGenre())
     }
 
@@ -32,7 +35,11 @@ class TitleSearchingViewModel : ViewModel()
             if (page<=totalPagesSearch)
             {
                 totalPagesSearch = MovieRepository.searchMovieFromQuery(query.value!!,page)
+                if (totalPagesSearch == ERROR_CODE)
+                    setError()
                 page++
             }
         }
+
+
 }

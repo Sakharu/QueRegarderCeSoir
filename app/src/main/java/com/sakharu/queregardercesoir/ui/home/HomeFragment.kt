@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.core.app.ActivityOptionsCompat
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,18 +15,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
-import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.base.BaseFragment
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.home.category.CategoryMovieAdapter
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.fragment_home.*
-import org.jetbrains.anko.doAsync
 
 
-class HomeFragment : Fragment(), OnMovieClickListener
+class HomeFragment : BaseFragment(), OnMovieClickListener
 {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var categoryMovieAdapter : CategoryMovieAdapter
@@ -56,33 +53,39 @@ class HomeFragment : Fragment(), OnMovieClickListener
 
         homeViewModel = ViewModelProvider(this, ViewModelFactory()).get(HomeViewModel::class.java)
 
-        //on ajoute le listener sur le recyclerview afin d'ouvrir le détail d'une catégorie au clic
-        homeViewModel.categoriesLiveList.observe(viewLifecycleOwner, Observer<List<Category>> {})
-
         //Si on a pas refresh les données aujourd'hui
-        if (DateUtils.isToday(PreferenceUtil.getLong(context!!,
-                PREFERENCE_LAST_TIMESTAMP_HOME,0)))
+        if (DateUtils.isToday(PreferenceUtil.getLong(context!!, PREFERENCE_LAST_TIMESTAMP_HOME,0)))
             homeViewModel.refreshData=false
 
-        //on charge les films les mieux notés
-        homeViewModel.topRatedMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
-            passDataToAdapterAndRefreshLoading(1,it)
+        //on ajoute le listener sur le recyclerview afin d'ouvrir le détail d'une catégorie au clic
+        homeViewModel.categoriesLiveList.observe(viewLifecycleOwner, Observer<List<Category>> {
+            //on charge les films les mieux notés
+            if (it.size == NUMBER_OF_CATEGORIES)
+            {
+                homeViewModel.topRatedMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> { topRatedMovies ->
+                    passDataToAdapterAndRefreshLoading(1,topRatedMovies)
+                })
+
+                //on charge les films actuellement au cinéma
+                homeViewModel.nowPlayingMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> { nowPlayingMovies ->
+                    passDataToAdapterAndRefreshLoading(2,nowPlayingMovies)
+                })
+
+                //on charge les films à la mode en ce moment
+                homeViewModel.trendingMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> { trendingMovies ->
+                    passDataToAdapterAndRefreshLoading(0,trendingMovies)
+                })
+            }
         })
 
-        //on charge les films actuellement au cinéma
-        homeViewModel.nowPlayingMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
-            passDataToAdapterAndRefreshLoading(2,it)
-        })
-
-        //on charge les films à la mode en ce moment
-        homeViewModel.trendingMoviesLiveList.observe(viewLifecycleOwner, Observer<List<Movie>> {
-            passDataToAdapterAndRefreshLoading(0,it)
+        homeViewModel.errorNetwork.observe(viewLifecycleOwner, Observer {
+            if (it)
+                this.showDialogError()
         })
     }
 
     private fun passDataToAdapterAndRefreshLoading(position: Int, movieList:List<Movie>)
     {
-        //TODO RESOUDRE CRASH ICI AU PREMIER DEMARRAGE
         categoryMovieAdapter.refreshOrAddACategory(homeViewModel.categoriesLiveList.value!![position],position,movieList)
         listCategoriesLoaded[position]=true
         checkIfLoadingIsFinish()
@@ -94,7 +97,7 @@ class HomeFragment : Fragment(), OnMovieClickListener
         {
             loadingMoreAnimationHome.hide()
             //si les données ont été refresh par rapport à l'api, on note dans les préférences le timestamp actuel
-            if (homeViewModel.refreshData)
+            if (homeViewModel.refreshData && homeViewModel.errorNetwork.value==false)
                 PreferenceUtil.setLong(context!!, PREFERENCE_LAST_TIMESTAMP_HOME,System.currentTimeMillis())
         }
     }

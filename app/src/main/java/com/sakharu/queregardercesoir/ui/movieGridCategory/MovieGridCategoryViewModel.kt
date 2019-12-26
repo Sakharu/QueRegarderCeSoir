@@ -1,16 +1,18 @@
-package com.sakharu.queregardercesoir.ui.movieList
+package com.sakharu.queregardercesoir.ui.movieGridCategory
 
 import androidx.lifecycle.*
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
+import com.sakharu.queregardercesoir.ui.base.BaseViewModel
 import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
 import com.sakharu.queregardercesoir.util.CATEGORY_TRENDING_ID
+import com.sakharu.queregardercesoir.util.ERROR_CODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class MovieListViewModel : ViewModel()
+class MovieGridCategoryViewModel : BaseViewModel()
 {
     lateinit var category : Category
     private var totalPages = 1
@@ -46,6 +48,8 @@ class MovieListViewModel : ViewModel()
                     CATEGORY_TRENDING_ID->MovieRepository.downloadTrendingMovies(page.value!!)
                     else->MovieRepository.downloadNowPlayingMovies(page.value!!)
                 }
+                if (totalPages == ERROR_CODE)
+                    setError()
             }
         }
     }

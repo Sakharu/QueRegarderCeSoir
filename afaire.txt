@@ -1,8 +1,9 @@
-remonter recyclerview lorsque l'on vient de finir de charger des nouveaux films
-TESTER A MORT LA PARTIE ACCUEIL, LA PARTIE DECOUVERTE, RECHERCHE AVANCEE, RECHERCHE PAR TITRE, SUGGESTIONS DE FILMS
-traiter erreurs network
+ajouter et regler les pb d'animations
 corriger fautes orthographes
 refonte design
 toute la partie des listes
 empêcher le rechargement du fragment lorsque l'on rappui sur le même fragment
+ajouter des commentaires un peu partout, refactorer et clean le code
+faire les todo
+
 

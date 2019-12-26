@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.movieList.littleMovie
+package com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

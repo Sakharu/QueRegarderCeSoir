@@ -17,7 +17,7 @@ import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_title_searching.*
 
@@ -26,12 +26,12 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
 {
     private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var titleSearchingViewModel : TitleSearchingViewModel
-    private var currentPage=1
     private var isLoading=false
     private var handler = Handler()
+    private var oldSize = 0
 
     private var movieObserver : Observer<List<Movie>> = Observer {
-
+        //si aucun film n'a été trouvé en BD
         if (it.isEmpty())
             if (titleSearchingViewModel.totalPagesSearch==0)
                 noMovieFromTitleSearch.show()
@@ -39,14 +39,20 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
                 onBottomReached()
         else
         {
-            val pair = searchTitleMovieAdapter.addMovie(it)
-            if (pair.first)
+            //si on a pas chargé assez de film, on charge la page suivante
+            if (searchTitleMovieAdapter.addMovie(it))
                 onBottomReached()
-            recyclerResultTitleSearch.scrollToPosition(pair.second)
             noMovieFromTitleSearch.hide()
+
+            //si on a récupéré des nouveaux films
+            if (oldSize!=0 && oldSize!=it.size)
+                loadingMoreAnimationResultSearch.hide()
+            //si on a pas récupéré de nouveaux films, on va lancer le chargement de la page suivante
+            else
+                onBottomReached()
         }
-        loadingMoreAnimationResultSearch.hide()
         isLoading=false
+        oldSize = it.size
     }
 
     private var genreObserver : Observer<List<Genre>> = Observer {
@@ -64,9 +70,9 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
         titleSearchingViewModel = ViewModelProvider(this, ViewModelFactory()).get(
             TitleSearchingViewModel::class.java)
 
-        titleSearchingViewModel.genresListLive.observe(this,genreObserver)
-
         searchTitleMovieAdapter = TitleSearchMovieAdapter(arrayListOf(), arrayListOf(),this,this)
+
+        titleSearchingViewModel.genresListLive.observe(this,genreObserver)
 
         recyclerResultTitleSearch.apply {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
@@ -82,13 +88,22 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
                 if (editSearchActionBar.text.toString().length >= 3 && !isLoading)
                 {
                     //si l'utilisateur ne tape rien pendant 1 seconde et demi, on lance la recherche automatiquement
-                    handler.postDelayed({ launchRequest() },1000)
+                    handler.postDelayed({ launchRequest() },1500)
                 }
             }
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
             override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
                 //En passant null pour le token, tous les callbacks et messages vont être supprimés
                 handler.removeCallbacksAndMessages(null)
+            }
+        })
+
+        //si une erreur dans la récupération des films survient
+        titleSearchingViewModel.errorNetwork.observe(this, Observer {
+            if (it)
+            {
+                showDialogNetworkError()
+                loadingMoreAnimationResultSearch.hide()
             }
         })
     }
@@ -105,11 +120,10 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
     override fun onBottomReached()
     {
         //Si on a atteint la dernière page, on arrête d'écouter la page en cours et on s'abonne à la page suivante
-        if (currentPage-1<titleSearchingViewModel.totalPagesSearch && !isLoading)
+        if (!isLoading)
         {
             isLoading=true
             loadingMoreAnimationResultSearch.show()
-            currentPage++
             titleSearchingViewModel.downloadSearchingMoviesFromQuery()
         }
     }
@@ -119,13 +133,12 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
         isLoading=true
         loadingMoreAnimationResultSearch.show()
         searchTitleMovieAdapter.clearAllMovies()
-        currentPage = 1
         titleSearchingViewModel.query.value =editSearchActionBar.text.toString()
         titleSearchingViewModel.page = 1
         titleSearchingViewModel.downloadSearchingMoviesFromQuery()
         hideKeyboard()
-        //si l'observer est déjà placé, refaire observe dessus ne changera rien
-        titleSearchingViewModel.searchMovieByTitle.observe(this@TitleSearchingActivity,movieObserver)
+        if (!titleSearchingViewModel.searchMovieByTitle.hasObservers())
+            titleSearchingViewModel.searchMovieByTitle.observe(this@TitleSearchingActivity,movieObserver)
 
     }
 }

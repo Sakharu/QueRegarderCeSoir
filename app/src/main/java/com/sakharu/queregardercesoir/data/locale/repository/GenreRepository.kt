@@ -6,11 +6,13 @@ import com.sakharu.queregardercesoir.data.locale.dao.GenreDAO
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.GenreService
+import com.sakharu.queregardercesoir.util.ERROR_CODE
 
 object GenreRepository
 {
     private lateinit var database: AppDatabase
     private lateinit var genreDAO: GenreDAO
+    var isAllGenreInDB = false
 
     private val genreService = GenreService.create()
 
@@ -38,11 +40,19 @@ object GenreRepository
      *  REGION REMOTE
      **********************/
 
-    suspend fun downloadAllGenre()
+    suspend fun downloadAllGenre() : Int?
     {
-        insertAllGenre(genreService.getAllGenres().genres)
-        isAllGenreInDB = true
+        return try
+        {
+            insertAllGenre(genreService.getAllGenres().genres)
+            isAllGenreInDB = true
+            null
+        }
+        catch (e:Exception)
+        {
+            e.printStackTrace()
+            return ERROR_CODE
+        }
     }
 
-    var isAllGenreInDB = false
 }

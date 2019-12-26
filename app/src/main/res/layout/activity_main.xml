@@ -19,9 +19,12 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:labelVisibilityMode="labeled"
+        app:itemTextColor="@drawable/bottom_navigation_selector"
+        app:itemIconTint="@drawable/bottom_navigation_selector"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
+        android:theme="@style/Widget.BottomNavigationView"
         app:menu="@menu/bottom_nav_menu" />
 
     <fragment

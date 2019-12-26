@@ -16,6 +16,9 @@ interface CategoryDAO
     @Query("SELECT * FROM category ORDER BY id")
     fun getAllCategories() : LiveData<List<Category>>
 
+    @Query("SELECT count(*) FROM category")
+    fun getNbCategory() : Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(category:List<Category>)
 

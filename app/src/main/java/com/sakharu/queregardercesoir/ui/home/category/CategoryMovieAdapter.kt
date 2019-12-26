@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.ui.movieList.MovieListActivity
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.LittleMovieAdapter
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.MovieGridCategoryActivity
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.LittleMovieAdapter
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.EXTRA_CATEGORY
 import com.sakharu.queregardercesoir.util.NUMBER_OF_CATEGORIES
 
@@ -46,7 +46,7 @@ class CategoryMovieAdapter(private var movieListInArrayList: ArrayList<CategoryA
         }
 
         holder.itemView.findViewById<ImageButton>(R.id.seeMoreImageButton).setOnClickListener{
-            holder.itemView.context.startActivity(Intent(holder.itemView.context, MovieListActivity::class.java)
+            holder.itemView.context.startActivity(Intent(holder.itemView.context, MovieGridCategoryActivity::class.java)
                 .putExtra(EXTRA_CATEGORY,category))
         }
     }

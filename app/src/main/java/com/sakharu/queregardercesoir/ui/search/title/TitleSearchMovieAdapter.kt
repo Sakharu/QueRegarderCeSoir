@@ -9,7 +9,7 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.OnBottomReachedListener
 import com.sakharu.queregardercesoir.util.setInvisible
 import com.sakharu.queregardercesoir.util.show
@@ -96,8 +96,7 @@ class TitleSearchMovieAdapter(private var listeMovie: MutableList<Movie>,
     On ajoute à la liste actuelle les nouveaux films récupérés
     */
     //on retourne true si on a pas assez ajouté d'élement sinon false
-    //on retourne l'ancienne taille pour permettre au recyclerview de scroll aux nouveaux éléments
-    fun addMovie(newMovies:List<Movie>) : Pair<Boolean,Int>
+    fun addMovie(newMovies:List<Movie>) : Boolean
     {
         val oldPosition = listeMovie.size
         if (newMovies.isNotEmpty())
@@ -113,7 +112,7 @@ class TitleSearchMovieAdapter(private var listeMovie: MutableList<Movie>,
 
         }
         //si on a chargé moins de 10 nouveaux éléments, on retourne true afin de charger la page suivante si possible
-        return Pair(oldPosition+10>listeMovie.size,oldPosition)
+        return oldPosition+10>listeMovie.size
     }
 
     fun clearAllMovies()

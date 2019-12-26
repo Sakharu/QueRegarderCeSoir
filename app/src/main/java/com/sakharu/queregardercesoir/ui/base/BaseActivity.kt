@@ -1,6 +1,7 @@
 package com.sakharu.queregardercesoir.ui.base
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.view.Menu
 import android.view.MenuItem
@@ -16,7 +17,7 @@ open class BaseActivity : AppCompatActivity()
 {
 
     /**
-        GESTION DE L'ACTION BAR
+    GESTION DE L'ACTION BAR
      **/
     fun setUpActionBar(title:String, enableBack: Boolean = true)
     {
@@ -72,6 +73,43 @@ open class BaseActivity : AppCompatActivity()
             view = View(this)
         imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
+
+    /**
+     *  DIALOG BOX
+     */
+
+    fun showDialogBox(titleRef:Int?, message:Int, positiveButtonMessage:Int, negativeButtonMessage:Int?, fonctionOui:()->Unit , fonctionNon:()->Unit)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.apply {
+            if (titleRef!=null)
+                setTitle(titleRef)
+            setMessage(message)
+            setPositiveButton(positiveButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionOui() }
+            if(negativeButtonMessage!=null)
+                setNegativeButton(negativeButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionNon() }
+        }
+
+        builder.create().show()
+    }
+
+    fun showDialogBox(titleRef:String, message:String, positiveButtonMessage:String, negativeButtonMessage:String, fonctionOui:()->Unit , fonctionNon:()->Unit)
+    {
+        val builder = AlertDialog.Builder(this)
+        builder.apply {
+            setTitle(titleRef)
+            setMessage(message)
+            setPositiveButton(positiveButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionOui() }
+            setNegativeButton(negativeButtonMessage) { dialog, _ -> dialog.dismiss(); fonctionNon() }
+        }
+
+        builder.create().show()
+    }
+
+    /**
+     * ERREURS
+     */
+    fun showDialogNetworkError() = showDialogBox(null,R.string.errorDesc,R.string.ok,null,{},{})
 
 
 }

@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.ui.discover
+package com.sakharu.queregardercesoir.ui.discover.suggestedMovie
 
 import android.app.Activity
 import android.app.Dialog
@@ -11,6 +11,7 @@ import com.google.android.material.chip.ChipGroup
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.util.ACTION_FAVORITE_GENRE_VALIDATE
+import com.sakharu.queregardercesoir.util.NUMBER_MAX_SELECTED_GENRE
 import com.sakharu.queregardercesoir.util.PREFERENCE_IDS_FAVORITES_GENRES
 import com.sakharu.queregardercesoir.util.PreferenceUtil
 
@@ -18,8 +19,10 @@ class AskForFavoriteGenreDialog
 {
     private var dialog : Dialog? = null
     private val listIdOfSelectedGenre = ArrayList<Long>()
+
     fun showDialog(activity: Activity, listGenres:List<Genre>)
     {
+
         dialog = Dialog(activity)
 
         dialog?.apply {
@@ -46,9 +49,10 @@ class AskForFavoriteGenreDialog
                 when
                 {
                     listIdOfSelectedGenre.contains(genre.id) -> listIdOfSelectedGenre.remove(genre.id)
-                    listIdOfSelectedGenre.size<5 -> listIdOfSelectedGenre.add(genre.id)
-                    else -> dialog?.findViewById<Button>(R.id.validateButtonDialogFavoriteGenre)?.performClick()
+                    listIdOfSelectedGenre.size<NUMBER_MAX_SELECTED_GENRE -> listIdOfSelectedGenre.add(genre.id)
                 }
+                if (listIdOfSelectedGenre.size==NUMBER_MAX_SELECTED_GENRE)
+                    dialog?.findViewById<Button>(R.id.validateButtonDialogFavoriteGenre)?.performClick()
             }
             chipGroup.addView(chip as View)
         }

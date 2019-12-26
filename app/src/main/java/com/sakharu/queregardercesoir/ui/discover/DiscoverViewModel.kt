@@ -1,7 +1,6 @@
 package com.sakharu.queregardercesoir.ui.discover
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import com.sakharu.queregardercesoir.data.locale.model.Genre
@@ -10,21 +9,23 @@ import com.sakharu.queregardercesoir.data.locale.model.UsualSearch
 import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import com.sakharu.queregardercesoir.data.locale.repository.UsualSearchRepository
+import com.sakharu.queregardercesoir.ui.base.BaseViewModel
+import com.sakharu.queregardercesoir.util.ERROR_CODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-class DiscoverViewModel : ViewModel()
+class DiscoverViewModel : BaseViewModel()
 {
-
     var totalPagesSuggestions = 1
     var refreshSuggestedMovies = true
-    var genresId : ArrayList<Long> = arrayListOf()
     var page=1
+    var favoriteGenresId:ArrayList<Long> = arrayListOf()
 
     var genresListLive : LiveData<List<Genre>> = liveData (Dispatchers.IO)
     {
         if (!GenreRepository.isAllGenreInDB)
-            GenreRepository.downloadAllGenre()
+            if (GenreRepository.downloadAllGenre() == ERROR_CODE)
+                setError()
         emitSource(GenreRepository.getAllGenre())
     }
 
@@ -43,21 +44,28 @@ class DiscoverViewModel : ViewModel()
             }
         }
 
-    fun getSuggestedMovies(page:Int,genresId:ArrayList<Long> = this.genresId,orderBy:String="RANDOM()") : LiveData<List<Movie>> = liveData(Dispatchers.IO)
+    fun getSuggestedMovies(genresId:ArrayList<Long>,orderBy:String="RANDOM()") : LiveData<List<Movie>> = liveData(Dispatchers.IO)
     {
         if (refreshSuggestedMovies)
+        {
             totalPagesSuggestions = MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
+            if (totalPagesSuggestions == ERROR_CODE)
+                setError()
+        }
         emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId,orderBy = orderBy))
     }
 
-    val suggestMovies =  liveData(Dispatchers.IO)
+    val suggestedMovies =  liveData(Dispatchers.IO)
     {
-        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = genresId,orderBy = "vote_average DESC",limit = ""))
+        emitSource(MovieRepository.getSuggestedMoviesFromGenres(genresId = favoriteGenresId,orderBy = "vote_average DESC",limit = ""))
     }
 
-    fun downloadSuggestMovies(page:Int) =
+    fun downloadSuggestMovies() =
         viewModelScope.launch {
-            totalPagesSuggestions =MovieRepository.downloadSuggestedMovies(page,withGenres = genresId.joinToString("|"))
+            page++
+            totalPagesSuggestions = MovieRepository.downloadSuggestedMovies(page,withGenres = favoriteGenresId.joinToString("|"))
+            if (totalPagesSuggestions == ERROR_CODE)
+                setError()
         }
 
 }

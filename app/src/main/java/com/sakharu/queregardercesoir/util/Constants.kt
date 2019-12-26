@@ -42,7 +42,8 @@ const val VOTEAVERAGEDESC = "vote_average.desc"
 /*
    PARAMETRES
  */
-const val NUMBER_MIN_GENRES=15
+const val NUMBER_MAX_SELECTED_GENRE=5
+const val ERROR_CODE=-1
 
 /*
     NOM DES PREFERENCES

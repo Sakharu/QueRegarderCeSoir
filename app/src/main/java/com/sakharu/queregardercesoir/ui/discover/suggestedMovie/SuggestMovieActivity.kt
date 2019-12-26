@@ -12,54 +12,52 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.discover.DiscoverViewModel
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.ui.search.title.TitleSearchMovieAdapter
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_result_advanced_search.*
+import kotlinx.android.synthetic.main.fragment_discover.*
 
 class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieClickListener
 {
     private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var discoverViewModel: DiscoverViewModel
-    private var currentPage=1
-    private var genresId:ArrayList<Long> = arrayListOf()
     private var isLoading=true
-    private var movieObserver : Observer<List<Movie>> = Observer {
-        //Si la liste contient plus d'éléments que ceux récupérés via l'api dans cette session
-        //on appelle onBottomReached afin de récupérer les pages suivantes et potentiellement corriger les positions
-        if (it.size>currentPage* MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST)
-            onBottomReached()
+    private var oldSize = 0
 
+    private var movieObserver : Observer<List<Movie>> = Observer {
+        //si aucun film n'a été trouvé en BD
         if (it.isEmpty())
-        {
             if (discoverViewModel.totalPagesSuggestions==0)
-            {
                 noFilmFromTitleSearch.show()
-                noFilmFromTitleSearch.text = getString(R.string.noFilmFromTitleSearch)
-            }
+            else
+                onBottomReached()
+        else
+        {
+            //si on a pas chargé assez de film, on charge la page suivante
+            if (searchTitleMovieAdapter.addMovie(it))
+                onBottomReached()
+            noFilmFromTitleSearch.hide()
+
+            //si on a récupéré des nouveaux films
+            if (oldSize!=it.size)
+                loadingMoreAnimationResultAdvancedSearch.hide()
+            //si on a pas récupéré de nouveaux films, on va lancer le chargement de la page suivante
             else
                 onBottomReached()
         }
-        else
-        {
-            searchTitleMovieAdapter.addMovie(it)
-            noFilmFromTitleSearch.hide()
-        }
-        loadingMoreAnimationResultAdvancedSearch.hide()
         isLoading=false
-
+        oldSize = it.size
     }
 
     private var genreObserver : Observer<List<Genre>> = Observer {
         if (it.isNotEmpty())
         {
             searchTitleMovieAdapter.addGenres(it)
-            discoverViewModel.genresId = it.map { genre -> genre.id }.toCollection(ArrayList())
-            discoverViewModel.suggestMovies.observe(this,movieObserver)
+            discoverViewModel.suggestedMovies.observe(this,movieObserver)
             discoverViewModel.genresListLive.removeObservers(this)
         }
     }
@@ -84,9 +82,17 @@ class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieCli
         loadingMoreAnimationResultAdvancedSearch.show()
 
         if (intent.getLongArrayExtra(EXTRA_GENRES)!=null)
-            genresId = intent.getLongArrayExtra(EXTRA_GENRES)!!.toCollection(ArrayList())
+            discoverViewModel.favoriteGenresId = intent.getLongArrayExtra(EXTRA_GENRES)!!.toCollection(ArrayList())
 
         setUpActionBar(getString(R.string.suggestionMoviesTitle))
+
+        discoverViewModel.errorNetwork.observe(this, Observer {
+            if (it)
+            {
+                showDialogNetworkError()
+                loadingMoreAnimationSuggestedMovies.hide()
+            }
+        })
     }
 
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)
@@ -100,10 +106,9 @@ class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieCli
     override fun onBottomReached()
     {
         //On lance le téléchargement de la page suivante lorsqu'on arrive au bout de la page en cours
-        if (currentPage-1<discoverViewModel.totalPagesSuggestions && !isLoading)
+        if (!isLoading)
         {
-            currentPage++
-            discoverViewModel.downloadSuggestMovies(currentPage)
+            discoverViewModel.downloadSuggestMovies()
             loadingMoreAnimationResultAdvancedSearch.show()
             isLoading=true
         }

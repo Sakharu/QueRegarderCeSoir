@@ -36,7 +36,6 @@
     <!-- DETAIL D'UN FILM -->
     <string name="genrePrefix">Genre : %1$s</string>
     <string name="averageVoteDetail">Note moyenne</string>
-    <string name="popularityPrefix">Score de popularite : %1$.2f</string>
     <string name="voteCountPrefix">Sur %1$d votes</string>
     <string name="releaseDatePrefix">Date de sortie : %1$s</string>
     <string name="budgetPrefix">Budget : %1$f\$</string>
@@ -112,5 +111,10 @@
     <string name="searchTitleFragment">Rechercher un film</string>
     <string name="emptyFieldTitle">Le titre est vide</string>
     <string name="tooShortFieldTitle">Le titre doit faire plus de 3 caractères</string>
+
+    <!-- ERREURS -->
+    <string name="errorTitle">Une erreur est survenue</string>
+    <string name="errorDesc">Une erreur est survenue durant la communication avec le serveur. Les données peuvent être incomplètes.</string>
+    <string name="ok">Ok</string>
 
 </resources>

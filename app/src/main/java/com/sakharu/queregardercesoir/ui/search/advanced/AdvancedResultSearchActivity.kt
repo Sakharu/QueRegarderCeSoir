@@ -14,7 +14,7 @@ import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.ui.search.title.TitleSearchMovieAdapter
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_result_advanced_search.*
@@ -33,36 +33,39 @@ class AdvancedResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBot
     private var year:Int=0
     private var averageVoteMin:Double=0.0
     private var genresId:String?=null
-    private var isLoading=false
+    private var isLoading=true
     private var certification:String?=null
+    private var oldSize=0
+
     private var movieObserver : Observer<List<Movie>> = Observer {
+        //si aucun film n'a été trouvé en BD
         if (it.isEmpty())
-        {
             if (searchViewModel.totalPagesSearch==0)
-            {
                 noFilmFromTitleSearch.show()
-                noFilmFromTitleSearch.text = getString(R.string.noFilmFromTitleSearch)
-            }
+            else
+                onBottomReached()
+        else
+        {
+            //si on a pas chargé assez de film, on charge la page suivante
+            if (searchTitleMovieAdapter.addMovie(it))
+                onBottomReached()
+            noFilmFromTitleSearch.hide()
+
+            //si on a récupéré des nouveaux films
+            if (oldSize!=0 && oldSize!=it.size)
+                loadingMoreAnimationResultAdvancedSearch.hide()
+            //si on a pas récupéré de nouveaux films, on va lancer le chargement de la page suivante
             else
                 onBottomReached()
         }
-        else
-        {
-            val pair = searchTitleMovieAdapter.addMovie(it)
-            if (pair.first)
-                onBottomReached()
-            recyclerAdvancedTitleMovie.scrollToPosition(pair.second)
-            noFilmFromTitleSearch.hide()
-        }
-        loadingMoreAnimationResultAdvancedSearch.hide()
         isLoading=false
+        oldSize = it.size
     }
 
     private var genreObserver : Observer<List<Genre>> = Observer {
         if (it.isNotEmpty())
         {
             searchTitleMovieAdapter.addGenres(it)
-
             searchViewModel.searchMovieFromCharacteristics.observe(this,movieObserver)
             searchViewModel.genresListLive.removeObservers(this)
         }
@@ -74,7 +77,6 @@ class AdvancedResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBot
         setContentView(R.layout.activity_result_advanced_search)
 
         searchViewModel = ViewModelProvider(this, ViewModelFactory()).get(SearchViewModel::class.java)
-
         searchViewModel.genresListLive.observe(this,genreObserver)
 
         searchTitleMovieAdapter = TitleSearchMovieAdapter(arrayListOf(), arrayListOf(), this, this)
@@ -107,6 +109,14 @@ class AdvancedResultSearchActivity : BaseActivity(), OnMovieClickListener, OnBot
         searchViewModel.downloadNextPage()
 
         setUpActionBar(getString(R.string.resultSearchTitle))
+
+        searchViewModel.errorNetwork.observe(this, Observer {
+            if (it)
+            {
+                showDialogNetworkError()
+                loadingMoreAnimationResultAdvancedSearch.hide()
+            }
+        })
     }
 
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)

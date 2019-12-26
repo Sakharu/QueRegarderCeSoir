@@ -8,7 +8,7 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
-import com.sakharu.queregardercesoir.ui.movieList.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 
 class SuggestedMovieAdapter(private var movieList: MutableList<Movie>,
                             private var genresList:List<Genre>,

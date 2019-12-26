@@ -1,26 +1,26 @@
 package com.sakharu.queregardercesoir.ui.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.liveData
+import androidx.lifecycle.*
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.MovieInCategory
 import com.sakharu.queregardercesoir.data.locale.repository.CategoryRepository
 import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
-import com.sakharu.queregardercesoir.util.CATEGORY_NOWPLAYING_ID
-import com.sakharu.queregardercesoir.util.CATEGORY_TOPRATED_ID
-import com.sakharu.queregardercesoir.util.CATEGORY_TRENDING_ID
+import com.sakharu.queregardercesoir.ui.base.BaseViewModel
+import com.sakharu.queregardercesoir.util.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
-class HomeViewModel : ViewModel()
+class HomeViewModel : BaseViewModel()
 {
+
     var refreshData=true
     /*
       on récupère toutes les catégories de la BD
     */
     var categoriesLiveList : LiveData<List<Category>> = liveData (Dispatchers.IO)
     {
+        if (CategoryRepository.getNbCategory()!= NUMBER_OF_CATEGORIES)
+            CategoryRepository.insertAllCategories()
         emitSource(CategoryRepository.getAllCategoriesLive())
     }
 
@@ -32,10 +32,11 @@ class HomeViewModel : ViewModel()
        Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
        la table ID
     */
-    var moviesInTopRatedCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
+    private var moviesInTopRatedCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
         if (refreshData)
-            MovieRepository.downloadTopRatedMovies()
+            if (MovieRepository.downloadTopRatedMovies() == ERROR_CODE)
+                setError()
         emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_TOPRATED_ID))
     }
 
@@ -55,10 +56,11 @@ class HomeViewModel : ViewModel()
        Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
        la table ID
     */
-    var nowPlayingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
+    private var nowPlayingMovieInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
         if (refreshData)
-            MovieRepository.downloadNowPlayingMovies()
+            if (MovieRepository.downloadNowPlayingMovies() == ERROR_CODE)
+                setError()
         emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_NOWPLAYING_ID))
     }
 
@@ -78,10 +80,11 @@ class HomeViewModel : ViewModel()
        Récupération des films les mieux notés : on récupère les ID de films qui apparaissent dans
        la table ID
     */
-    var trendingMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
+    private var trendingMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
     {
         if (refreshData)
-            MovieRepository.downloadTrendingMovies()
+            if (MovieRepository.downloadTrendingMovies() == ERROR_CODE)
+                setError()
         emitSource(MovieRepository.getFirstMoviesInCategoryFromCategoryId(CATEGORY_TRENDING_ID))
     }
 
@@ -93,18 +96,4 @@ class HomeViewModel : ViewModel()
     {
         MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
-
-
-    /************************************
-     * DELETE MOVIES FROM CATEGORY
-     ***********************************/
-    /*
-    On récupère toutes les liaisons entre les films et les catégories en vue de les supprimer
-     lorsque celles-ci datent de plus de 3 jours
-    */
-    var getAllMoviesInCategory : LiveData<List<MovieInCategory>> = liveData(Dispatchers.IO)
-    {
-        emitSource(MovieRepository.getAllMoviesInCategoryLive())
-    }
-
 }
