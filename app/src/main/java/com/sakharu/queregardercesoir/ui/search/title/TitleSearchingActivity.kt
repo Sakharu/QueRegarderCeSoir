@@ -16,19 +16,22 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.base.OnBottomReachedListener
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_title_searching.*
 
 
-class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomReachedListener
+class TitleSearchingActivity : BaseActivity(), OnMovieClickListener,
+    OnBottomReachedListener
 {
     private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var titleSearchingViewModel : TitleSearchingViewModel
     private var isLoading=false
     private var handler = Handler()
     private var oldSize = 0
+    override var searchIconEnable = false
 
     private var movieObserver : Observer<List<Movie>> = Observer {
         //si aucun film n'a été trouvé en BD
@@ -75,8 +78,8 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
         titleSearchingViewModel.genresListLive.observe(this,genreObserver)
 
         recyclerResultTitleSearch.apply {
-            layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
-            addItemDecoration(DividerItemDecoration(context, (layoutManager as LinearLayoutManager).orientation))
+            layoutManager = LinearLayoutManager(this@TitleSearchingActivity, LinearLayoutManager.VERTICAL,false)
+            addItemDecoration(DividerItemDecoration(this@TitleSearchingActivity, (layoutManager as LinearLayoutManager).orientation))
             adapter = searchTitleMovieAdapter
         }
 
@@ -111,7 +114,7 @@ class TitleSearchingActivity : BaseActivity(), OnMovieClickListener, OnBottomRea
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)
     {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-            androidx.core.util.Pair<View,String>(imageView,getString(R.string.transitionMovieListToDetail)))
+            androidx.core.util.Pair<View,String>(imageView,movie.id.toString()))
 
         startActivity(Intent(this, DetailMovieActivity::class.java)
             .putExtra(EXTRA_MOVIE_ID,movie.id),options.toBundle())

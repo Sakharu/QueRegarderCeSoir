@@ -7,6 +7,7 @@ import android.text.format.DateUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -67,6 +68,8 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
         root.findViewById<RecyclerView>(R.id.recyclerUsualSearches).apply {
             layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(true)
+            layoutAnimation = AnimationUtils.loadLayoutAnimation(root.context, R.anim.layout_animation_slide_from_right)
+            scheduleLayoutAnimation()
             adapter = usualSearchAdapter
         }
 
@@ -97,6 +100,8 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
         root.findViewById<RecyclerView>(R.id.recyclerSuggestionsMovies).apply {
             layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(false)
+            layoutAnimation = AnimationUtils.loadLayoutAnimation(root.context, R.anim.layout_animation_fall_down)
+            scheduleLayoutAnimation()
             adapter = suggestedMovieAdapter
         }
 

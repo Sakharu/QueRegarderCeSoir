@@ -8,19 +8,20 @@ import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
 import com.sakharu.queregardercesoir.ui.base.BaseViewModel
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 class HomeViewModel : BaseViewModel()
 {
 
     var refreshData=true
+    var arrayCategoryNames = arrayOf<String>()
+
     /*
       on récupère toutes les catégories de la BD
     */
-    var categoriesLiveList : LiveData<List<Category>> = liveData (Dispatchers.IO)
+    val categoriesLiveList : LiveData<List<Category>> = liveData (Dispatchers.IO)
     {
         if (CategoryRepository.getNbCategory()!= NUMBER_OF_CATEGORIES)
-            CategoryRepository.insertAllCategories()
+            CategoryRepository.insertAllCategories(arrayCategoryNames)
         emitSource(CategoryRepository.getAllCategoriesLive())
     }
 
@@ -46,7 +47,7 @@ class HomeViewModel : BaseViewModel()
     */
     var topRatedMoviesLiveList = Transformations.switchMap(moviesInTopRatedCategory)
     {
-        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromMovieListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -70,7 +71,7 @@ class HomeViewModel : BaseViewModel()
     */
     var nowPlayingMoviesLiveList = Transformations.switchMap(nowPlayingMovieInCategory)
     {
-        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromMovieListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 
     /************************************
@@ -94,6 +95,6 @@ class HomeViewModel : BaseViewModel()
     */
     var trendingMoviesLiveList = Transformations.switchMap(trendingMoviesInCategory)
     {
-        MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
+        MovieRepository.getMoviesFromMovieListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
     }
 }

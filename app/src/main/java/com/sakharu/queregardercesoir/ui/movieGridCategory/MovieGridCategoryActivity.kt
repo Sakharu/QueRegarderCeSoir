@@ -12,26 +12,31 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.base.OnBottomReachedListener
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.LittleMovieAdapter
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
+import com.sakharu.queregardercesoir.ui.userList.OnFavoriteClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_movie_grid.*
 
 
-class MovieGridCategoryActivity : BaseActivity(),OnMovieClickListener, OnBottomReachedListener
+class MovieGridCategoryActivity : BaseActivity(),OnMovieClickListener,
+    OnBottomReachedListener,OnFavoriteClickListener
 {
     private lateinit var movieGridCategoryViewModel: MovieGridCategoryViewModel
     private lateinit var littleMoviePagingAdapter: LittleMovieAdapter
     private lateinit var observer : Observer<List<Movie>>
     private var isLoading=false
+    //Permet de ne mettre à jour qu'un film à la fois dans la liste des favoris
+    private var isFavoriteLoading=true
 
     override fun onCreate(savedInstanceState: Bundle?)
     {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_movie_grid)
 
-        littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(), this, this)
+        littleMoviePagingAdapter = LittleMovieAdapter(arrayListOf(), arrayListOf(),this, this,this)
         recyclerCategoryDetails.apply {
             layoutManager = GridLayoutManager(this@MovieGridCategoryActivity,3)
             setHasFixedSize(false)
@@ -53,6 +58,11 @@ class MovieGridCategoryActivity : BaseActivity(),OnMovieClickListener, OnBottomR
         movieGridCategoryViewModel.category = intent.getSerializableExtra(EXTRA_CATEGORY) as Category
 
         setUpActionBar(movieGridCategoryViewModel.category.name)
+
+        movieGridCategoryViewModel.getFavoritesMoviesId.observe(this, Observer {
+            littleMoviePagingAdapter.setFavoriteMoviesId(it.toMutableList())
+        })
+
 
         //on charge les films populaires lorsqu'on en a en BD
         movieGridCategoryViewModel.getMoviesLiveList.observe(this, observer)
@@ -85,9 +95,18 @@ class MovieGridCategoryActivity : BaseActivity(),OnMovieClickListener, OnBottomR
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)
     {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this@MovieGridCategoryActivity,
-            androidx.core.util.Pair<View,String>(imageView,getString(R.string.transitionMovieListToDetail)))
+            androidx.core.util.Pair<View,String>(imageView,movie.id.toString()))
 
         startActivity(Intent(this, DetailMovieActivity::class.java).
             putExtra(EXTRA_MOVIE_ID,movie.id),options.toBundle())
+    }
+
+    override fun onFavoriteClick(movie: Movie)
+    {
+        isFavoriteLoading=true
+        movieGridCategoryViewModel.updateFavoriteMovie(movie).observe(this, Observer {
+            littleMoviePagingAdapter.refreshFavoriteIcon(it.first,it.second)
+            isFavoriteLoading=false
+        })
     }
 }

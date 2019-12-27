@@ -13,7 +13,7 @@
 
     <item
         android:id="@+id/navigation_userList"
-        android:icon="@drawable/ic_list_white_24dp"
+        android:icon="@drawable/ic_account_circle_black_24dp"
         android:title="@string/title_lists" />
 
 </menu>

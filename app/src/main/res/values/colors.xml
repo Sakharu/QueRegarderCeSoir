@@ -30,8 +30,8 @@
 
     <!-- BOTTOM NAVIGATION BAR -->
     <color name="colorBackgroundBottomNavBar">#616161</color>
-    <color name="colorTextBottomNavBar">#eceff1</color>
-    <color name="colorIconBottomNavBar">#eceff1</color>
-    <color name="colorSelectedIconBottomNavBar">#bdbdbd</color>
+    <color name="colorTextBottomNavBar">#FFFFFF</color>
+    <color name="colorIconBottomNavBar">#FFFFFF</color>
+    <color name="colorSelectedIconBottomNavBar">#9e9e9e</color>
 
 </resources>

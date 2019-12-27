@@ -33,18 +33,21 @@ object MovieRepository
      *  REGION LOCALE
      **********************/
 
-    /*
-        MOVIE
-     */
+    /**
+     * MOVIE
+     **/
     suspend fun insertAllMovies(movies: List<Movie>) = movieDAO.insertAll(movies)
 
     suspend fun insertMovie(movie: Movie) = insertAllMovies(listOf(movie))
 
     fun getMovieLiveById(id: Long): LiveData<Movie> = movieDAO.getById(id)
 
-    /*
-        MOVIEINCATEGORY
-     */
+    fun getMoviesFromMovieListIdLive(movieListId:List<Long>): LiveData<List<Movie>> = movieDAO.getMoviesByListId(movieListId)
+
+
+    /**
+     * MOVIE IN CATEGORY
+     **/
 
     suspend fun insertMovieListInCategory(idMovieList : List<Long>, categoryId:Long, page: Int)
     {
@@ -52,25 +55,25 @@ object MovieRepository
             movieInCategoryDAO.insert(MovieInCategory(null, categoryId, idMovieList[i],i+ MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST*(page-1),page))
     }
 
-    fun getAllMoviesInCategoryLive() : LiveData<List<MovieInCategory>>
-            = movieInCategoryDAO.getAllMoviesInCategory()
-
-    fun getMoviesFromListIdLive(popularMoviesListId:List<Long>): LiveData<List<Movie>>
-            = movieDAO.getMoviesByListId(popularMoviesListId)
-
     fun getMovieInCategoryLive(id:Long, page:MutableLiveData<Int>): LiveData<List<MovieInCategory>> =
         Transformations.switchMap(page) {
             movieInCategoryDAO.getMoviesIdFromCategoryId(id,it)
         }
 
-
     fun getFirstMoviesInCategoryFromCategoryId(id:Long): LiveData<List<MovieInCategory>> =
         movieInCategoryDAO.getFirstMoviesIdFromCategoryID(id)
+
+
+    /**
+     *  SEARCH MOVIES
+     */
 
     fun getMoviesFromTitleSearch(search:MutableLiveData<String>)
             = Transformations.switchMap(search) {
         movieDAO.getMoviesFromTitleSearch(it)
     }
+
+
 
     fun getMoviesFromCharacSearch(sortBy: String, voteAverageGte: Double = 0.0, genresId: List<String> = listOf(),
                                   yearGte: String? = null, yearLte: String? = null, yearDuring: Int? = null,
@@ -202,7 +205,7 @@ object MovieRepository
         }
     }
 
-    suspend fun downloadMovieDetail(id:Long,isSuggested:Boolean?=null) : Int?
+    suspend fun downloadMovieDetail(id: Long, isSuggested: Boolean? = null) : Int?
     {
         return try
         {

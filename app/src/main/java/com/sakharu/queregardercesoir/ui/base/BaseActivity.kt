@@ -15,7 +15,7 @@ import com.sakharu.queregardercesoir.ui.search.title.TitleSearchingActivity
 
 open class BaseActivity : AppCompatActivity()
 {
-
+    open var searchIconEnable=true
     /**
     GESTION DE L'ACTION BAR
      **/
@@ -41,8 +41,8 @@ open class BaseActivity : AppCompatActivity()
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.searchAppBar ->
         {
-            startActivity(Intent(this,
-                TitleSearchingActivity::class.java))
+            if (searchIconEnable)
+                startActivity(Intent(this, TitleSearchingActivity::class.java))
             true
         }
         else -> true

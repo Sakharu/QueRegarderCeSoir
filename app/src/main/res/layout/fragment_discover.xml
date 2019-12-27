@@ -23,16 +23,32 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerUsualSearches"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardUsualSearches"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:background="@color/colorBaseBackround"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_usual_search" />
+            app:layout_constraintTop_toBottomOf="@+id/textView7">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/colorBaseBackround">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerUsualSearches"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_usual_search" />
+            </FrameLayout>
+
+        </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/advancedSearchTV"
@@ -42,7 +58,7 @@
             android:text="@string/advancedSearch"
             android:textSize="12sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recyclerUsualSearches" />
+            app:layout_constraintTop_toBottomOf="@+id/cardUsualSearches" />
 
         <TextView
             android:id="@+id/textView9"

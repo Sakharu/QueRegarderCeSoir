@@ -10,7 +10,8 @@ import com.sakharu.queregardercesoir.data.locale.dao.*
 import com.sakharu.queregardercesoir.data.locale.model.*
 
 
-@Database(entities = [Movie::class, Genre::class, Category::class, MovieInCategory::class,UsualSearch::class], version = 1, exportSchema = false)
+@Database(entities = [Movie::class, Genre::class, Category::class, MovieInCategory::class,
+    UsualSearch::class,UserList::class,MovieInUserList::class], version = 1, exportSchema = false)
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase()
 {
@@ -19,6 +20,9 @@ abstract class AppDatabase : RoomDatabase()
     abstract fun movieInCategoryDAO(): MovieInCategoryDAO
     abstract fun genreDAO(): GenreDAO
     abstract fun usualSearchDAO(): UsualSearchDAO
+    abstract fun userListDAO(): UserListDAO
+    abstract fun movieInUserListDAO(): MovieInUserListDAO
+
     companion object
     {
         fun buildInstance(context: Context) = Room

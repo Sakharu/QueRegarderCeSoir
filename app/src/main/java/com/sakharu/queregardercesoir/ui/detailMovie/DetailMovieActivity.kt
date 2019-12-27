@@ -37,9 +37,9 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
         detailMovieViewModel = ViewModelProvider(this, ViewModelFactory()).get(DetailMovieViewModel::class.java)
 
         val id = intent.getLongExtra(EXTRA_MOVIE_ID,-1)
+        //Ne devrait normalement jamais arriver
         if (id==-1L)
-        //TODO FERMER ACTIVITE AFFICHER ERREUR
-            finish()
+            showDialogBox(null, R.string.errorDetailMovie,R.string.ok,null,{finish()}, {})
         else
         {
             detailMovieViewModel.getMovieById(id).observe(this, Observer<Movie> {
@@ -47,9 +47,12 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
                 if (!detailMovieViewModel.getGenresFromMovie(it).hasObservers())
                     detailMovieViewModel.getGenresFromMovie(it).observe(this,genresObserver)
             })
+            imgPosterMovieDetail.transitionName = id.toString()
         }
 
-        similarMoviesAdapter = LittleMovieAdapter(arrayListOf(),this)
+
+
+        similarMoviesAdapter = LittleMovieAdapter(arrayListOf(),onMovieClickListener = this)
 
         recyclerSimilarMovies.apply {
             layoutManager = GridLayoutManager(this@DetailMovieActivity,3)
@@ -79,7 +82,6 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
             Glide.with(context)
                 .load(MovieService.IMAGE_PREFIX_POSTER + movie.posterImg)
                 .error(R.drawable.film_poster_placeholder)
-                .dontAnimate()
                 .into(imgPosterMovieDetail)
         else
             Glide.with(context).load(R.drawable.film_poster_placeholder).into(imgPosterMovieDetail)
@@ -184,7 +186,9 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
             genresMovieDetail.hide()
     }
 
-    override fun onClickOnMovie(movie: Movie, imageView: ImageView) {
+    override fun onClickOnMovie(movie: Movie, imageView: ImageView)
+    {
+        //TODO
     }
 }
 

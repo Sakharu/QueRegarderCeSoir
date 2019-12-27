@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.chip.Chip
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
+import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_advanced_search.*
@@ -18,20 +19,23 @@ class AdvancedSearchActivity : BaseActivity()
 {
     private lateinit var searchViewModel : SearchViewModel
     private var listIdOfSelectedGenre = linkedSetOf<Long>()
+    private var progressVoteAverage = 30
     private var genreObserver = Observer<List<Genre>> {
-            for (genre in it)
-            {
-                val chip = layoutInflater.inflate(R.layout.chip_layout,layoutAdvanceSearch, false) as Chip
-                chip.text = genre.name
-                chip.id = genre.id.toInt()
-                chip.setOnClickListener{
-                    if (listIdOfSelectedGenre.contains(genre.id))
-                        listIdOfSelectedGenre.remove(genre.id)
-                    else
-                        listIdOfSelectedGenre.add(genre.id)
-                }
-                chipGroupGenres.addView(chip as View)
+        for (genre in it)
+        {
+            val chip = layoutInflater.inflate(R.layout.chip_layout,layoutAdvanceSearch, false) as Chip
+            chip.text = genre.name
+            chip.id = genre.id.toInt()
+            chip.setOnClickListener{
+                if (listIdOfSelectedGenre.contains(genre.id))
+                    listIdOfSelectedGenre.remove(genre.id)
+                else
+                    listIdOfSelectedGenre.add(genre.id)
             }
+            chipGroupGenres.addView(chip as View)
+        }
+        if (GenreRepository.isAllGenreInDB)
+            searchViewModel.genresListLive.removeObservers(this)
     }
 
 
@@ -47,10 +51,13 @@ class AdvancedSearchActivity : BaseActivity()
 
         setUpActionBar(getString(R.string.advancedSearch),true)
 
+        voteAverageMinAdvancedSearch.text = getString(R.string.percent,progressVoteAverage)
+
         seekbarAverageVoteAdvancedSearch.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
-            override fun onProgressChanged(seekbar: SeekBar?, progess: Int, fromUser: Boolean)
+            override fun onProgressChanged(seekbar: SeekBar?, progress: Int, fromUser: Boolean)
             {
-                voteAverageMinAdvancedSearch.text = (progess/10.0).toString()
+                progressVoteAverage=progress/10
+                voteAverageMinAdvancedSearch.text = getString(R.string.percent,progress)
             }
 
             override fun onStartTrackingTouch(seekbar: SeekBar?) {}
@@ -58,7 +65,7 @@ class AdvancedSearchActivity : BaseActivity()
         })
 
         advanceSearchButton.setOnClickListener{
-           validateForm()
+            validateForm()
         }
 
         searchViewModel.errorNetwork.observe(this, Observer {
@@ -98,7 +105,7 @@ class AdvancedSearchActivity : BaseActivity()
                 putExtra(EXTRA_SORTBY,sortBy)
                 putExtra(EXTRA_BEFORE_DURING_AFTER,spinnerGreaterLowerYear.selectedItemPosition)
                 putExtra(EXTRA_YEAR, year)
-                putExtra(EXTRA_AVERAGE_VOTE_MIN, voteAverageMinAdvancedSearch.text.toString().toDouble())
+                putExtra(EXTRA_AVERAGE_VOTE_MIN, (progressVoteAverage/10).toDouble())
             }
             startActivity(intentAdvancedSearch)
         }

@@ -1,9 +1,5 @@
-ajouter et regler les pb d'animations
+toute la partie des listes
 corriger fautes orthographes
 refonte design
-toute la partie des listes
 empêcher le rechargement du fragment lorsque l'on rappui sur le même fragment
 ajouter des commentaires un peu partout, refactorer et clean le code
-faire les todo
-
-

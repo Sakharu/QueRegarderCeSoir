@@ -3,7 +3,7 @@ package com.sakharu.queregardercesoir.ui.home.category
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageButton
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
@@ -36,16 +36,16 @@ class CategoryMovieAdapter(private var movieListInArrayList: ArrayList<CategoryA
     {
         val category = movieListInArrayList[position].category
         holder.titleCategory.text = category.name
+
         holder.recyclerLittleMovie.apply {
             layoutManager = LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false)
             setHasFixedSize(true)
-            adapter = LittleMovieAdapter(
-                movieListInArrayList[position].movieList.toMutableList(),
-                onMovieClickListener=onMovieClickListener
-            )
+            layoutAnimation = AnimationUtils.loadLayoutAnimation(holder.itemView.context, R.anim.layout_animation_slide_from_right)
+            scheduleLayoutAnimation()
+            adapter = LittleMovieAdapter(movieListInArrayList[position].movieList.toMutableList(), onMovieClickListener=onMovieClickListener)
         }
 
-        holder.itemView.findViewById<ImageButton>(R.id.seeMoreImageButton).setOnClickListener{
+        holder.seeMoreIB.setOnClickListener{
             holder.itemView.context.startActivity(Intent(holder.itemView.context, MovieGridCategoryActivity::class.java)
                 .putExtra(EXTRA_CATEGORY,category))
         }

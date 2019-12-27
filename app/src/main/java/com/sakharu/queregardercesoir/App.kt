@@ -1,10 +1,7 @@
 package com.sakharu.queregardercesoir
 
 import android.app.Application
-import com.sakharu.queregardercesoir.data.locale.repository.CategoryRepository
-import com.sakharu.queregardercesoir.data.locale.repository.GenreRepository
-import com.sakharu.queregardercesoir.data.locale.repository.MovieRepository
-import com.sakharu.queregardercesoir.data.locale.repository.UsualSearchRepository
+import com.sakharu.queregardercesoir.data.locale.repository.*
 
 class App:Application()
 {
@@ -15,5 +12,6 @@ class App:Application()
         GenreRepository.initialize(this)
         CategoryRepository.initialize(this)
         UsualSearchRepository.initialize(this)
+        UserListRepository.initialize(this)
     }
 }

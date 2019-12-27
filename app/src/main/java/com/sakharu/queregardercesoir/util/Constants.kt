@@ -5,14 +5,18 @@ package com.sakharu.queregardercesoir.util
  */
 const val NUMBER_OF_CATEGORIES=3
 
-const val CATEGORY_TRENDING_NAME="Tendances actuelles"
 const val CATEGORY_TRENDING_ID=1L
-
-const val CATEGORY_TOPRATED_NAME="Les plus appréciés"
 const val CATEGORY_TOPRATED_ID=2L
-
-const val CATEGORY_NOWPLAYING_NAME="En salle en ce moment"
 const val CATEGORY_NOWPLAYING_ID=3L
+
+/*
+    USER LISTS
+ */
+const val NUMBER_OF_BASE_LIST=3
+
+const val USER_LIST_FAVORITE_ID=1L
+const val USER_LIST_TOWATCH_ID=2L
+const val USER_LIST_WATCHED_ID=3L
 
 /*
     ACTIONS & EXTRA

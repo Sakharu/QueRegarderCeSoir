@@ -4,20 +4,14 @@
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="title_home">Accueil</string>
     <string name="title_discover">Découvrir</string>
-    <string name="title_lists">Listes</string>
+    <string name="title_lists">Mes films</string>
 
     <!-- CATEGORIES -->
-    <string name="category_popular_name">Ils ont le vent en poupe</string>
-    <string name="category_popular_overview">Les films les plus populaires récent ou ancien. Actualisé chaque jour.</string>
-
-    <string name="category_toprated_name">Ils ont conquis le public</string>
-    <string name="category_toprated_overview">Les films les mieux notés par le public toutes générations confondues.</string>
-
-    <string name="category_nowplaying_name">En salle en ce moment</string>
-    <string name="category_nowplaying_overview">Les films actuellement en salle près de chez vous.</string>
-
-    <string name="category_upcoming_name">Bientôt en salle</string>
-    <string name="category_upcoming_overview">Les fims prochainement en salle près de chez vous.</string>
+    <array name="categoryNames">
+        <item>Ils ont le vent en poupe</item>
+        <item>Ils ont conquis le public</item>
+        <item>En salle en ce moment</item>
+    </array>
     <string name="seeMore">Voir plus</string>
 
     <!-- RECHERCHES COURANTES -->
@@ -42,6 +36,7 @@
     <string name="overviewPrefix">Synopsis : %1$s</string>
     <string name="originalTitlePrefix">Titre original : %1$s</string>
     <string name="similarMovies">Films similaires</string>
+    <string name="errorDetailMovie">Une erreur est survenue durant l\'ouverture du détail du film</string>
 
     <!-- TRANSITIONS -->
     <string name="transitionMovieListToDetail">transitionMovieListToDetail</string>
@@ -53,7 +48,7 @@
     <string name="usualSearches">Recherches populaires</string>
     <string name="suggestionMoviesTitle">Suggestions basés sur vos genres favoris</string>
     <string name="discoverTitleFragment">Découvrez de nouveaux films</string>
-    <string name="askForFavoritesGenreButton">Le faire maintenant</string>
+    <string name="askForFavoritesGenreButton">Définir</string>
     <string name="percent">%1$d&#65130;</string>
     <string name="numberGenreSelected">Vous pouvez choisir jusqu\'à 5 genres.</string>
 
@@ -74,7 +69,6 @@
     <string name="hintYear">1850 → 2030</string>
     <string name="voteAverage">Note moyenne minimale</string>
     <string name="yearInvalid">L\'année entrée est invalide, elle doit être comprise entre 1850 et 2014</string>
-    <string name="baseAverageVote">3.0</string>
     <string name="everyFieldEmpty">Veuillez remplir au moins champs</string>
     <string name="sortBy">Trier par</string>
     <string-array name="sortBySearch">
@@ -116,5 +110,19 @@
     <string name="errorTitle">Une erreur est survenue</string>
     <string name="errorDesc">Une erreur est survenue durant la communication avec le serveur. Les données peuvent être incomplètes.</string>
     <string name="ok">Ok</string>
+
+    <!-- USER LISTS -->
+    <array name="baseListNames">
+        <item>Favoris</item>
+        <item>Films à voir</item>
+        <item>Films déjà vus</item>
+    </array>
+
+    <array name="baseListResourceName">
+        <item> </item>
+        <item> </item>
+        <item> </item>
+    </array>
+    <string name="emptyList">Aucun film n\'a encore été ajouté</string>
 
 </resources>

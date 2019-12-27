@@ -16,7 +16,6 @@
         android:id="@+id/searchAppBar"
         android:icon="@android:drawable/ic_menu_search"
         app:showAsAction="always"
-        android:iconTint="#FF0000"
         android:title="@string/title_discover"
         />
 

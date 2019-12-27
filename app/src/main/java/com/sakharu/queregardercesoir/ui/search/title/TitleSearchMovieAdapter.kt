@@ -10,7 +10,7 @@ import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.util.OnBottomReachedListener
+import com.sakharu.queregardercesoir.ui.base.OnBottomReachedListener
 import com.sakharu.queregardercesoir.util.setInvisible
 import com.sakharu.queregardercesoir.util.show
 import java.text.SimpleDateFormat

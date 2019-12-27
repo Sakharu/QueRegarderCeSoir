@@ -1,4 +1,4 @@
-package com.sakharu.queregardercesoir.util
+package com.sakharu.queregardercesoir.ui.base
 
 interface OnBottomReachedListener
 {

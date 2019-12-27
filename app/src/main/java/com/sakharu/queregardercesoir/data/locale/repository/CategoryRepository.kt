@@ -6,6 +6,7 @@ import com.sakharu.queregardercesoir.data.locale.AppDatabase
 import com.sakharu.queregardercesoir.data.locale.dao.CategoryDAO
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.util.*
+import kotlin.coroutines.coroutineContext
 
 object CategoryRepository
 {
@@ -32,11 +33,11 @@ object CategoryRepository
 
     fun getAllCategoriesLive() : LiveData<List<Category>> = categoryDAO.getAllCategories()
 
-    suspend fun insertAllCategories()
+    suspend fun insertAllCategories(names:Array<String>)
     {
-        insertCategory(CATEGORY_TRENDING_ID, CATEGORY_TRENDING_NAME)
-        insertCategory(CATEGORY_TOPRATED_ID, CATEGORY_TOPRATED_NAME)
-        insertCategory(CATEGORY_NOWPLAYING_ID, CATEGORY_NOWPLAYING_NAME)
+        insertCategory(CATEGORY_TRENDING_ID, names[0])
+        insertCategory(CATEGORY_TOPRATED_ID, names[1])
+        insertCategory(CATEGORY_NOWPLAYING_ID, names[2])
     }
     /***********************
      *  REGION REMOTE

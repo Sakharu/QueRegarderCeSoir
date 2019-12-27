@@ -30,12 +30,14 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
     private lateinit var categoryMovieAdapter : CategoryMovieAdapter
     private lateinit var recyclerCategory : RecyclerView
     private var listCategoriesLoaded= arrayListOf(false,false,false)
+    private var isDialogShown=false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
         categoryMovieAdapter = CategoryMovieAdapter(onMovieClickListener = this)
         recyclerCategory = root.findViewById(R.id.recyclerHomePopularMovies)
+
         recyclerCategory.apply {
             layoutManager = LinearLayoutManager(context!!,LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(true)
@@ -44,14 +46,9 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
 
         (activity as BaseActivity).setUpActionBar(getString(R.string.title_home),false)
 
-        return root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?)
-    {
-        super.onActivityCreated(savedInstanceState)
-
         homeViewModel = ViewModelProvider(this, ViewModelFactory()).get(HomeViewModel::class.java)
+
+        homeViewModel.arrayCategoryNames = resources.getStringArray(R.array.categoryNames)
 
         //Si on a pas refresh les données aujourd'hui
         if (DateUtils.isToday(PreferenceUtil.getLong(context!!, PREFERENCE_LAST_TIMESTAMP_HOME,0)))
@@ -79,9 +76,13 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
         })
 
         homeViewModel.errorNetwork.observe(viewLifecycleOwner, Observer {
-            if (it)
+            if (it && !isDialogShown)
+            {
                 this.showDialogError()
+                isDialogShown=true
+            }
         })
+        return root
     }
 
     private fun passDataToAdapterAndRefreshLoading(position: Int, movieList:List<Movie>)
@@ -112,11 +113,12 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
         if (activity!=null)
         {
             val options = ActivityOptionsCompat.makeSceneTransitionAnimation(activity!!,
-                androidx.core.util.Pair<View,String>(imageView,getString(R.string.transitionMovieListToDetail)))
+                androidx.core.util.Pair<View,String>(imageView,movie.id.toString()))
 
             startActivity(Intent(activity, DetailMovieActivity::class.java).putExtra(EXTRA_MOVIE_ID,movie.id),options.toBundle())
         }
+        else
+            startActivity(Intent(activity, DetailMovieActivity::class.java).putExtra(EXTRA_MOVIE_ID,movie.id))
 
     }
-
 }

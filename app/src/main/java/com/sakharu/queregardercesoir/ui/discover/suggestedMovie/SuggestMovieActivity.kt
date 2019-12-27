@@ -13,6 +13,7 @@ import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Genre
 import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.base.OnBottomReachedListener
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.discover.DiscoverViewModel
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
@@ -21,7 +22,8 @@ import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.activity_result_advanced_search.*
 import kotlinx.android.synthetic.main.fragment_discover.*
 
-class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieClickListener
+class SuggestMovieActivity : BaseActivity(),
+    OnBottomReachedListener, OnMovieClickListener
 {
     private lateinit var searchTitleMovieAdapter : TitleSearchMovieAdapter
     private lateinit var discoverViewModel: DiscoverViewModel
@@ -98,7 +100,7 @@ class SuggestMovieActivity : BaseActivity(), OnBottomReachedListener, OnMovieCli
     override fun onClickOnMovie(movie: Movie, imageView: ImageView)
     {
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(this,
-            androidx.core.util.Pair<View,String>(imageView,getString(R.string.transitionMovieListToDetail)))
+            androidx.core.util.Pair<View,String>(imageView,movie.id.toString()))
 
         startActivity(Intent(this, DetailMovieActivity::class.java).putExtra(EXTRA_MOVIE_ID,movie.id),options.toBundle())
     }

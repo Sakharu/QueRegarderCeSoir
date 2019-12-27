@@ -32,9 +32,11 @@ class MovieGridCategoryViewModel : BaseViewModel()
         de la table MovieInCategory
     */
     var getMoviesLiveList: LiveData<List<Movie>> = Transformations.switchMap(getmoviesIdInSelectedCategoryByPage)
-        {
-            MovieRepository.getMoviesFromListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
-        }
+    {
+        MovieRepository.getMoviesFromMovieListIdLive(it.map { movieInCategory-> movieInCategory.idMovie })
+    }
+
+
 
     fun downloadMovies()
     {
