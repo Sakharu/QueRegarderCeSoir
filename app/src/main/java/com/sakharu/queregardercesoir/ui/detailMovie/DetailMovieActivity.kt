@@ -15,6 +15,7 @@ import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.FullscreenActivity
 import com.sakharu.queregardercesoir.ui.base.BaseActivity
+import com.sakharu.queregardercesoir.ui.detailMovie.chooseUserList.ChooseUserListDialog
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.LittleMovieAdapter
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
@@ -22,10 +23,14 @@ import kotlinx.android.synthetic.main.activity_detail_movie.*
 import java.text.SimpleDateFormat
 import java.util.*
 
+
 class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 {
     private lateinit var detailMovieViewModel: DetailMovieViewModel
     private lateinit var similarMoviesAdapter : LittleMovieAdapter
+
+    private var isFavorite = false
+    private var idMovie = -1L
 
     private var genresObserver:Observer<List<Genre>> = Observer { afficherGenres(it) }
 
@@ -36,45 +41,75 @@ class DetailMovieActivity : BaseActivity(), OnMovieClickListener
 
         detailMovieViewModel = ViewModelProvider(this, ViewModelFactory()).get(DetailMovieViewModel::class.java)
 
-        val id = intent.getLongExtra(EXTRA_MOVIE_ID,-1)
+        idMovie = intent.getLongExtra(EXTRA_MOVIE_ID,-1)
         //Ne devrait normalement jamais arriver
-        if (id==-1L)
+        if (idMovie==-1L)
             showDialogBox(null, R.string.errorDetailMovie,R.string.ok,null,{finish()}, {})
         else
         {
-            detailMovieViewModel.getMovieById(id).observe(this, Observer<Movie> {
+            detailMovieViewModel.getMovieById(idMovie).observe(this, Observer<Movie> {
                 showMovieInformations(this,it)
                 if (!detailMovieViewModel.getGenresFromMovie(it).hasObservers())
                     detailMovieViewModel.getGenresFromMovie(it).observe(this,genresObserver)
             })
-            imgPosterMovieDetail.transitionName = id.toString()
+            imgPosterMovieDetail.transitionName = idMovie.toString()
+
+            similarMoviesAdapter = LittleMovieAdapter(arrayListOf(),onMovieClickListener = this)
+
+            recyclerSimilarMovies.apply {
+                layoutManager = GridLayoutManager(this@DetailMovieActivity,3)
+                adapter = similarMoviesAdapter
+            }
+
+            detailMovieViewModel.getSimilarMovies(idMovie).observe(this, Observer {
+                if (it.isNotEmpty())
+                    similarMoviesAdapter.setData(it)
+                else
+                    titleSimilarMoviesDetail.hide()
+            })
+
+            detailMovieViewModel.errorNetwork.observe(this, Observer {
+                if (it)
+                    showDialogNetworkError()
+            })
+
+            detailMovieViewModel.isMovieFavorite(idMovie).observe(this, Observer {
+                if (it==0)
+                {
+                    isFavorite=false
+                    addTofavoriteIconDetailMovie.setImageResource(R.drawable.ic_favorite_border_24dp)
+                }
+                else
+                {
+                    isFavorite=true
+                    addTofavoriteIconDetailMovie.setImageResource(R.drawable.ic_favorite_24dp)
+                }
+            })
+
+            setUpListenersForLists()
+        }
+    }
+
+    private fun setUpListenersForLists()
+    {
+        addTofavoriteIconDetailMovie.setOnClickListener{
+            detailMovieViewModel.updateFavoriteMovie(idMovie,!isFavorite)
         }
 
+        addToListIconDetailMovie.setOnClickListener{
+            if (detailMovieViewModel.userLists.isNotEmpty())
+            {
+                detailMovieViewModel.getUserListsForMovie(idMovie).observe(this, Observer {
+                    ChooseUserListDialog().showDialog(this@DetailMovieActivity, detailMovieViewModel.userLists,it)
+                })
 
-
-        similarMoviesAdapter = LittleMovieAdapter(arrayListOf(),onMovieClickListener = this)
-
-        recyclerSimilarMovies.apply {
-            layoutManager = GridLayoutManager(this@DetailMovieActivity,3)
-            adapter = similarMoviesAdapter
+            }
+            //TODO GERER ERREUR
         }
-
-        detailMovieViewModel.getSimilarMovies(id).observe(this, Observer {
-            if (it.isNotEmpty())
-                similarMoviesAdapter.setData(it)
-            else
-                titleSimilarMoviesDetail.hide()
-        })
-
-        detailMovieViewModel.errorNetwork.observe(this, Observer {
-            if (it)
-                showDialogNetworkError()
-        })
     }
 
     private fun showMovieInformations(context: Context, movie: Movie)
     {
-
         setUpActionBar(movie.title)
 
         //Affichage du poster

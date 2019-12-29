@@ -8,9 +8,9 @@
 
     <!-- CATEGORIES -->
     <array name="categoryNames">
-        <item>Ils ont le vent en poupe</item>
-        <item>Ils ont conquis le public</item>
-        <item>En salle en ce moment</item>
+        <item>Tendances actuelles</item>
+        <item>Must-sees</item>
+        <item>En salle</item>
     </array>
     <string name="seeMore">Voir plus</string>
 
@@ -19,12 +19,14 @@
         <item>La crème des films récents</item>
         <item>Ma famille d\'abord</item>
         <item>Les succès de la décénnie</item>
+        <item>Recherche avancée</item>
     </array>
 
     <array name="usualSearchestSubTitles">
         <item>Les films les mieux notés des 5 dernières années</item>
         <item>Les meilleurs films tous publics de ces 20 dernières années</item>
         <item>Les plus grands succès critiques de ces 10 dernières années</item>
+        <item>Rechercher par genre, année, popularité, note…</item>
     </array>
 
     <!-- DETAIL D'UN FILM -->
@@ -37,6 +39,7 @@
     <string name="originalTitlePrefix">Titre original : %1$s</string>
     <string name="similarMovies">Films similaires</string>
     <string name="errorDetailMovie">Une erreur est survenue durant l\'ouverture du détail du film</string>
+    <string name="askAddToList">Ajouter à quelle liste ?</string>
 
     <!-- TRANSITIONS -->
     <string name="transitionMovieListToDetail">transitionMovieListToDetail</string>
@@ -87,6 +90,7 @@
     <string name="favorite">Favoris</string>
     <string name="planToWatch">A voir</string>
     <string name="completed">Déjà vu</string>
+
 
     <!-- CONTENT DESCRIPTION -->
     <string name="backButtonContentDesc">Bouton retour</string>

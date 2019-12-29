@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#000000</color>
-    <color name="colorPrimaryDark">#1C313A</color>
-    <color name="colorPrimaryLight">#718792</color>
+    <color name="colorPrimary">#eeeeee</color>
+    <color name="colorPrimaryDark">#bcbcbc</color>
+    <color name="colorPrimaryLight">#ffffff</color>
     <color name="colorAccent">#FFEB3B</color>
-    <color name="colorBaseTextTitle">#4EB1BA</color>
-    <color name="colorBaseText">#E9E9E9</color>
-    <color name="colorAnimationLoading">#50FFFFFF</color>
+    <color name="colorBaseText">#455a64</color>
 
-    <color name="colorBaseBackround">#222930</color>
-    <color name="colorBaseBackround80">#80263238</color>
+    <color name="colorBaseBackround">#cfd8dc</color>
+    <color name="colorBackgroundLightGrey">#eeeeee</color>
+    <color name="colorBaseBackround80">#80eeeeee</color>
     <color name="colorOnError">@android:color/holo_red_dark</color>
-    <color name="colorChipBackground">#DEE9E9</color>
+    <color name="colorChipBackground">#fafafa</color>
     <color name="colorChipBackgroundSelected">#4BF3E1</color>
     <color name="colorProgressVoteMovie">#007DD6</color>
     <color name="colorBackgroundCardSuggestedMovie">#80000000</color>
+    <color name="colorRipple">#bdbdbd</color>
+    <color name="colorDivider">#bdbdbd</color>
 
     <!-- DETAIL FILM PROGRESSBAR-->
     <color name="colorPorgressBarProgression">#00BCD4</color>
@@ -23,15 +24,21 @@
     <!-- ACTION BAR -->
     <color name="colorTextActionBar">#FFFFFF</color>
     <color name="colorTextSecondaryActionBar">#FFFFFF</color>
-    <color name="colorBackgroundActionBar">#616161</color>
+    <color name="colorBackgroundActionBar">#455a64</color>
 
     <!-- STATUS BAR -->
-    <color name="colorBackgroundStatusBar">@color/colorBaseBackround</color>
+    <color name="colorBackgroundStatusBar">#455a64</color>
 
     <!-- BOTTOM NAVIGATION BAR -->
-    <color name="colorBackgroundBottomNavBar">#616161</color>
+    <color name="colorBackgroundBottomNavBar">#455a64</color>
     <color name="colorTextBottomNavBar">#FFFFFF</color>
     <color name="colorIconBottomNavBar">#FFFFFF</color>
     <color name="colorSelectedIconBottomNavBar">#9e9e9e</color>
+
+    <!-- CAROUSEL RECYCLERVIEW -->
+    <color name="colorActiveItemCarousel">@color/colorBaseBackround</color>
+    <color name="colorInactiveItemCarousel">@color/colorBaseBackround80</color>
+
+
 
 </resources>

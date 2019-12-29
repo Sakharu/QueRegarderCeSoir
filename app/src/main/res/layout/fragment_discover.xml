@@ -18,57 +18,35 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/usualSearches"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cardUsualSearches"
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerUsualSearches"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorBaseBackround"
-            app:cardCornerRadius="4dp"
-            app:cardElevation="4dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView7">
+            app:layout_constraintTop_toBottomOf="@+id/textView7"
+            android:layout_marginTop="8dp"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_usual_search"
+            />
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/colorBaseBackround">
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerUsualSearches"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    tools:itemCount="3"
-                    tools:listitem="@layout/item_usual_search" />
-            </FrameLayout>
-
-        </androidx.cardview.widget.CardView>
-
-        <Button
-            android:id="@+id/advancedSearchTV"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="32dp"
-            android:text="@string/advancedSearch"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cardUsualSearches" />
 
         <TextView
             android:id="@+id/textView9"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="8dp"
             android:text="@string/suggestionMoviesTitle"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/advancedSearchTV" />
+            app:layout_constraintTop_toBottomOf="@+id/recyclerUsualSearches" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerSuggestionsMovies"

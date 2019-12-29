@@ -10,15 +10,12 @@ import com.sakharu.queregardercesoir.data.locale.model.Movie
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService
 import com.sakharu.queregardercesoir.ui.base.OnBottomReachedListener
 import com.sakharu.queregardercesoir.ui.userList.OnFavoriteClickListener
-import com.sakharu.queregardercesoir.util.show
 
 
 class LittleMovieAdapter(
     private var movieList: MutableList<Movie>,
-    private var favoriteMovieListId : MutableList<Long>? = null,
     private var onMovieClickListener: OnMovieClickListener? = null,
-    private var onBottomReachedListener: OnBottomReachedListener? = null,
-    private var onFavoriteClickListener: OnFavoriteClickListener? = null)
+    private var onBottomReachedListener: OnBottomReachedListener? = null)
 
     : RecyclerView.Adapter<LittleMovieHolder>()
 {
@@ -49,42 +46,11 @@ class LittleMovieAdapter(
             onMovieClickListener?.onClickOnMovie(movie,holder.posterImgIV)
         }
 
-        if (favoriteMovieListId!=null)
-        {
-            if (favoriteMovieListId!!.contains(movie.id))
-                holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_red_24dp)
-            else
-                holder.favoriteIcon.setImageResource(R.drawable.ic_favorite_border_red_24dp)
-
-            holder.favoriteIcon.show()
-            holder.favoriteIcon.setOnClickListener{
-                onFavoriteClickListener?.onFavoriteClick(movie)
-            }
-        }
-    }
-
-    fun refreshFavoriteIcon(idMovie: Long,isFavorite:Boolean)
-    {
-        val position = movieList.indexOfFirst { it.id==idMovie }
-        if (position!=-1)
-        {
-            if (isFavorite)
-                this.favoriteMovieListId!!.add(idMovie)
-            else
-                this.favoriteMovieListId!!.remove(idMovie)
-            notifyItemChanged(position)
-        }
     }
 
     fun setData(newMovies:List<Movie>)
     {
         this.movieList.addAll(newMovies.filter { !movieList.contains(it) })
-        notifyDataSetChanged()
-    }
-
-    fun setFavoriteMoviesId(favoriteMovieListId: MutableList<Long>)
-    {
-        this.favoriteMovieListId=favoriteMovieListId
         notifyDataSetChanged()
     }
 

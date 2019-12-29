@@ -9,5 +9,4 @@ import com.sakharu.queregardercesoir.R
 class LittleMovieHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 {
     var posterImgIV : ImageView = itemView.findViewById(R.id.posterItemMovieHome)
-    var favoriteIcon : ImageButton = itemView.findViewById(R.id.addToFavoriteLittleMovie)
 }

@@ -13,6 +13,7 @@ import com.sakharu.queregardercesoir.ui.base.BaseViewModel
 import com.sakharu.queregardercesoir.util.ERROR_CODE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DiscoverViewModel : BaseViewModel()
 {
@@ -62,10 +63,13 @@ class DiscoverViewModel : BaseViewModel()
 
     fun downloadSuggestMovies() =
         viewModelScope.launch {
-            page++
-            totalPagesSuggestions = MovieRepository.downloadSuggestedMovies(page,withGenres = favoriteGenresId.joinToString("|"))
-            if (totalPagesSuggestions == ERROR_CODE)
-                setError()
+            withContext(Dispatchers.IO)
+            {
+                page++
+                totalPagesSuggestions = MovieRepository.downloadSuggestedMovies(page,withGenres = favoriteGenresId.joinToString("|"))
+                if (totalPagesSuggestions == ERROR_CODE)
+                    setError()
+            }
         }
 
 }

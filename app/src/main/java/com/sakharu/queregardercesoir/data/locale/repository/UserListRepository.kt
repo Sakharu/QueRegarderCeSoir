@@ -8,6 +8,8 @@ import com.sakharu.queregardercesoir.data.locale.dao.UserListDAO
 import com.sakharu.queregardercesoir.data.locale.model.MovieInUserList
 import com.sakharu.queregardercesoir.data.locale.model.UserList
 import com.sakharu.queregardercesoir.util.USER_LIST_FAVORITE_ID
+import com.sakharu.queregardercesoir.util.USER_LIST_TOWATCH_ID
+import com.sakharu.queregardercesoir.util.USER_LIST_WATCHED_ID
 
 object UserListRepository
 {
@@ -36,13 +38,19 @@ object UserListRepository
     suspend fun insertUserList(id: Long, name: String,iconResourceName:String)
             = userListDAO.insert(UserList(id, name,iconResourceName))
 
-    fun getAllUserLists() : LiveData<List<UserList>> = userListDAO.getAllLists()
+    fun getAllUserListsLive() : LiveData<List<UserList>> = userListDAO.getAllListsLive()
+
+    fun getAllUserLists() : List<UserList> = userListDAO.getAllList()
 
     suspend fun insertBaseUserList(names:Array<String>,resourceNames:Array<String>)
     {
         for (i in names.indices)
             insertUserList(i.toLong(),names[i],resourceNames[i])
     }
+
+    fun getUserListsFromMovieInUserLists(listUserListsIds : List<Long>) =
+        userListDAO.getUserListsFromListId(listUserListsIds)
+
 
     /**
      * MOVIE IN USER LIST
@@ -58,8 +66,16 @@ object UserListRepository
         movieInUserListDAO.getFirstMoviesIdFromUserListID(userListId)
 
     fun getMovieInUserListFromIdUserListAndIdMovie(idUserList:Long, idMovie:Long)
-            = movieInUserListDAO.getMovieInUserListFromIdUserListAndIdMovie(idUserList,idMovie)
+            = movieInUserListDAO.getCountFromIdUserListAndIdMovie(idUserList,idMovie)
+
+    fun getMovieInUserListFromMovieId(movieId:Long): LiveData<List<MovieInUserList>> =
+        movieInUserListDAO.getMovieInUserListFromMovieId(movieId)
 
     fun getFavoriteMoviesId() = movieInUserListDAO.getFavoritesMoviesId(USER_LIST_FAVORITE_ID)
 
+    fun isMovieFavorite(movieId:Long) = movieInUserListDAO.getCountFromIdUserListAndIdMovie(USER_LIST_FAVORITE_ID,movieId)
+
+    fun isMovieWatched(movieId:Long) = movieInUserListDAO.getCountFromIdUserListAndIdMovie(USER_LIST_WATCHED_ID,movieId)
+
+    fun isMovieToWatch(movieId:Long) = movieInUserListDAO.getCountFromIdUserListAndIdMovie(USER_LIST_TOWATCH_ID,movieId)
 }

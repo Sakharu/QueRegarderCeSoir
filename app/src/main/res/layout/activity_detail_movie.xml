@@ -9,6 +9,7 @@
     android:theme="@style/AppTheme">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layoutDetailMovie"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fitsSystemWindows="false"
@@ -66,6 +67,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:fontFamily="@font/roboto"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +94,7 @@
             android:textSize="14sp"
             app:layout_constraintBottom_toTopOf="@+id/voteCountMovieDetail"
             app:layout_constraintStart_toEndOf="@+id/peopleIconDetailMovie"
-            app:layout_constraintTop_toBottomOf="@+id/genresMovieDetail" />
+            app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail" />
 
         <ProgressBar
             android:id="@+id/progressBarAverageVoteMovieDetail"
@@ -106,7 +108,7 @@
             android:progress="68"
             android:progressBackgroundTint="@color/colorBaseText"
             android:progressDrawable="@drawable/progress_drawable_vote_movie"
-            android:progressTint="@color/colorPorgressBarProgression"
+            android:progressTint="@color/colorBaseText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textAverageVoteMovieDetail"
             app:layout_constraintTop_toBottomOf="@+id/genresMovieDetail" />
@@ -155,7 +157,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail"
-            app:srcCompat="@drawable/ic_people_white_24dp" />
+            app:srcCompat="@drawable/ic_people_24dp" />
 
         <ImageView
             android:id="@+id/iconDateMovieDetail"
@@ -204,13 +206,37 @@
             android:id="@+id/textVoteMovieDetail"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorPorgressBarProgression"
             android:textSize="22sp"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintEnd_toEndOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintStart_toStartOf="@+id/progressBarAverageVoteMovieDetail"
             app:layout_constraintTop_toTopOf="@+id/progressBarAverageVoteMovieDetail"
             tools:text="68" />
+
+        <ImageButton
+            android:id="@+id/addTofavoriteIconDetailMovie"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/topbar"
+            app:srcCompat="@drawable/ic_favorite_border_24dp" />
+
+        <ImageButton
+            android:id="@+id/addToListIconDetailMovie"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:adjustViewBounds="true"
+            android:background="@android:color/transparent"
+            android:padding="8dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/addTofavoriteIconDetailMovie"
+            app:srcCompat="@drawable/ic_playlist_add_black_24dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

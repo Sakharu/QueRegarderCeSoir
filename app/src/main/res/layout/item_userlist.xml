@@ -5,17 +5,20 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
-    android:background="@color/colorBaseBackround"
     app:cardCornerRadius="4dp"
     app:cardElevation="4dp"
     app:cardMaxElevation="4dp"
+    android:focusable="true"
+    android:foreground="@drawable/selectable_item_background"
+    android:clickable="true"
     app:layout_constraintTop_toTopOf="parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorBaseBackround"
-        android:minHeight="160dp">
+        android:background="@color/colorBackgroundLightGrey"
+        android:minHeight="160dp"
+        android:paddingBottom="16dp">
 
         <TextView
             android:id="@+id/nameUserList"
@@ -24,6 +27,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/iconUserList"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -36,6 +40,10 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:longClickable="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/nameUserList"
@@ -48,7 +56,7 @@
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="@+id/recyclerMovieUserList"
             app:layout_constraintTop_toTopOf="@+id/nameUserList"
-            tools:srcCompat="@drawable/ic_favorite_red_24dp" />
+            tools:srcCompat="@drawable/ic_favorite_24dp" />
 
         <TextView
             android:id="@+id/noMovieInUserList"

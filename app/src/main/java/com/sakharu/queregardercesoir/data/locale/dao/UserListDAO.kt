@@ -13,8 +13,14 @@ interface UserListDAO
     @Query("SELECT * FROM UserList WHERE id = :id")
     fun getById(id:Long) : LiveData<UserList>
 
+    @Query("SELECT * FROM userList WHERE id in (:userListsIds)")
+    fun getUserListsFromListId(userListsIds:List<Long>) : LiveData<List<UserList>>
+
     @Query("SELECT * FROM UserList ORDER BY id")
-    fun getAllLists() : LiveData<List<UserList>>
+    fun getAllListsLive() : LiveData<List<UserList>>
+
+    @Query("SELECT * FROM UserList ORDER BY id")
+    fun getAllList() : List<UserList>
 
     @Query("SELECT count(*) FROM UserList")
     fun getNbUserList() : Int

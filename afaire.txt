@@ -1,5 +1,5 @@
 toute la partie des listes
+ajouter des indicateurs au dessus des listes (stats)
 corriger fautes orthographes
-refonte design
 empêcher le rechargement du fragment lorsque l'on rappui sur le même fragment
 ajouter des commentaires un peu partout, refactorer et clean le code

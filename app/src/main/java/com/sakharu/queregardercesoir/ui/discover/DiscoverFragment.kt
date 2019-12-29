@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Movie
@@ -21,6 +22,7 @@ import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.discover.suggestedMovie.AskForFavoriteGenreDialog
 import com.sakharu.queregardercesoir.ui.discover.suggestedMovie.SuggestMovieActivity
 import com.sakharu.queregardercesoir.ui.discover.suggestedMovie.SuggestedMovieAdapter
+import com.sakharu.queregardercesoir.ui.discover.usualSearch.CustomCarouselLayoutManager
 import com.sakharu.queregardercesoir.ui.discover.usualSearch.OnUsualSearchClickListener
 import com.sakharu.queregardercesoir.ui.discover.usualSearch.UsualSearchAdapter
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
@@ -66,30 +68,23 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
 
         usualSearchAdapter = UsualSearchAdapter(arrayListOf(),this)
         root.findViewById<RecyclerView>(R.id.recyclerUsualSearches).apply {
-            layoutManager = LinearLayoutManager(root.context,LinearLayoutManager.VERTICAL,false)
+            layoutManager = CustomCarouselLayoutManager(root.context,LinearLayoutManager.HORIZONTAL,false)
             setHasFixedSize(true)
             layoutAnimation = AnimationUtils.loadLayoutAnimation(root.context, R.anim.layout_animation_slide_from_right)
             scheduleLayoutAnimation()
             adapter = usualSearchAdapter
+            PagerSnapHelper().attachToRecyclerView(this)
         }
 
         discoverViewModel.nbUsualSearches.observe(viewLifecycleOwner, Observer<Int> {
             if (it==0)
-                discoverViewModel.insertUsualSearches(resources.getStringArray(R.array.usualSearchestTitles)
-                    ,resources.getStringArray(R.array.usualSearchestSubTitles),it)
+                discoverViewModel.insertUsualSearches(resources.getStringArray(R.array.usualSearchestTitles),
+                    resources.getStringArray(R.array.usualSearchestSubTitles),it)
         })
 
         discoverViewModel.getAllUsualSearchesListLive.observe(viewLifecycleOwner, Observer {
             usualSearchAdapter.setData(it)
-        })
-
-
-        /**
-        RECHERCHE AVANCEE
-         **/
-        root.findViewById<TextView>(R.id.advancedSearchTV).setOnClickListener{
-            startActivity(Intent(root.context, AdvancedSearchActivity::class.java))
-        }
+         })
 
         /**
          * SUGGESTIONS DE FILMS
@@ -194,6 +189,8 @@ class DiscoverFragment : BaseFragment(), OnUsualSearchClickListener, OnMovieClic
             ID_MY_FAMILY_FIRST -> startActivity(intentSearchActivity.putExtra(EXTRA_YEAR,Calendar.getInstance().get(Calendar.YEAR)-20)
                 .putExtra(EXTRA_CERTIFICATION,CERTIFICATION_FRANCE_NO_AGE_REQUIRED))
             ID_SUCCES_OF_LAST_TEN_YEARS -> startActivity(intentSearchActivity.putExtra(EXTRA_YEAR,Calendar.getInstance().get(Calendar.YEAR)-10))
+            ID_ADVANCED_SEARCH ->  startActivity(Intent(context, AdvancedSearchActivity::class.java))
+
         }
     }
 

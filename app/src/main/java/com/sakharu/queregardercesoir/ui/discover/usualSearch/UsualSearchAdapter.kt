@@ -20,7 +20,7 @@ class UsualSearchAdapter(private var listSearch: MutableList<UsualSearch>,
     {
         holder.titleSearch.text = listSearch[position].title
         holder.subTitleSearch.text = listSearch[position].subtitle
-        holder.nextImgButton.setOnClickListener{
+        holder.itemView.setOnClickListener{
             this.onUsualSearchClickListener?.onUsualSearchClick(listSearch[position].id)
         }
     }

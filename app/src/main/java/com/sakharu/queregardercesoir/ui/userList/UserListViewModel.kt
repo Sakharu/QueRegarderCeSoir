@@ -23,7 +23,7 @@ class UserListViewModel : ViewModel()
     {
         if (UserListRepository.getNbUserList()< NUMBER_OF_BASE_LIST)
             UserListRepository.insertBaseUserList(arrayBaseUserListNames,arrayBaseUserListResourceName)
-        emitSource(UserListRepository.getAllUserLists())
+        emitSource(UserListRepository.getAllUserListsLive())
     }
 
     fun getMoviesInUserListFromUserListId(idUserList:Long): LiveData<List<MovieInUserList>> = liveData(Dispatchers.IO)

@@ -31,7 +31,7 @@ class UserListFragment : Fragment() {
     {
         val root = inflater.inflate(R.layout.fragment_list, container, false)
 
-        (activity as BaseActivity).changeTitleFromActionbar(getString(R.string.title_lists))
+        (activity as BaseActivity).setUpActionBar(getString(R.string.title_lists),false)
 
         userListAdapter = UserListAdapter()
         recyclerUserList = root.findViewById(R.id.recyclerUserList)
@@ -40,9 +40,8 @@ class UserListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(true)
             adapter = userListAdapter
-        }
 
-        (activity as BaseActivity).setUpActionBar(getString(R.string.title_home),false)
+        }
 
         userListViewModel = ViewModelProvider(this, ViewModelFactory()).get(UserListViewModel::class.java)
 

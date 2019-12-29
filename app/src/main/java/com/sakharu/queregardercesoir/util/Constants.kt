@@ -62,6 +62,7 @@ const val PREFERENCE_IDS_FAVORITES_GENRES="PreferenceIdsFavoritesGenres"
 const val ID_BEST_RECENT_MOVIES=0
 const val ID_MY_FAMILY_FIRST=1
 const val ID_SUCCES_OF_LAST_TEN_YEARS=2
+const val ID_ADVANCED_SEARCH=3
 
 /*
     CERTIFICATIONS

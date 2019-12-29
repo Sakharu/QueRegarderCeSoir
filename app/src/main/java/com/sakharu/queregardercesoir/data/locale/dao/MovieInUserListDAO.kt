@@ -14,6 +14,9 @@ interface MovieInUserListDAO
     @Query("SELECT * FROM MovieInUserList WHERE id = :id")
     fun getById(id:Long) : LiveData<MovieInUserList>
 
+    @Query("SELECT * FROM MovieInUserList WHERE idMovie = :idMovie")
+    fun getMovieInUserListFromMovieId(idMovie:Long) : LiveData<List<MovieInUserList>>
+
     @Query("SELECT * FROM MovieInUserList WHERE idUserList = :idUserList LIMIT ${MovieService.NUMBER_MOVIES_RETRIEVE_BY_REQUEST}")
     fun getMoviesIdFromUserListId(idUserList:Long) : LiveData<List<MovieInUserList>>
 
@@ -24,10 +27,7 @@ interface MovieInUserListDAO
     fun getFavoritesMoviesId(idUserList:Long) : LiveData<List<Long>>
 
     @Query("SELECT count(*) FROM MovieInUserList WHERE idUserList = :idUserList AND idMovie = :idMovie")
-    fun getMovieInUserListFromIdUserListAndIdMovie(idUserList:Long, idMovie:Long) : Int
-
-    @Query("SELECT * FROM MovieInUserList")
-    fun getAllMoviesInCategory() : LiveData<List<MovieInUserList>>
+    fun getCountFromIdUserListAndIdMovie(idUserList:Long, idMovie:Long) : LiveData<Int>
 
     @Query("DELETE FROM MovieInUserList WHERE idUserList = :idUserList AND idMovie = :idMovie")
     fun deleteMovieInUserList(idUserList: Long,idMovie:Long)

@@ -10,5 +10,4 @@ class UsualSearchHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 {
     var titleSearch : TextView = itemView.findViewById(R.id.titleUsualSearch)
     var subTitleSearch : TextView = itemView.findViewById(R.id.subtitleUsualSearch)
-    var nextImgButton : ImageButton = itemView.findViewById(R.id.nextButtonUsualSearch)
 }
