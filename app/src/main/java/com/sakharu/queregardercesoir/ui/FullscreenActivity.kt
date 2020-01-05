@@ -1,9 +1,14 @@
 package com.sakharu.queregardercesoir.ui
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService.Companion.IMAGE_PREFIX_BACKDROP_HIRES
 import com.sakharu.queregardercesoir.data.remote.webservice.MovieService.Companion.IMAGE_PREFIX_POSTER_HIRES
@@ -18,7 +23,6 @@ class FullscreenActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen)
 
-
         if (!intent.getStringExtra(EXTRA_IMAGE_URL).isNullOrEmpty())
         {
             val url = if (intent.getStringExtra(EXTRA_TYPE_IMAGE) == TYPE_POSTER)
@@ -30,6 +34,22 @@ class FullscreenActivity : BaseActivity() {
                 .load(url)
                 .error(R.drawable.film_poster_placeholder)
                 .transition(DrawableTransitionOptions.withCrossFade())
+                .listener(object : RequestListener<Drawable>{
+
+                    override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?,
+                                                 dataSource: DataSource?, isFirstResource: Boolean): Boolean
+                    {
+                        loadingAnimationFullscreenActivity.hide()
+                        return false
+                    }
+
+                    override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean
+                    {
+                        showDialogNetworkError()
+                        loadingAnimationFullscreenActivity.hide()
+                        return false
+                    }
+                })
                 .into(fullscreenImageView)
         }
         else

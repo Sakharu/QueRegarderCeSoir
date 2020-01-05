@@ -7,7 +7,11 @@
     android:layout_margin="4dp"
     app:cardCornerRadius="4dp"
     app:cardElevation="2dp"
-    app:cardMaxElevation="2dp">
+    app:cardMaxElevation="2dp"
+    android:focusable="true"
+    android:foreground="@drawable/selectable_item_background"
+    android:clickable="true"
+    >
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".ui.FullscreenActivity">
 
+    <ProgressBar
+        android:id="@+id/loadingAnimationFullscreenActivity"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="@drawable/background_loading_progressbar"
+        android:indeterminate="true"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        android:padding="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <include
         android:id="@+id/topbar"
         layout="@layout/action_bar"

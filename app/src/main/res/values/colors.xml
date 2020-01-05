@@ -3,23 +3,18 @@
     <color name="colorPrimary">#eeeeee</color>
     <color name="colorPrimaryDark">#bcbcbc</color>
     <color name="colorPrimaryLight">#ffffff</color>
-    <color name="colorAccent">#FFEB3B</color>
-    <color name="colorBaseText">#455a64</color>
 
+    <color name="colorBaseText">#455a64</color>
     <color name="colorBaseBackround">#cfd8dc</color>
     <color name="colorBackgroundLightGrey">#eeeeee</color>
     <color name="colorBaseBackround80">#80eeeeee</color>
+
     <color name="colorOnError">@android:color/holo_red_dark</color>
     <color name="colorChipBackground">#fafafa</color>
     <color name="colorChipBackgroundSelected">#4BF3E1</color>
-    <color name="colorProgressVoteMovie">#007DD6</color>
-    <color name="colorBackgroundCardSuggestedMovie">#80000000</color>
+    <color name="colorBackgroundTitleCardSuggestedMovie">#80000000</color>
     <color name="colorRipple">#bdbdbd</color>
     <color name="colorDivider">#bdbdbd</color>
-
-    <!-- DETAIL FILM PROGRESSBAR-->
-    <color name="colorPorgressBarProgression">#00BCD4</color>
-
 
     <!-- ACTION BAR -->
     <color name="colorTextActionBar">#FFFFFF</color>
@@ -38,7 +33,5 @@
     <!-- CAROUSEL RECYCLERVIEW -->
     <color name="colorActiveItemCarousel">@color/colorBaseBackround</color>
     <color name="colorInactiveItemCarousel">@color/colorBaseBackround80</color>
-
-
 
 </resources>

@@ -1,6 +1,5 @@
 package com.sakharu.queregardercesoir.ui.home.category
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -9,14 +8,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
 import com.sakharu.queregardercesoir.data.locale.model.Category
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.ui.movieGridCategory.MovieGridCategoryActivity
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.LittleMovieAdapter
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
-import com.sakharu.queregardercesoir.util.EXTRA_CATEGORY
 import com.sakharu.queregardercesoir.util.NUMBER_OF_CATEGORIES
 
 class CategoryMovieAdapter(private var movieListInArrayList: ArrayList<CategoryAndList> = ArrayList(NUMBER_OF_CATEGORIES),
-                           private var onMovieClickListener: OnMovieClickListener?=null)
+                           private var onMovieClickListener: OnMovieClickListener?=null,
+                           private var onCategoryMovieClickListener: OnCategoryMovieClickListener?=null)
     : RecyclerView.Adapter<CategoryMovieHolder>()
 {
     //on rempli la liste avec 4 catégories et films vides afin de pouvoir manipuler
@@ -45,9 +43,12 @@ class CategoryMovieAdapter(private var movieListInArrayList: ArrayList<CategoryA
             adapter = LittleMovieAdapter(movieListInArrayList[position].movieList.toMutableList(), onMovieClickListener=onMovieClickListener)
         }
 
+        holder.itemView.setOnClickListener{
+           onCategoryMovieClickListener?.onCategoryMovieClick(category)
+        }
+
         holder.seeMoreIB.setOnClickListener{
-            holder.itemView.context.startActivity(Intent(holder.itemView.context, MovieGridCategoryActivity::class.java)
-                .putExtra(EXTRA_CATEGORY,category))
+            onCategoryMovieClickListener?.onCategoryMovieClick(category)
         }
     }
 

@@ -1,7 +1,6 @@
 package com.sakharu.queregardercesoir.data.remote.webservice
 
 import com.sakharu.queregardercesoir.data.locale.model.Movie
-import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseAuth
 import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseMovieDetail
 import com.sakharu.queregardercesoir.data.remote.modelResponse.ResponseResult
 import okhttp3.OkHttpClient
@@ -15,14 +14,6 @@ import retrofit2.http.Query
 
 interface MovieService
 {
-    @GET("authentication/token/new")
-    suspend fun authenticate(@Query(value = "api_key") api_key:String = API_KEY) : ResponseAuth
-
-    @GET("movie/popular")
-    suspend fun getPopularMovies(@Query("api_key") api_key:String = API_KEY,
-                                 @Query("language") language:String = "fr-FR",
-                                 @Query("page") page:Int = 1) : ResponseResult<Movie>
-
     @GET("movie/top_rated")
     suspend fun getTopRatedMovies(@Query("api_key") api_key:String = API_KEY,
                                   @Query("language") language:String = "fr-FR",
@@ -39,7 +30,8 @@ interface MovieService
                                   @Query("page") page:Int = 1) : ResponseResult<Movie>
 
     @GET("movie/{id}")
-    suspend fun getMovieDetail(@Path("id")id:Long, @Query("api_key") api_key:String = API_KEY,
+    suspend fun getMovieDetail(@Path("id")id:Long,
+                               @Query("api_key") api_key:String = API_KEY,
                                @Query("language") language:String = "fr-FR"): ResponseMovieDetail
 
     @GET("search/movie")
@@ -62,7 +54,7 @@ interface MovieService
                                        @Query("certification_country") certificationCountry:String?=null,
                                        @Query("certification") certification:String?=null,
                                        @Query("with_genres") withGenres:String?=null,
-                                       @Query("vote_count.gte") voteCountGte:Int=3
+                                       @Query("vote_count.gte") voteCountGte:Int=10
                                        ) : ResponseResult<Movie>
 
     @GET("discover/movie")

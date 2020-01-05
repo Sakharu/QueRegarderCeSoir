@@ -27,12 +27,6 @@
         <item name="android:textSize">14sp</item>
     </style>
 
-    <style name="CategoryOverviewStyle" parent="TextAppearance.AppCompat">
-        <item name="android:textColor">@color/colorBaseText</item>
-        <item name="android:fontFamily">@font/roboto</item>
-        <item name="android:textSize">14sp</item>
-    </style>
-
     <style name="TextInputLayoutTheme" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
         <item name="counterTextAppearance">@style/HintText</item>
         <item name="hintTextAppearance">@style/HintText</item>

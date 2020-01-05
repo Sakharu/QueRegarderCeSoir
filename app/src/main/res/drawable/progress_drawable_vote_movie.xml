@@ -10,8 +10,8 @@
 
         <gradient
             android:angle="0"
-            android:endColor="@color/colorProgressVoteMovie"
-            android:startColor="@color/colorProgressVoteMovie"
+            android:endColor="@color/colorBaseText"
+            android:startColor="@color/colorBaseText"
             android:type="sweep"
             android:useLevel="false" />
     </shape>

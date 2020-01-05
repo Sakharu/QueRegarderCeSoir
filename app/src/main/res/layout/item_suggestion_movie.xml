@@ -85,7 +85,7 @@
             android:id="@+id/frameLayout"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/colorBackgroundCardSuggestedMovie"
+            android:background="@color/colorBackgroundTitleCardSuggestedMovie"
             android:minHeight="75dp"
             app:layout_constraintBottom_toBottomOf="@+id/posterSuggestedMovie"
             app:layout_constraintEnd_toEndOf="@+id/posterSuggestedMovie"

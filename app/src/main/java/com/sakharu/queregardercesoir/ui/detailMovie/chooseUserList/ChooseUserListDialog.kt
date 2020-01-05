@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.view.Window
 import android.view.animation.AnimationUtils
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.sakharu.queregardercesoir.R
@@ -30,6 +31,7 @@ class ChooseUserListDialog
             setHasFixedSize(false)
             layoutAnimation = AnimationUtils.loadLayoutAnimation(dialog!!.context, R.anim.layout_animation_fall_down)
             scheduleLayoutAnimation()
+            addItemDecoration(DividerItemDecoration(activity, (layoutManager as LinearLayoutManager).orientation))
             adapter = ChooseUserListAdapter(listCompleteUserList.toMutableList(),listUserListFromMovie.toMutableList())
         }
 

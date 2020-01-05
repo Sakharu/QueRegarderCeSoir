@@ -19,12 +19,14 @@ import com.sakharu.queregardercesoir.ui.base.BaseActivity
 import com.sakharu.queregardercesoir.ui.base.BaseFragment
 import com.sakharu.queregardercesoir.ui.detailMovie.DetailMovieActivity
 import com.sakharu.queregardercesoir.ui.home.category.CategoryMovieAdapter
+import com.sakharu.queregardercesoir.ui.home.category.OnCategoryMovieClickListener
+import com.sakharu.queregardercesoir.ui.movieGridCategory.MovieGridCategoryActivity
 import com.sakharu.queregardercesoir.ui.movieGridCategory.littleMovie.OnMovieClickListener
 import com.sakharu.queregardercesoir.util.*
 import kotlinx.android.synthetic.main.fragment_home.*
 
 
-class HomeFragment : BaseFragment(), OnMovieClickListener
+class HomeFragment : BaseFragment(), OnMovieClickListener, OnCategoryMovieClickListener
 {
     private lateinit var homeViewModel: HomeViewModel
     private lateinit var categoryMovieAdapter : CategoryMovieAdapter
@@ -35,7 +37,7 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
     {
         val root = inflater.inflate(R.layout.fragment_home, container, false)
-        categoryMovieAdapter = CategoryMovieAdapter(onMovieClickListener = this)
+        categoryMovieAdapter = CategoryMovieAdapter(onMovieClickListener = this,onCategoryMovieClickListener = this)
         recyclerCategory = root.findViewById(R.id.recyclerHomePopularMovies)
 
         recyclerCategory.apply {
@@ -121,4 +123,8 @@ class HomeFragment : BaseFragment(), OnMovieClickListener
             startActivity(Intent(activity, DetailMovieActivity::class.java).putExtra(EXTRA_MOVIE_ID,movie.id))
 
     }
+
+    override fun onCategoryMovieClick(category: Category) =
+        startActivity(Intent(context, MovieGridCategoryActivity::class.java).putExtra(EXTRA_CATEGORY,category))
+
 }

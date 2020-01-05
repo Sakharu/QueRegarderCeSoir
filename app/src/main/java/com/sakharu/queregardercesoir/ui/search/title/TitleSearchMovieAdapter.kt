@@ -2,6 +2,7 @@ package com.sakharu.queregardercesoir.ui.search.title
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -82,7 +83,7 @@ class TitleSearchMovieAdapter(private var listeMovie: MutableList<Movie>,
         if (position==listeMovie.size-1)
             onBottomReachedListener?.onBottomReached()
 
-        movieHolder.itemView.setOnClickListener{
+        movieHolder.itemView.findViewById<ConstraintLayout>(R.id.layoutItemResultSearch).setOnClickListener{
             onMovieClickListener?.onClickOnMovie(listeMovie[position],movieHolder.posterImg)
         }
     }

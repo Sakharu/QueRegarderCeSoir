@@ -20,11 +20,15 @@ class ChooseUserListAdapter(private var userList: MutableList<UserList>,
     {
         val list = userList[position]
         holder.listNameTV.text = list.name
-        holder.listNameTV.isChecked = false
+        holder.listNameTV.isChecked = selectedUserList.contains(list)
+
+        holder.itemView.setOnClickListener{
+            holder.listNameTV.isChecked = !holder.listNameTV.isChecked
+        }
     }
 }
 
 class ChooseUserListHolder(itemView : View) : RecyclerView.ViewHolder(itemView)
 {
-    val listNameTV = itemView.findViewById<CheckedTextView>(R.id.checkedTextView)
+    val listNameTV: CheckedTextView = itemView.findViewById(R.id.checkedTextView)
 }

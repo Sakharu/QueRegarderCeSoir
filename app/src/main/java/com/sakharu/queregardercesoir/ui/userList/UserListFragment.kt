@@ -40,7 +40,6 @@ class UserListFragment : Fragment() {
             layoutManager = LinearLayoutManager(context!!, LinearLayoutManager.VERTICAL,false)
             setHasFixedSize(true)
             adapter = userListAdapter
-
         }
 
         userListViewModel = ViewModelProvider(this, ViewModelFactory()).get(UserListViewModel::class.java)
